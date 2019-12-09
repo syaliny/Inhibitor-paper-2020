@@ -5,7 +5,7 @@ The R code which generates the figures have been broken down into 6 sections.Eac
 
 a) Section 1
 
--This section contains the R code for Figure 1 (NMDS for all samples),Figure 2 (Line graph) and Figure S1 (Stressplot for NMDS) and Fig S2 (NMDS plot for urea treated samples only)
+-This section contains the R code for Figure 1 (NMDS for all samples),Figure 2 (Line graph) and Figure S1 (Stressplot for NMDS) and Figure S2 (NMDS plot for urea treated samples only)
 
 b) Section 2
 
