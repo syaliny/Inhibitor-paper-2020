@@ -1,0 +1,197 @@
+,OTU,Sample,Abundance,SampleID,BarcodeSequence,LinkerPrimerSequence,BarcodePlate,Well,Original_name,Description,Replicate,Day,Treatment,Domain,Phylum,Class,Order,Family,Genus
+1,New.CleanUp.ReferenceOTU777186,625.F10,0.835260116,625.F10,TCTACGGCACGT,CATGATCCTTCTGCAGGTTCACCTAC,4,F10,625F10,625F10,1,33,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+2,New.CleanUp.ReferenceOTU777186,625.F11,0.793450882,625.F11,ATGCTGCAACAC,CATGATCCTTCTGCAGGTTCACCTAC,4,F11,625F11,625F11,2,33,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+3,New.CleanUp.ReferenceOTU777186,625.F12,0.76984127,625.F12,TTCTCATGGAGG,CATGATCCTTCTGCAGGTTCACCTAC,4,F12,625F12,625F12,3,33,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+4,New.CleanUp.ReferenceOTU777186,305.B6,0.535809019,305.B6,TATCCAAGCGCA,CATGATCCTTCTGCAGGTTCACCTAC,4,B6,305B6,305B6,3,15,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+5,New.CleanUp.ReferenceOTU777186,610.F4,0.167381974,610.F4,ACCTGTCCTTTC,CATGATCCTTCTGCAGGTTCACCTAC,4,F4,610F4,610F4,1,33,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+6,New.CleanUp.ReferenceOTU777186,730.H4,0.163388805,730.H4,TGACTAATGGCC,CATGATCCTTCTGCAGGTTCACCTAC,4,H4,730H4,730H4,1,42,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+7,New.CleanUp.ReferenceOTU777186,530.2,0.137630662,530.2,GCCAAGGATAGG,CATGATCCTTCTGCAGGTTCACCTAC,4,E11,5.30E+14,5.30E+14,2,27,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+8,New.CleanUp.ReferenceOTU777186,430.D9,0.129692833,430.D9,CTCTGCCTAATT,CATGATCCTTCTGCAGGTTCACCTAC,4,D9,430D9,430D9,3,21,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+9,New.CleanUp.ReferenceOTU777186,305.B5,0.127272727,305.B5,ACCAATCTCGGC,CATGATCCTTCTGCAGGTTCACCTAC,4,B5,305B5,305B5,2,15,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+10,New.CleanUp.ReferenceOTU777186,710.G9,0.116666667,710.G9,GGCAAATACACT,CATGATCCTTCTGCAGGTTCACCTAC,4,G9,710G9,710G9,3,42,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+11,New.CleanUp.ReferenceOTU777186,705.G5,0.110091743,705.G5,GGAATTATCGGT,CATGATCCTTCTGCAGGTTCACCTAC,4,G5,705G5,705G5,2,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+12,New.CleanUp.ReferenceOTU777186,705.G6,0.108695652,705.G6,CATCAAGCATAG,CATGATCCTTCTGCAGGTTCACCTAC,4,G6,705G6,705G6,3,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+13,New.CleanUp.ReferenceOTU777186,230.B3,0.107291667,230.B3,CTCTTCTGATCA,CATGATCCTTCTGCAGGTTCACCTAC,4,B3,230B3,230B3,3,9,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricomycotina,Agaricomycetes
+14,New.CleanUp.ReferenceOTU964616,805.H7,0.102702703,805.H7,CACGTGACATGT,CATGATCCTTCTGCAGGTTCACCTAC,4,H7,805H7,805H7,1,51,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Blastocladiaceae,Allomyces
+15,New.ReferenceOTU6681,805.H8,0.896184561,805.H8,CACAGTTGAAGT,CATGATCCTTCTGCAGGTTCACCTAC,4,H8,805H8,805H8,2,51,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Trichocomaceae,Aspergillus
+16,New.CleanUp.ReferenceOTU529677,430.D7,0.133064516,430.D7,CTTGACGAGGTT,CATGATCCTTCTGCAGGTTCACCTAC,4,D7,430D7,430D7,1,21,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Spizellomycetaceae,Gaertneriomyces
+17,New.ReferenceOTU1751,205.A2,0.686375321,205.A2,GACTGACTCGTC,CATGATCCTTCTGCAGGTTCACCTAC,4,A2,205A2,205A2,2,9,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Leotiomycetes,Helotiales
+18,New.ReferenceOTU1751,205.A3,0.588796785,205.A3,TCGTGGATAGCT,CATGATCCTTCTGCAGGTTCACCTAC,4,A3,205A3,205A3,3,9,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Leotiomycetes,Helotiales
+19,New.ReferenceOTU1751,205.A1,0.550383877,205.A1,TGTATCTTCACC,CATGATCCTTCTGCAGGTTCACCTAC,4,A1,205A1,205A1,1,9,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Leotiomycetes,Helotiales
+20,New.ReferenceOTU1751,805.H9,0.517985612,805.H9,CTAGGATCACTG,CATGATCCTTCTGCAGGTTCACCTAC,4,H9,805H9,805H9,3,51,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Leotiomycetes,Helotiales
+21,New.ReferenceOTU1751,805.H7,0.227027027,805.H7,CACGTGACATGT,CATGATCCTTCTGCAGGTTCACCTAC,4,H7,805H7,805H7,1,51,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Leotiomycetes,Helotiales
+22,New.ReferenceOTU1751,810.H11,0.107142857,810.H11,ACCGGAGTAGGA,CATGATCCTTCTGCAGGTTCACCTAC,4,H11,810H11,810H11,2,51,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Leotiomycetes,Helotiales
+23,New.ReferenceOTU3543,810.H10,0.4,810.H10,GATGACCCAAAT,CATGATCCTTCTGCAGGTTCACCTAC,4,H10,810H10,810H10,1,51,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+24,New.ReferenceOTU3543,615.F8,0.225352113,615.F8,CCTACATGAGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,F8,615F8,615F8,2,33,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+25,New.ReferenceOTU3543,715.G10,0.1875,715.G10,GTCATGCTCCAG,CATGATCCTTCTGCAGGTTCACCTAC,4,G10,715G10,715G10,1,42,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+26,New.ReferenceOTU3543,810.H11,0.153061224,810.H11,ACCGGAGTAGGA,CATGATCCTTCTGCAGGTTCACCTAC,4,H11,810H11,810H11,2,51,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+27,New.ReferenceOTU3543,805.H7,0.140540541,805.H7,CACGTGACATGT,CATGATCCTTCTGCAGGTTCACCTAC,4,H7,805H7,805H7,1,51,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+28,New.ReferenceOTU3543,715.G12,0.137254902,715.G12,TTACCGACGAGT,CATGATCCTTCTGCAGGTTCACCTAC,4,G12,715G12,715G12,3,42,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+29,New.ReferenceOTU3543,415.D1,0.125,415.D1,TAATGCCCAGGT,CATGATCCTTCTGCAGGTTCACCTAC,4,D1,415D1,415D1,1,21,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+30,New.ReferenceOTU3543,815.F11,0.115537849,815.F11,TGATAGGTACAC,CATGATCCTTCTGCAGGTTCACCTAC,6,F11,815F11,815F11,2,51,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+31,New.ReferenceOTU3543,225.A12,0.112149533,225.A12,GGCATGTTATCG,CATGATCCTTCTGCAGGTTCACCTAC,4,A12,225A12,225A12,3,9,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+32,New.ReferenceOTU3543,215.A9,0.111111111,215.A9,CAGTCGTTAAGA,CATGATCCTTCTGCAGGTTCACCTAC,4,A9,215A9,215A9,3,9,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+33,New.ReferenceOTU3543,605.F2,0.109947644,605.F2,CATGTGCTTAGG,CATGATCCTTCTGCAGGTTCACCTAC,4,F2,605F2,605F2,2,33,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+34,New.ReferenceOTU3543,615.F7,0.109704641,615.F7,GAGTACAGTCTA,CATGATCCTTCTGCAGGTTCACCTAC,4,F7,615F7,615F7,1,33,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+35,New.ReferenceOTU3543,725.H3,0.10443038,725.H3,TTACCTTACACC,CATGATCCTTCTGCAGGTTCACCTAC,4,H3,725H3,725H3,3,42,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Cryptomycota,LKM11
+36,New.ReferenceOTU1052,830.G6,0.320621469,830.G6,ATAGAGGCCATT,CATGATCCTTCTGCAGGTTCACCTAC,6,G6,830G6,830G6,3,51,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+37,New.ReferenceOTU1052,330.C5,0.299120235,330.C5,CGGAGTAATCCT,CATGATCCTTCTGCAGGTTCACCTAC,4,C5,330C5,330C5,2,15,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+38,New.ReferenceOTU1052,205.A1,0.297744722,205.A1,TGTATCTTCACC,CATGATCCTTCTGCAGGTTCACCTAC,4,A1,205A1,205A1,1,9,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+39,New.ReferenceOTU1052,530.1,0.295031056,530.1,CACACAAAGTCA,CATGATCCTTCTGCAGGTTCACCTAC,4,E10,5.30E+13,5.30E+13,1,27,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+40,New.ReferenceOTU1052,230.B2,0.291666667,230.B2,CTACTTACATCC,CATGATCCTTCTGCAGGTTCACCTAC,4,B2,230B2,230B2,2,9,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+41,New.ReferenceOTU1052,230.B1,0.278903456,230.B1,AGGCACAGTAGG,CATGATCCTTCTGCAGGTTCACCTAC,4,B1,230B1,230B1,1,9,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+42,New.ReferenceOTU1052,830.G4,0.274570983,830.G4,GTCAACGCTGTC,CATGATCCTTCTGCAGGTTCACCTAC,6,G4,830G4,830G4,1,51,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+43,New.ReferenceOTU1052,330.C6,0.269817073,330.C6,CTGTGTCCATGG,CATGATCCTTCTGCAGGTTCACCTAC,4,C6,330C6,330C6,3,15,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+44,New.ReferenceOTU1052,530.3,0.256959315,530.3,CGCCACGTGTAT,CATGATCCTTCTGCAGGTTCACCTAC,4,E12,5.30E+15,5.30E+15,3,27,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+45,New.ReferenceOTU1052,630.G2,0.251471825,630.G2,GCTATCAAGACA,CATGATCCTTCTGCAGGTTCACCTAC,4,G2,630G2,630G2,2,33,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+46,New.ReferenceOTU1052,730.H4,0.242057489,730.H4,TGACTAATGGCC,CATGATCCTTCTGCAGGTTCACCTAC,4,H4,730H4,730H4,1,42,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+47,New.ReferenceOTU1052,630.G3,0.235939643,630.G3,CCGTGACAACTC,CATGATCCTTCTGCAGGTTCACCTAC,4,G3,630G3,630G3,3,33,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+48,New.ReferenceOTU1052,830.G5,0.234016888,830.G5,GCTGTCGTCAAC,CATGATCCTTCTGCAGGTTCACCTAC,6,G5,830G5,830G5,2,51,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+49,New.ReferenceOTU1052,430.D7,0.211693548,430.D7,CTTGACGAGGTT,CATGATCCTTCTGCAGGTTCACCTAC,4,D7,430D7,430D7,1,21,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+50,New.ReferenceOTU1052,430.D8,0.211180124,430.D8,ACCTGGGAATAT,CATGATCCTTCTGCAGGTTCACCTAC,4,D8,430D8,430D8,2,21,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+51,New.ReferenceOTU1052,230.B3,0.203125,230.B3,CTCTTCTGATCA,CATGATCCTTCTGCAGGTTCACCTAC,4,B3,230B3,230B3,3,9,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+52,New.ReferenceOTU1052,530.2,0.196864111,530.2,GCCAAGGATAGG,CATGATCCTTCTGCAGGTTCACCTAC,4,E11,5.30E+14,5.30E+14,2,27,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+53,New.ReferenceOTU1052,730.H6,0.18504436,730.H6,ATTGCAAGCAAC,CATGATCCTTCTGCAGGTTCACCTAC,4,H6,730H6,730H6,3,42,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+54,New.ReferenceOTU1052,430.D9,0.170648464,430.D9,CTCTGCCTAATT,CATGATCCTTCTGCAGGTTCACCTAC,4,D9,430D9,430D9,3,21,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+55,New.ReferenceOTU1052,630.G1,0.168577982,630.G1,CATAGTGATTGG,CATGATCCTTCTGCAGGTTCACCTAC,4,G1,630G1,630G1,1,33,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+56,New.ReferenceOTU1052,205.A2,0.158448236,205.A2,GACTGACTCGTC,CATGATCCTTCTGCAGGTTCACCTAC,4,A2,205A2,205A2,2,9,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+57,New.ReferenceOTU1052,330.C4,0.146596859,330.C4,AATAGCATGTCG,CATGATCCTTCTGCAGGTTCACCTAC,4,C4,330C4,330C4,1,15,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+58,New.ReferenceOTU1052,415.D2,0.143835616,415.D2,TATGAACGTCCG,CATGATCCTTCTGCAGGTTCACCTAC,4,D2,415D2,415D2,2,21,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+59,New.ReferenceOTU1052,205.A3,0.138156242,205.A3,TCGTGGATAGCT,CATGATCCTTCTGCAGGTTCACCTAC,4,A3,205A3,205A3,3,9,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+60,New.ReferenceOTU1052,730.H5,0.136203866,730.H5,CTCTCTCACTTG,CATGATCCTTCTGCAGGTTCACCTAC,4,H5,730H5,730H5,2,42,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+61,New.ReferenceOTU1052,210.A5,0.136,210.A5,GGCGATTTACGT,CATGATCCTTCTGCAGGTTCACCTAC,4,A5,210A5,210A5,2,9,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+62,New.ReferenceOTU1052,225.A11,0.126934985,225.A11,ATAATTGCCGAG,CATGATCCTTCTGCAGGTTCACCTAC,4,A11,225A11,225A11,2,9,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+63,New.ReferenceOTU1052,715.G10,0.125,715.G10,GTCATGCTCCAG,CATGATCCTTCTGCAGGTTCACCTAC,4,G10,715G10,715G10,1,42,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+64,New.ReferenceOTU1052,210.A4,0.121900826,210.A4,GACGCACTAACT,CATGATCCTTCTGCAGGTTCACCTAC,4,A4,210A4,210A4,1,9,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+65,New.ReferenceOTU1052,225.A12,0.121495327,225.A12,GGCATGTTATCG,CATGATCCTTCTGCAGGTTCACCTAC,4,A12,225A12,225A12,3,9,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Mortierellales
+66,New.CleanUp.ReferenceOTU327255,630.G1,0.209862385,630.G1,CATAGTGATTGG,CATGATCCTTCTGCAGGTTCACCTAC,4,G1,630G1,630G1,1,33,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricaceae,Mycocalia
+67,New.CleanUp.ReferenceOTU327255,730.H6,0.20278834,730.H6,ATTGCAAGCAAC,CATGATCCTTCTGCAGGTTCACCTAC,4,H6,730H6,730H6,3,42,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricaceae,Mycocalia
+68,New.CleanUp.ReferenceOTU327255,630.G2,0.111017662,630.G2,GCTATCAAGACA,CATGATCCTTCTGCAGGTTCACCTAC,4,G2,630G2,630G2,2,33,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Agaricaceae,Mycocalia
+69,New.CleanUp.ReferenceOTU2211657,505.D11,0.5,505.D11,CTCTATTCCACC,CATGATCCTTCTGCAGGTTCACCTAC,4,D11,505D11,505D11,2,27,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+70,New.CleanUp.ReferenceOTU2211657,815.F10,0.256,815.F10,TGCTCCGTAGAA,CATGATCCTTCTGCAGGTTCACCTAC,6,F10,815F10,815F10,1,51,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+71,New.CleanUp.ReferenceOTU2211657,825.G3,0.222222222,825.G3,TAGACCGACTCC,CATGATCCTTCTGCAGGTTCACCTAC,6,G3,825G3,825G3,3,51,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+72,New.CleanUp.ReferenceOTU2211657,725.H1,0.210762332,725.H1,GCTTAGATGTAG,CATGATCCTTCTGCAGGTTCACCTAC,4,H1,725H1,725H1,1,42,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+73,New.CleanUp.ReferenceOTU2211657,825.G1,0.189189189,825.G1,AAGCAGATTGTC,CATGATCCTTCTGCAGGTTCACCTAC,6,G1,825G1,825G1,1,51,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+74,New.CleanUp.ReferenceOTU2211657,705.G4,0.18,705.G4,CGTTCCTTGTTA,CATGATCCTTCTGCAGGTTCACCTAC,4,G4,705G4,705G4,1,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+75,New.CleanUp.ReferenceOTU2211657,425.D5,0.166666667,425.D5,GCTGTGATTCGA,CATGATCCTTCTGCAGGTTCACCTAC,4,D5,425D5,425D5,2,21,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+76,New.CleanUp.ReferenceOTU2211657,825.G2,0.164835165,825.G2,TAGAGGCGTAGG,CATGATCCTTCTGCAGGTTCACCTAC,6,G2,825G2,825G2,2,51,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+77,New.CleanUp.ReferenceOTU2211657,505.D10,0.160714286,505.D10,ATATGACCCAGC,CATGATCCTTCTGCAGGTTCACCTAC,4,D10,505D10,505D10,1,27,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+78,New.CleanUp.ReferenceOTU2211657,815.F12,0.144736842,815.F12,CGAGTTCATCGA,CATGATCCTTCTGCAGGTTCACCTAC,6,F12,815F12,815F12,3,51,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+79,New.CleanUp.ReferenceOTU2211657,805.H9,0.118705036,805.H9,CTAGGATCACTG,CATGATCCTTCTGCAGGTTCACCTAC,4,H9,805H9,805H9,3,51,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+80,New.CleanUp.ReferenceOTU2211657,525.3,0.118421053,525.3,TTGGGCCACATA,CATGATCCTTCTGCAGGTTCACCTAC,4,E9,5.25E+13,5.25E+13,3,27,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+81,New.CleanUp.ReferenceOTU2211657,705.G5,0.114678899,705.G5,GGAATTATCGGT,CATGATCCTTCTGCAGGTTCACCTAC,4,G5,705G5,705G5,2,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+82,New.CleanUp.ReferenceOTU2211657,725.H2,0.113168724,725.H2,AAGACGTAGCGG,CATGATCCTTCTGCAGGTTCACCTAC,4,H2,725H2,725H2,2,42,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+83,New.CleanUp.ReferenceOTU2211657,725.H3,0.10443038,725.H3,TTACCTTACACC,CATGATCCTTCTGCAGGTTCACCTAC,4,H3,725H3,725H3,3,42,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Dothideomycetes,Pleosporales
+84,New.ReferenceOTU1798,810.H12,0.168224299,810.H12,TGAGGACTACCT,CATGATCCTTCTGCAGGTTCACCTAC,4,H12,810H12,810H12,3,51,Antifungal,Eukaryota,SAR,Stramenopiles,Peronosporomycetes,Pythium,Pythium aristosporum
+85,New.CleanUp.ReferenceOTU1104673,210.A4,0.179752066,210.A4,GACGCACTAACT,CATGATCCTTCTGCAGGTTCACCTAC,4,A4,210A4,210A4,1,9,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Helicocephalidaceae,Rhopalomyces
+86,New.CleanUp.ReferenceOTU1104673,610.F6,0.107936508,610.F6,CGATCGAACACT,CATGATCCTTCTGCAGGTTCACCTAC,4,F6,610F6,610F6,3,33,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Helicocephalidaceae,Rhopalomyces
+87,New.ReferenceOTU1536,505.D12,0.194444444,505.D12,ATTGAGTGAGTC,CATGATCCTTCTGCAGGTTCACCTAC,4,D12,505D12,505D12,3,27,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+88,New.ReferenceOTU1536,425.D5,0.182539683,425.D5,GCTGTGATTCGA,CATGATCCTTCTGCAGGTTCACCTAC,4,D5,425D5,425D5,2,21,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+89,New.ReferenceOTU1536,310.B9,0.178571429,310.B9,CTTCCAACTCAT,CATGATCCTTCTGCAGGTTCACCTAC,4,B9,310B9,310B9,3,15,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+90,New.ReferenceOTU1536,410.C10,0.166666667,410.C10,AAGGGCGCTGAA,CATGATCCTTCTGCAGGTTCACCTAC,4,C10,410C10,410C10,1,21,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+91,New.ReferenceOTU1536,510.1,0.153846154,510.1,TTATGGTACGGA,CATGATCCTTCTGCAGGTTCACCTAC,4,E1,5100,5100,1,27,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+92,New.ReferenceOTU1536,315.B10,0.151162791,315.B10,GAGATCGCCTAT,CATGATCCTTCTGCAGGTTCACCTAC,4,B10,315B10,315B10,1,15,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+93,New.ReferenceOTU1536,710.G9,0.15,710.G9,GGCAAATACACT,CATGATCCTTCTGCAGGTTCACCTAC,4,G9,710G9,710G9,3,42,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+94,New.ReferenceOTU1536,405.C9,0.145454545,405.C9,TGTGTAGCCATG,CATGATCCTTCTGCAGGTTCACCTAC,4,C9,405C9,405C9,3,21,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+95,New.ReferenceOTU1536,505.D10,0.142857143,505.D10,ATATGACCCAGC,CATGATCCTTCTGCAGGTTCACCTAC,4,D10,505D10,505D10,1,27,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+96,New.ReferenceOTU1536,610.F5,0.141891892,610.F5,GTTCACGCCCAA,CATGATCCTTCTGCAGGTTCACCTAC,4,F5,610F5,610F5,2,33,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+97,New.ReferenceOTU1536,310.B8,0.141891892,310.B8,AACTGCGATATG,CATGATCCTTCTGCAGGTTCACCTAC,4,B8,310B8,310B8,2,15,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+98,New.ReferenceOTU1536,705.G6,0.139130435,705.G6,CATCAAGCATAG,CATGATCCTTCTGCAGGTTCACCTAC,4,G6,705G6,705G6,3,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+99,New.ReferenceOTU1536,510.2,0.137681159,510.2,GCTAGTTATGGA,CATGATCCTTCTGCAGGTTCACCTAC,4,E2,51000,51000,2,27,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+100,New.ReferenceOTU1536,415.D2,0.136986301,415.D2,TATGAACGTCCG,CATGATCCTTCTGCAGGTTCACCTAC,4,D2,415D2,415D2,2,21,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+101,New.ReferenceOTU1536,425.D4,0.135869565,425.D4,AAGTCACACACA,CATGATCCTTCTGCAGGTTCACCTAC,4,D4,425D4,425D4,1,21,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+102,New.ReferenceOTU1536,510.3,0.132867133,510.3,CAGATTAACCAG,CATGATCCTTCTGCAGGTTCACCTAC,4,E3,510000,510000,3,27,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+103,New.ReferenceOTU1536,410.C11,0.130434783,410.C11,GTTTCCGTGGTG,CATGATCCTTCTGCAGGTTCACCTAC,4,C11,410C11,410C11,2,21,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+104,New.ReferenceOTU1536,225.A11,0.13003096,225.A11,ATAATTGCCGAG,CATGATCCTTCTGCAGGTTCACCTAC,4,A11,225A11,225A11,2,9,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+105,New.ReferenceOTU1536,210.A5,0.128,210.A5,GGCGATTTACGT,CATGATCCTTCTGCAGGTTCACCTAC,4,A5,210A5,210A5,2,9,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+106,New.ReferenceOTU1536,410.C12,0.126984127,410.C12,AGGAACCAGACG,CATGATCCTTCTGCAGGTTCACCTAC,4,C12,410C12,410C12,3,21,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+107,New.ReferenceOTU1536,715.G10,0.125,715.G10,GTCATGCTCCAG,CATGATCCTTCTGCAGGTTCACCTAC,4,G10,715G10,715G10,1,42,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+108,New.ReferenceOTU1536,305.B4,0.123348018,305.B4,ATGCTAACCACG,CATGATCCTTCTGCAGGTTCACCTAC,4,B4,305B4,305B4,1,15,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+109,New.ReferenceOTU1536,215.A8,0.120805369,215.A8,CGCACTACGCAT,CATGATCCTTCTGCAGGTTCACCTAC,4,A8,215A8,215A8,2,9,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+110,New.ReferenceOTU1536,710.G7,0.117647059,710.G7,CATCGCGTTGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,G7,710G7,710G7,1,42,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+111,New.ReferenceOTU1536,605.F1,0.112,605.F1,GCAACCGATTGT,CATGATCCTTCTGCAGGTTCACCTAC,4,F1,605F1,605F1,1,33,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+112,New.ReferenceOTU1536,615.F9,0.111111111,615.F9,TCCGTGGTATAG,CATGATCCTTCTGCAGGTTCACCTAC,4,F9,615F9,615F9,3,33,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+113,New.ReferenceOTU1536,515.3,0.108571429,515.3,AACCGATGTACC,CATGATCCTTCTGCAGGTTCACCTAC,4,E6,515000000,515000000,3,27,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+114,New.ReferenceOTU1536,405.C7,0.108433735,405.C7,CTTCGCGGATGT,CATGATCCTTCTGCAGGTTCACCTAC,4,C7,405C7,405C7,1,21,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+115,New.ReferenceOTU1536,515.1,0.108333333,515.1,GGCTGCATACTC,CATGATCCTTCTGCAGGTTCACCTAC,4,E4,5150000,5150000,1,27,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+116,New.ReferenceOTU1536,525.3,0.105263158,525.3,TTGGGCCACATA,CATGATCCTTCTGCAGGTTCACCTAC,4,E9,5.25E+13,5.25E+13,3,27,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+117,New.ReferenceOTU1536,605.F2,0.104712042,605.F2,CATGTGCTTAGG,CATGATCCTTCTGCAGGTTCACCTAC,4,F2,605F2,605F2,2,33,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+118,New.ReferenceOTU1536,525.2,0.103448276,525.2,GCATTACTGGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,E8,52500000000,52500000000,2,27,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+119,New.ReferenceOTU1536,810.H11,0.102040816,810.H11,ACCGGAGTAGGA,CATGATCCTTCTGCAGGTTCACCTAC,4,H11,810H11,810H11,2,51,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+120,New.ReferenceOTU1536,425.D6,0.100961538,425.D6,CTAGCTATGGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,D6,425D6,425D6,3,21,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellaceae,Tremella
+121,New.ReferenceOTU6152,730.H5,0.523725835,730.H5,CTCTCTCACTTG,CATGATCCTTCTGCAGGTTCACCTAC,4,H5,730H5,730H5,2,42,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+122,New.ReferenceOTU6152,315.B11,0.446666667,315.B11,TGTACATCGCCG,CATGATCCTTCTGCAGGTTCACCTAC,4,B11,315B11,315B11,2,15,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+123,New.ReferenceOTU6152,515.1,0.445833333,515.1,GGCTGCATACTC,CATGATCCTTCTGCAGGTTCACCTAC,4,E4,5150000,5150000,1,27,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+124,New.ReferenceOTU6152,715.G12,0.411764706,715.G12,TTACCGACGAGT,CATGATCCTTCTGCAGGTTCACCTAC,4,G12,715G12,715G12,3,42,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+125,New.ReferenceOTU6152,325.C2,0.374558304,325.C2,CGAAACTACGTA,CATGATCCTTCTGCAGGTTCACCTAC,4,C2,325C2,325C2,2,15,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+126,New.ReferenceOTU6152,510.1,0.373626374,510.1,TTATGGTACGGA,CATGATCCTTCTGCAGGTTCACCTAC,4,E1,5100,5100,1,27,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+127,New.ReferenceOTU6152,615.F8,0.370892019,615.F8,CCTACATGAGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,F8,615F8,615F8,2,33,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+128,New.ReferenceOTU6152,815.F11,0.35059761,815.F11,TGATAGGTACAC,CATGATCCTTCTGCAGGTTCACCTAC,6,F11,815F11,815F11,2,51,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+129,New.ReferenceOTU6152,510.2,0.333333333,510.2,GCTAGTTATGGA,CATGATCCTTCTGCAGGTTCACCTAC,4,E2,51000,51000,2,27,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+130,New.ReferenceOTU6152,310.B7,0.326086957,310.B7,GTACTGAAGATC,CATGATCCTTCTGCAGGTTCACCTAC,4,B7,310B7,310B7,1,15,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+131,New.ReferenceOTU6152,515.3,0.325714286,515.3,AACCGATGTACC,CATGATCCTTCTGCAGGTTCACCTAC,4,E6,515000000,515000000,3,27,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+132,New.ReferenceOTU6152,525.2,0.32183908,525.2,GCATTACTGGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,E8,52500000000,52500000000,2,27,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+133,New.ReferenceOTU6152,505.D12,0.319444444,505.D12,ATTGAGTGAGTC,CATGATCCTTCTGCAGGTTCACCTAC,4,D12,505D12,505D12,3,27,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+134,New.ReferenceOTU6152,515.2,0.3125,515.2,TTGGTAAAGTGC,CATGATCCTTCTGCAGGTTCACCTAC,4,E5,51500000,51500000,2,27,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+135,New.ReferenceOTU6152,210.A6,0.308988764,210.A6,TAAGGCATCGCT,CATGATCCTTCTGCAGGTTCACCTAC,4,A6,210A6,210A6,3,9,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+136,New.ReferenceOTU6152,305.B4,0.303964758,305.B4,ATGCTAACCACG,CATGATCCTTCTGCAGGTTCACCTAC,4,B4,305B4,305B4,1,15,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+137,New.ReferenceOTU6152,410.C12,0.301587302,410.C12,AGGAACCAGACG,CATGATCCTTCTGCAGGTTCACCTAC,4,C12,410C12,410C12,3,21,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+138,New.ReferenceOTU6152,715.G11,0.298611111,715.G11,CCTAGTAAGCTG,CATGATCCTTCTGCAGGTTCACCTAC,4,G11,715G11,715G11,2,42,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+139,New.ReferenceOTU6152,325.C1,0.297674419,325.C1,CAAAGCGGTATT,CATGATCCTTCTGCAGGTTCACCTAC,4,C1,325C1,325C1,1,15,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+140,New.ReferenceOTU6152,215.A8,0.285234899,215.A8,CGCACTACGCAT,CATGATCCTTCTGCAGGTTCACCTAC,4,A8,215A8,215A8,2,9,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+141,New.ReferenceOTU6152,215.A9,0.279835391,215.A9,CAGTCGTTAAGA,CATGATCCTTCTGCAGGTTCACCTAC,4,A9,215A9,215A9,3,9,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+142,New.ReferenceOTU6152,405.C9,0.272727273,405.C9,TGTGTAGCCATG,CATGATCCTTCTGCAGGTTCACCTAC,4,C9,405C9,405C9,3,21,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+143,New.ReferenceOTU6152,710.G7,0.272058824,710.G7,CATCGCGTTGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,G7,710G7,710G7,1,42,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+144,New.ReferenceOTU6152,425.D6,0.264423077,425.D6,CTAGCTATGGAC,CATGATCCTTCTGCAGGTTCACCTAC,4,D6,425D6,425D6,3,21,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+145,New.ReferenceOTU6152,815.F10,0.264,815.F10,TGCTCCGTAGAA,CATGATCCTTCTGCAGGTTCACCTAC,6,F10,815F10,815F10,1,51,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+146,New.ReferenceOTU6152,710.G8,0.261682243,710.G8,GCACATAGTCGT,CATGATCCTTCTGCAGGTTCACCTAC,4,G8,710G8,710G8,2,42,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+147,New.ReferenceOTU6152,310.B8,0.256756757,310.B8,AACTGCGATATG,CATGATCCTTCTGCAGGTTCACCTAC,4,B8,310B8,310B8,2,15,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+148,New.ReferenceOTU6152,225.A12,0.252336449,225.A12,GGCATGTTATCG,CATGATCCTTCTGCAGGTTCACCTAC,4,A12,225A12,225A12,3,9,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+149,New.ReferenceOTU6152,415.D3,0.250883392,415.D3,TCAGTCAGATGA,CATGATCCTTCTGCAGGTTCACCTAC,4,D3,415D3,415D3,3,21,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+150,New.ReferenceOTU6152,610.F5,0.25,610.F5,GTTCACGCCCAA,CATGATCCTTCTGCAGGTTCACCTAC,4,F5,610F5,610F5,2,33,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+151,New.ReferenceOTU6152,315.B12,0.236111111,315.B12,TGTTAAGCAGCA,CATGATCCTTCTGCAGGTTCACCTAC,4,B12,315B12,315B12,3,15,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+152,New.ReferenceOTU6152,405.C7,0.222891566,405.C7,CTTCGCGGATGT,CATGATCCTTCTGCAGGTTCACCTAC,4,C7,405C7,405C7,1,21,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+153,New.ReferenceOTU6152,615.F9,0.222222222,615.F9,TCCGTGGTATAG,CATGATCCTTCTGCAGGTTCACCTAC,4,F9,615F9,615F9,3,33,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+154,New.ReferenceOTU6152,615.F7,0.215189873,615.F7,GAGTACAGTCTA,CATGATCCTTCTGCAGGTTCACCTAC,4,F7,615F7,615F7,1,33,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+155,New.ReferenceOTU6152,305.B5,0.2,305.B5,ACCAATCTCGGC,CATGATCCTTCTGCAGGTTCACCTAC,4,B5,305B5,305B5,2,15,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+156,New.ReferenceOTU6152,415.D2,0.198630137,415.D2,TATGAACGTCCG,CATGATCCTTCTGCAGGTTCACCTAC,4,D2,415D2,415D2,2,21,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+157,New.ReferenceOTU6152,425.D5,0.198412698,425.D5,GCTGTGATTCGA,CATGATCCTTCTGCAGGTTCACCTAC,4,D5,425D5,425D5,2,21,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+158,New.ReferenceOTU6152,610.F6,0.196825397,610.F6,CGATCGAACACT,CATGATCCTTCTGCAGGTTCACCTAC,4,F6,610F6,610F6,3,33,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+159,New.ReferenceOTU6152,410.C11,0.191304348,410.C11,GTTTCCGTGGTG,CATGATCCTTCTGCAGGTTCACCTAC,4,C11,410C11,410C11,2,21,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+160,New.ReferenceOTU6152,425.D4,0.190217391,425.D4,AAGTCACACACA,CATGATCCTTCTGCAGGTTCACCTAC,4,D4,425D4,425D4,1,21,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+161,New.ReferenceOTU6152,330.C4,0.188481675,330.C4,AATAGCATGTCG,CATGATCCTTCTGCAGGTTCACCTAC,4,C4,330C4,330C4,1,15,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+162,New.ReferenceOTU6152,310.B9,0.1875,310.B9,CTTCCAACTCAT,CATGATCCTTCTGCAGGTTCACCTAC,4,B9,310B9,310B9,3,15,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+163,New.ReferenceOTU6152,715.G10,0.1875,715.G10,GTCATGCTCCAG,CATGATCCTTCTGCAGGTTCACCTAC,4,G10,715G10,715G10,1,42,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+164,New.ReferenceOTU6152,710.G9,0.183333333,710.G9,GGCAAATACACT,CATGATCCTTCTGCAGGTTCACCTAC,4,G9,710G9,710G9,3,42,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+165,New.ReferenceOTU6152,825.G1,0.182432432,825.G1,AAGCAGATTGTC,CATGATCCTTCTGCAGGTTCACCTAC,6,G1,825G1,825G1,1,51,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+166,New.ReferenceOTU6152,510.3,0.181818182,510.3,CAGATTAACCAG,CATGATCCTTCTGCAGGTTCACCTAC,4,E3,510000,510000,3,27,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+167,New.ReferenceOTU6152,215.A7,0.177966102,215.A7,ACCCATACAGCC,CATGATCCTTCTGCAGGTTCACCTAC,4,A7,215A7,215A7,1,9,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+168,New.ReferenceOTU6152,605.F3,0.176100629,605.F3,GTTCCTCCATTA,CATGATCCTTCTGCAGGTTCACCTAC,4,F3,605F3,605F3,3,33,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+169,New.ReferenceOTU6152,705.G5,0.174311927,705.G5,GGAATTATCGGT,CATGATCCTTCTGCAGGTTCACCTAC,4,G5,705G5,705G5,2,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+170,New.ReferenceOTU6152,610.F4,0.167381974,610.F4,ACCTGTCCTTTC,CATGATCCTTCTGCAGGTTCACCTAC,4,F4,610F4,610F4,1,33,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+171,New.ReferenceOTU6152,225.A11,0.167182663,225.A11,ATAATTGCCGAG,CATGATCCTTCTGCAGGTTCACCTAC,4,A11,225A11,225A11,2,9,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+172,New.ReferenceOTU6152,315.B10,0.162790698,315.B10,GAGATCGCCTAT,CATGATCCTTCTGCAGGTTCACCTAC,4,B10,315B10,315B10,1,15,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+173,New.ReferenceOTU6152,415.D1,0.159090909,415.D1,TAATGCCCAGGT,CATGATCCTTCTGCAGGTTCACCTAC,4,D1,415D1,415D1,1,21,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+174,New.ReferenceOTU6152,705.G4,0.155,705.G4,CGTTCCTTGTTA,CATGATCCTTCTGCAGGTTCACCTAC,4,G4,705G4,705G4,1,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+175,New.ReferenceOTU6152,815.F12,0.151315789,815.F12,CGAGTTCATCGA,CATGATCCTTCTGCAGGTTCACCTAC,6,F12,815F12,815F12,3,51,Antibacterial+Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+176,New.ReferenceOTU6152,430.D7,0.151209677,430.D7,CTTGACGAGGTT,CATGATCCTTCTGCAGGTTCACCTAC,4,D7,430D7,430D7,1,21,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+177,New.ReferenceOTU6152,505.D10,0.142857143,505.D10,ATATGACCCAGC,CATGATCCTTCTGCAGGTTCACCTAC,4,D10,505D10,505D10,1,27,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+178,New.ReferenceOTU6152,210.A4,0.142561983,210.A4,GACGCACTAACT,CATGATCCTTCTGCAGGTTCACCTAC,4,A4,210A4,210A4,1,9,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+179,New.ReferenceOTU6152,405.C8,0.14084507,405.C8,ATAGGCTGTAGT,CATGATCCTTCTGCAGGTTCACCTAC,4,C8,405C8,405C8,2,21,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+180,New.ReferenceOTU6152,725.H3,0.139240506,725.H3,TTACCTTACACC,CATGATCCTTCTGCAGGTTCACCTAC,4,H3,725H3,725H3,3,42,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+181,New.ReferenceOTU6152,725.H2,0.137860082,725.H2,AAGACGTAGCGG,CATGATCCTTCTGCAGGTTCACCTAC,4,H2,725H2,725H2,2,42,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+182,New.ReferenceOTU6152,410.C10,0.130952381,410.C10,AAGGGCGCTGAA,CATGATCCTTCTGCAGGTTCACCTAC,4,C10,410C10,410C10,1,21,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+183,New.ReferenceOTU6152,605.F1,0.128,605.F1,GCAACCGATTGT,CATGATCCTTCTGCAGGTTCACCTAC,4,F1,605F1,605F1,1,33,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+184,New.ReferenceOTU6152,825.G3,0.115942029,825.G3,TAGACCGACTCC,CATGATCCTTCTGCAGGTTCACCTAC,6,G3,825G3,825G3,3,51,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+185,New.ReferenceOTU6152,630.G3,0.113854595,630.G3,CCGTGACAACTC,CATGATCCTTCTGCAGGTTCACCTAC,4,G3,630G3,630G3,3,33,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+186,New.ReferenceOTU6152,210.A5,0.112,210.A5,GGCGATTTACGT,CATGATCCTTCTGCAGGTTCACCTAC,4,A5,210A5,210A5,2,9,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+187,New.ReferenceOTU6152,505.D11,0.109243697,505.D11,CTCTATTCCACC,CATGATCCTTCTGCAGGTTCACCTAC,4,D11,505D11,505D11,2,27,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+188,New.ReferenceOTU6152,305.B6,0.106100796,305.B6,TATCCAAGCGCA,CATGATCCTTCTGCAGGTTCACCTAC,4,B6,305B6,305B6,3,15,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+189,New.ReferenceOTU6152,330.C6,0.105182927,330.C6,CTGTGTCCATGG,CATGATCCTTCTGCAGGTTCACCTAC,4,C6,330C6,330C6,3,15,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+190,New.ReferenceOTU6152,605.F2,0.104712042,605.F2,CATGTGCTTAGG,CATGATCCTTCTGCAGGTTCACCTAC,4,F2,605F2,605F2,2,33,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+191,New.ReferenceOTU6152,705.G6,0.104347826,705.G6,CATCAAGCATAG,CATGATCCTTCTGCAGGTTCACCTAC,4,G6,705G6,705G6,3,42,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+192,New.ReferenceOTU6152,630.G1,0.103211009,630.G1,CATAGTGATTGG,CATGATCCTTCTGCAGGTTCACCTAC,4,G1,630G1,630G1,1,33,Negative Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Tremellomycetes,Tremellales
+193,New.ReferenceOTU7546,205.A3,0.164782718,205.A3,TCGTGGATAGCT,CATGATCCTTCTGCAGGTTCACCTAC,4,A3,205A3,205A3,3,9,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Ascobolaceae,Ascobolaceae
+194,New.ReferenceOTU7546,605.F1,0.152,605.F1,GCAACCGATTGT,CATGATCCTTCTGCAGGTTCACCTAC,4,F1,605F1,605F1,1,33,Antibacterial,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Ascobolaceae,Ascobolaceae
+195,New.ReferenceOTU7546,825.G2,0.10989011,825.G2,TAGAGGCGTAGG,CATGATCCTTCTGCAGGTTCACCTAC,6,G2,825G2,825G2,2,51,Positive Control,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Ascobolaceae,Ascobolaceae
+196,New.CleanUp.ReferenceOTU199282,410.C10,0.154761905,410.C10,AAGGGCGCTGAA,CATGATCCTTCTGCAGGTTCACCTAC,4,C10,410C10,410C10,1,21,Antifungal,Eukaryota,Opisthokonta,Nucletmycea,Fungi,Incertae Sedis,Zoopagales

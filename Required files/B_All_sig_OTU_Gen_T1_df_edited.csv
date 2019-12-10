@@ -1,0 +1,266 @@
+,Treatment,Genus,Phylum,N,Abundance,sd,se,ci,Response_to_urea,Response_to_Inhibitors
+241,Positive Control,Subgroup 6,Acidobacteria,18,2.111111111,1.022619985,0.241033842,0.508536955,Negative,Stimulated
+242,Antifungal,Subgroup 6,Acidobacteria,17,2.235294118,1.147247345,0.278248352,0.589860156,Negative,Stimulated
+243,Antibacterial+Antifungal,Subgroup 6,Acidobacteria,19,3.263157895,1.326738074,0.304374589,0.639467283,Negative,Stimulated
+244,Antibacterial,Subgroup 6,Acidobacteria,21,4.333333333,3.864367132,0.843274043,1.759038829,Negative,Stimulated
+245,Negative Control,Subgroup 6,Acidobacteria,20,32.9,9.781292563,2.187163508,4.577785833,Negative,Stimulated
+106,Negative Control,Kocuria sp. PK-11,Actinobacteria,20,0.15,0.366347549,0.081917802,0.17145593,Positive,Stimulated
+107,Positive Control,Kocuria sp. PK-11,Actinobacteria,18,5.5,4.287464629,1.010565104,2.132106,Positive,Stimulated
+108,Antibacterial+Antifungal,Kocuria sp. PK-11,Actinobacteria,19,5.789473684,3.376042183,0.774517195,1.627200245,Positive,Stimulated
+109,Antibacterial,Kocuria sp. PK-11,Actinobacteria,21,7.238095238,8.067866892,1.760552892,3.67244898,Positive,Stimulated
+110,Antifungal,Kocuria sp. PK-11,Actinobacteria,17,35,35.09451524,8.511670189,18.04393474,Positive,Stimulated
+11,Negative Control,Adhaeribacter,Bacteroidetes,40,0.1,0.30382181,0.048038446,0.097166929,Positive,Inhibited
+12,Antifungal,Adhaeribacter,Bacteroidetes,34,3.117647059,4.847771784,0.831386002,1.691467539,Positive,Inhibited
+13,Antibacterial+Antifungal,Adhaeribacter,Bacteroidetes,38,3.605263158,5.206749641,0.844646326,1.71141602,Positive,Inhibited
+14,Antibacterial,Adhaeribacter,Bacteroidetes,42,8.476190476,12.4493865,1.920982041,3.879501936,Positive,Inhibited
+15,Positive Control,Adhaeribacter,Bacteroidetes,36,32.83333333,44.68972397,7.448287328,15.12082716,Positive,Inhibited
+21,Negative Control,Arcticibacter,Bacteroidetes,40,0.275,0.554122082,0.087614394,0.177216839,Positive,Inhibited
+22,Antifungal,Arcticibacter,Bacteroidetes,34,40.82352941,41.03617812,7.037646487,14.31819944,Positive,Inhibited
+23,Antibacterial,Arcticibacter,Bacteroidetes,42,50.5952381,57.90827883,8.935441414,18.04549003,Positive,Inhibited
+24,Antibacterial+Antifungal,Arcticibacter,Bacteroidetes,38,61.89473684,81.25461799,13.1812396,26.70772834,Positive,Inhibited
+25,Positive Control,Arcticibacter,Bacteroidetes,36,79.83333333,83.28556726,13.88092788,28.17978173,Positive,Inhibited
+56,Negative Control,Chitinophagaceae,Bacteroidetes,80,43.0375,43.48241133,4.861481378,9.67653663,Positive,Inhibited
+57,Antifungal,Chitinophagaceae,Bacteroidetes,68,49.61764706,97.32083108,11.8018843,23.55665965,Positive,Inhibited
+58,Antibacterial,Chitinophagaceae,Bacteroidetes,84,52.3452381,91.15331901,9.945642482,19.78148288,Positive,Inhibited
+59,Antibacterial+Antifungal,Chitinophagaceae,Bacteroidetes,76,57.14473684,107.9254933,12.37990313,24.66203168,Positive,Inhibited
+60,Positive Control,Chitinophagaceae,Bacteroidetes,72,67.20833333,121.0133199,14.26155652,28.43673603,Positive,Inhibited
+86,Negative Control,Flavobacterium,Bacteroidetes,40,11.75,12.51819189,1.979299928,4.003511992,Positive,Inhibited
+87,Antibacterial,Flavobacterium,Bacteroidetes,42,23.66666667,39.0269867,6.021994787,12.1616652,Positive,Inhibited
+88,Antifungal,Flavobacterium,Bacteroidetes,34,27.23529412,53.66171189,9.202907665,18.72345643,Positive,Inhibited
+89,Antibacterial+Antifungal,Flavobacterium,Bacteroidetes,38,38.47368421,66.97992311,10.86557831,22.01575289,Positive,Inhibited
+90,Positive Control,Flavobacterium,Bacteroidetes,36,94.86111111,113.6310201,18.93850335,38.4472058,Positive,Inhibited
+131,Antibacterial,Myroides,Bacteroidetes,21,0,0,0,0,Positive,Inhibited
+132,Antibacterial+Antifungal,Myroides,Bacteroidetes,19,0,0,0,0,Positive,Inhibited
+133,Antifungal,Myroides,Bacteroidetes,17,0,0,0,0,Positive,Inhibited
+134,Negative Control,Myroides,Bacteroidetes,20,0,0,0,0,Positive,Inhibited
+135,Positive Control,Myroides,Bacteroidetes,18,5.722222222,17.03907466,4.016148413,8.473332485,Positive,Inhibited
+156,Negative Control,Parasegetibacter,Bacteroidetes,20,0,0,0,0,Positive,Inhibited
+157,Antifungal,Parasegetibacter,Bacteroidetes,17,4.176470588,4.837810638,1.173341427,2.487372708,Positive,Inhibited
+158,Antibacterial,Parasegetibacter,Bacteroidetes,21,4.285714286,4.627557208,1.009815771,2.106438787,Positive,Inhibited
+159,Antibacterial+Antifungal,Parasegetibacter,Bacteroidetes,19,5.052631579,5.957942264,1.366845697,2.87163625,Positive,Inhibited
+160,Positive Control,Parasegetibacter,Bacteroidetes,18,13.44444444,8.644768715,2.037591527,4.298942345,Positive,Inhibited
+161,Negative Control,Pedobacter,Bacteroidetes,200,0.505,1.549833838,0.109589802,0.216106327,Positive,Stimulated
+162,Antifungal,Pedobacter,Bacteroidetes,170,16.98235294,26.55628689,2.036774227,4.020796914,Positive,Stimulated
+163,Antibacterial+Antifungal,Pedobacter,Bacteroidetes,190,23.18421053,40.84468923,2.963185198,5.84516454,Positive,Stimulated
+164,Positive Control,Pedobacter,Bacteroidetes,180,35.33333333,47.63666022,3.550627016,7.006471583,Positive,Stimulated
+165,Antibacterial,Pedobacter,Bacteroidetes,210,39.33809524,122.8643979,8.478448944,16.71424011,Positive,Stimulated
+176,Negative Control,Pontibacter,Bacteroidetes,20,0,0,0,0,Positive,Stimulated
+177,Antifungal,Pontibacter,Bacteroidetes,17,74.11764706,40.72450484,9.877143235,20.93860828,Positive,Stimulated
+178,Positive Control,Pontibacter,Bacteroidetes,18,86.5,29.78007625,7.019231286,14.80928351,Positive,Stimulated
+179,Antibacterial+Antifungal,Pontibacter,Bacteroidetes,19,103.8947368,39.41361121,9.04210254,18.99675252,Positive,Stimulated
+180,Antibacterial,Pontibacter,Bacteroidetes,21,123.3333333,65.54336987,14.30273589,29.83498426,Positive,Stimulated
+206,Antifungal,Saprospiraceae,Bacteroidetes,17,4.176470588,2.789159688,0.676470588,1.434053585,Negative,Stimulated
+207,Positive Control,Saprospiraceae,Bacteroidetes,18,5.722222222,2.396211607,0.564792492,1.191607998,Negative,Stimulated
+208,Antibacterial+Antifungal,Saprospiraceae,Bacteroidetes,19,6.947368421,3.135348363,0.719298246,1.511189538,Negative,Stimulated
+209,Antibacterial,Saprospiraceae,Bacteroidetes,21,12.52380952,8.76709215,1.913136352,3.990732501,Negative,Stimulated
+210,Negative Control,Saprospiraceae,Bacteroidetes,20,70.75,10.17672784,2.275585523,4.762855238,Negative,Stimulated
+221,Negative Control,Sphingobacterium,Bacteroidetes,20,0.05,0.223606798,0.05,0.104651203,Positive,Stimulated
+222,Antibacterial,Sphingobacterium,Bacteroidetes,21,4.619047619,2.479439261,0.541058004,1.12862722,Positive,Stimulated
+223,Antifungal,Sphingobacterium,Bacteroidetes,17,6.235294118,4.670779,1.132830304,2.401492965,Positive,Stimulated
+224,Positive Control,Sphingobacterium,Bacteroidetes,18,11.33333333,12.8016543,3.017378856,6.366112916,Positive,Stimulated
+225,Antibacterial+Antifungal,Sphingobacterium,Bacteroidetes,19,12.94736842,10.95178161,2.512511016,5.278589769,Positive,Stimulated
+226,Negative Control,Sphingobacterium sp. MIMdw12,Bacteroidetes,20,0,0,0,0,Positive,Inhibited
+227,Antifungal,Sphingobacterium sp. MIMdw12,Bacteroidetes,17,0.764705882,0.831370237,0.2016369,0.427451133,Positive,Inhibited
+228,Antibacterial+Antifungal,Sphingobacterium sp. MIMdw12,Bacteroidetes,19,2.578947368,2.545492519,0.583976034,1.226888121,Positive,Inhibited
+229,Antibacterial,Sphingobacterium sp. MIMdw12,Bacteroidetes,21,10.71428571,23.0198672,5.023346853,10.47851792,Positive,Inhibited
+230,Positive Control,Sphingobacterium sp. MIMdw12,Bacteroidetes,18,10.88888889,23.72858512,5.592881148,11.79994777,Positive,Inhibited
+36,Negative Control,Bacillus,Firmicutes,40,0,0,0,0,Positive,Inhibited
+37,Antibacterial,Bacillus,Firmicutes,42,1.023809524,1.023816276,0.157978281,0.319043611,Positive,Inhibited
+38,Antibacterial+Antifungal,Bacillus,Firmicutes,38,1.157894737,1.533875427,0.248827452,0.504172307,Positive,Inhibited
+39,Antifungal,Bacillus,Firmicutes,34,2.323529412,2.760331428,0.473392934,0.963125167,Positive,Inhibited
+40,Positive Control,Bacillus,Firmicutes,36,7.638888889,14.10805804,2.351343006,4.773480079,Positive,Inhibited
+66,Negative Control,Cohnella,Firmicutes,20,0,0,0,0,Positive,Stimulated
+67,Antifungal,Cohnella,Firmicutes,17,4.647058824,6.343709251,1.538575488,3.261634331,Positive,Stimulated
+68,Antibacterial+Antifungal,Cohnella,Firmicutes,19,5.263157895,4.628920024,1.061947084,2.231068035,Positive,Stimulated
+69,Positive Control,Cohnella,Firmicutes,18,10.83333333,9.01143065,2.124014574,4.481279035,Positive,Stimulated
+70,Antibacterial,Cohnella,Firmicutes,21,16.19047619,15.32846714,3.344945759,6.977434587,Positive,Stimulated
+136,Antibacterial,Oceanobacillus,Firmicutes,21,0,0,0,0,Negative,Stimulated
+137,Antibacterial+Antifungal,Oceanobacillus,Firmicutes,19,0,0,0,0,Negative,Stimulated
+138,Negative Control,Oceanobacillus,Firmicutes,20,0,0,0,0,Negative,Stimulated
+139,Positive Control,Oceanobacillus,Firmicutes,18,0,0,0,0,Negative,Stimulated
+140,Antifungal,Oceanobacillus,Firmicutes,17,1.235294118,2.840101489,0.68882579,1.460245442,Negative,Stimulated
+146,Negative Control,Paenibacillaceae,Firmicutes,100,0,0,0,0,Positive,Inhibited
+147,Antibacterial+Antifungal,Paenibacillaceae,Firmicutes,95,1.936842105,3.024054367,0.310261432,0.616031346,Positive,Inhibited
+148,Antifungal,Paenibacillaceae,Firmicutes,85,3.023529412,7.902646438,0.857162355,1.704561345,Positive,Inhibited
+149,Antibacterial,Paenibacillaceae,Firmicutes,105,11.67619048,26.34041033,2.570560836,5.097518602,Positive,Inhibited
+150,Positive Control,Paenibacillaceae,Firmicutes,90,13.9,23.23550654,2.449237442,4.866582626,Positive,Inhibited
+151,Negative Control,Paenibacillus,Firmicutes,240,0,0,0,0,Positive,Inhibited
+152,Antibacterial+Antifungal,Paenibacillus,Firmicutes,228,2.346491228,4.850008944,0.321199689,0.632914194,Positive,Inhibited
+153,Antifungal,Paenibacillus,Firmicutes,204,3.490196078,7.420840177,0.519562735,1.024431638,Positive,Inhibited
+154,Antibacterial,Paenibacillus,Firmicutes,252,9.134920635,21.63214856,1.362697272,2.683778079,Positive,Inhibited
+155,Positive Control,Paenibacillus,Firmicutes,216,20,37.15523688,2.528093657,4.983022063,Positive,Inhibited
+181,Negative Control,Pseudogracilibacillus,Firmicutes,20,0,0,0,0,Positive,Inhibited
+182,Antifungal,Pseudogracilibacillus,Firmicutes,17,0.235294118,0.437237316,0.106045626,0.224806684,Positive,Inhibited
+183,Antibacterial+Antifungal,Pseudogracilibacillus,Firmicutes,19,0.473684211,0.512989176,0.117687788,0.247252868,Positive,Inhibited
+184,Antibacterial,Pseudogracilibacillus,Firmicutes,21,0.476190476,0.679635757,0.148308681,0.309366487,Positive,Inhibited
+185,Positive Control,Pseudogracilibacillus,Firmicutes,18,1.277777778,3.195687454,0.753230756,1.589177983,Positive,Inhibited
+191,Negative Control,Psychrobacillus,Firmicutes,20,0.05,0.223606798,0.05,0.104651203,Positive,Stimulated
+192,Antibacterial,Psychrobacillus,Firmicutes,21,0.523809524,0.813575296,0.177536685,0.370335035,Positive,Stimulated
+193,Antibacterial+Antifungal,Psychrobacillus,Firmicutes,19,0.684210526,0.820069887,0.188136935,0.395261033,Positive,Stimulated
+194,Positive Control,Psychrobacillus,Firmicutes,18,0.777777778,0.646761667,0.152443187,0.32162701,Positive,Stimulated
+195,Antifungal,Psychrobacillus,Firmicutes,17,6.647058824,12.95637477,3.142382452,6.661553212,Positive,Stimulated
+216,Negative Control,Solibacillus,Firmicutes,20,0.15,0.366347549,0.081917802,0.17145593,Positive,Stimulated
+217,Positive Control,Solibacillus,Firmicutes,18,0.222222222,0.427792632,0.10083169,0.212736271,Positive,Stimulated
+218,Antibacterial+Antifungal,Solibacillus,Firmicutes,19,0.263157895,0.452413928,0.103790873,0.218056533,Positive,Stimulated
+219,Antibacterial,Solibacillus,Firmicutes,21,0.333333333,0.658280589,0.143648601,0.299645731,Positive,Stimulated
+220,Antifungal,Solibacillus,Firmicutes,17,3.882352941,11.22988398,2.723646929,5.773873559,Positive,Stimulated
+236,Negative Control,Sporosarcina,Firmicutes,40,2.075,2.411377944,0.38127233,0.77119608,Positive,Stimulated
+237,Antibacterial+Antifungal,Sporosarcina,Firmicutes,38,3.921052632,4.339520331,0.703963155,1.426364839,Positive,Stimulated
+238,Antibacterial,Sporosarcina,Firmicutes,42,6.452380952,12.80663392,1.976106515,3.990828069,Positive,Stimulated
+239,Positive Control,Sporosarcina,Firmicutes,36,6.694444444,11.79302323,1.965503871,3.990184992,Positive,Stimulated
+240,Antifungal,Sporosarcina,Firmicutes,34,10.52941176,12.70703764,2.179238977,4.433695036,Positive,Stimulated
+251,Negative Control,Thermobacillus,Firmicutes,20,0,0,0,0,Positive,Inhibited
+252,Antibacterial,Thermobacillus,Firmicutes,21,0.666666667,0.730296743,0.159363815,0.332427092,Positive,Inhibited
+253,Antifungal,Thermobacillus,Firmicutes,17,0.705882353,0.587867532,0.142578819,0.302253595,Positive,Inhibited
+254,Antibacterial+Antifungal,Thermobacillus,Firmicutes,19,0.736842105,0.653376296,0.149894803,0.314917294,Positive,Inhibited
+255,Positive Control,Thermobacillus,Firmicutes,18,10.55555556,9.011249324,2.123971835,4.481188864,Positive,Inhibited
+96,Positive Control,Gemmatimonadaceae,Gemmatimonadetes,18,4.888888889,2.083235292,0.491023267,1.035968538,Negative,Stimulated
+97,Antifungal,Gemmatimonadaceae,Gemmatimonadetes,17,9.176470588,3.844400053,0.93240397,1.976608116,Negative,Stimulated
+98,Antibacterial,Gemmatimonadaceae,Gemmatimonadetes,21,9.571428571,3.443420227,0.751415897,1.567426095,Negative,Stimulated
+99,Antibacterial+Antifungal,Gemmatimonadaceae,Gemmatimonadetes,19,13.42105263,4.822583327,1.106376493,2.324410759,Negative,Stimulated
+100,Negative Control,Gemmatimonadaceae,Gemmatimonadetes,20,33.15,12.21420657,2.731179618,5.716424637,Negative,Stimulated
+111,Negative Control,Longimicrobiaceae,Gemmatimonadetes,20,0,0,0,0,Positive,Inhibited
+112,Antibacterial+Antifungal,Longimicrobiaceae,Gemmatimonadetes,19,50.26315789,55.37733402,12.70443172,26.69102062,Positive,Inhibited
+113,Antifungal,Longimicrobiaceae,Gemmatimonadetes,17,58.11764706,72.14125237,17.49682374,37.09160936,Positive,Inhibited
+114,Antibacterial,Longimicrobiaceae,Gemmatimonadetes,21,74.76190476,61.98863183,13.52702846,28.21688691,Positive,Inhibited
+115,Positive Control,Longimicrobiaceae,Gemmatimonadetes,18,81.33333333,72.72429807,17.14128144,36.16494261,Positive,Inhibited
+246,Positive Control,Tepidisphaeraceae,Planctomycetes,18,1.722222222,0.826442095,0.19479427,0.410979985,Negative,Stimulated
+247,Antibacterial+Antifungal,Tepidisphaeraceae,Planctomycetes,19,1.789473684,1.315672509,0.301835974,0.634133851,Negative,Stimulated
+248,Antifungal,Tepidisphaeraceae,Planctomycetes,17,2.235294118,2.016476251,0.489067328,1.03677642,Negative,Stimulated
+249,Antibacterial,Tepidisphaeraceae,Planctomycetes,21,3.714285714,4.605896841,1.005089091,2.096579106,Negative,Stimulated
+250,Negative Control,Tepidisphaeraceae,Planctomycetes,20,19.1,3.768288736,0.842614977,1.763613416,Negative,Stimulated
+1,Negative Control,Achromobacter,Betaproteobacteria,40,0,0,0,0,Positive,Stimulated
+2,Antibacterial,Achromobacter,Betaproteobacteria,42,4.642857143,7.327933288,1.130724655,2.283544766,Positive,Stimulated
+3,Positive Control,Achromobacter,Betaproteobacteria,36,11.13888889,19.38357593,3.230595989,6.558458529,Positive,Stimulated
+4,Antibacterial+Antifungal,Achromobacter,Betaproteobacteria,38,12.15789474,14.11061765,2.289044449,4.63804461,Positive,Stimulated
+5,Antifungal,Achromobacter,Betaproteobacteria,34,12.32352941,13.66198128,2.343010461,4.766890624,Positive,Stimulated
+6,Positive Control,Acidibacter,Gammaproteobacteria,18,3.5,2.176073096,0.512905347,1.082135692,Negative,Stimulated
+7,Antifungal,Acidibacter,Gammaproteobacteria,17,6.058823529,2.435944074,0.590803218,1.252446874,Negative,Stimulated
+8,Antibacterial,Acidibacter,Gammaproteobacteria,21,6.19047619,2.839349355,0.619596826,1.292456331,Negative,Stimulated
+9,Antibacterial+Antifungal,Acidibacter,Gammaproteobacteria,19,7.473684211,2.480331991,0.569027184,1.195481752,Negative,Stimulated
+10,Negative Control,Acidibacter,Gammaproteobacteria,20,23.45,4.582288557,1.024630871,2.144577059,Negative,Stimulated
+16,Negative Control,Alcaligenaceae,Betaproteobacteria,200,0.14,0.584902174,0.041358829,0.081557814,Positive,Stimulated
+17,Antibacterial,Alcaligenaceae,Betaproteobacteria,210,4.585714286,10.55424746,0.728312268,1.435779846,Positive,Stimulated
+18,Positive Control,Alcaligenaceae,Betaproteobacteria,180,5.505555556,16.19314195,1.206965539,2.381711656,Positive,Stimulated
+19,Antibacterial+Antifungal,Alcaligenaceae,Betaproteobacteria,190,93.56842105,483.1536098,35.0516469,69.1427062,Positive,Stimulated
+20,Antifungal,Alcaligenaceae,Betaproteobacteria,170,190.2529412,735.7956372,56.43294926,111.4043104,Positive,Stimulated
+26,Positive Control,Arenimonas,Gammaproteobacteria,18,10.44444444,2.705598166,0.637715604,1.345462315,Negative,Stimulated
+27,Antifungal,Arenimonas,Gammaproteobacteria,17,16.23529412,6.713134623,1.628174302,3.45157533,Negative,Stimulated
+28,Antibacterial+Antifungal,Arenimonas,Gammaproteobacteria,19,20.47368421,7.581911376,1.739409763,3.654364307,Negative,Stimulated
+29,Antibacterial,Arenimonas,Gammaproteobacteria,21,20.47619048,11.24552821,2.453975441,5.11890307,Negative,Stimulated
+30,Negative Control,Arenimonas,Gammaproteobacteria,20,50.05,15.63557011,3.496219763,7.317672064,Negative,Stimulated
+31,Negative Control,Azospirillum,Alphaproteobacteria,20,0.5,0.606976979,0.135724179,0.28407397,Positive,Stimulated
+32,Positive Control,Azospirillum,Alphaproteobacteria,18,21.33333333,12.94785924,3.051839689,6.438818918,Positive,Stimulated
+33,Antifungal,Azospirillum,Alphaproteobacteria,17,25.23529412,11.45932705,2.779295049,5.891842302,Positive,Stimulated
+34,Antibacterial+Antifungal,Azospirillum,Alphaproteobacteria,19,28.15789474,23.38628078,5.365180767,11.27182652,Positive,Stimulated
+35,Antibacterial,Azospirillum,Alphaproteobacteria,21,65.76190476,89.72619727,19.57986147,40.84287532,Positive,Stimulated
+41,Negative Control,Bosea,Alphaproteobacteria,40,0.075,0.266746783,0.04217637,0.08530976,Positive,Stimulated
+42,Antibacterial+Antifungal,Bosea,Alphaproteobacteria,38,1.921052632,1.583386363,0.256859186,0.520446147,Positive,Stimulated
+43,Antifungal,Bosea,Alphaproteobacteria,34,1.941176471,1.41295256,0.242319365,0.493002455,Positive,Stimulated
+44,Positive Control,Bosea,Alphaproteobacteria,36,2.333333333,3.472339681,0.57872328,1.174870719,Positive,Stimulated
+45,Antibacterial,Bosea,Alphaproteobacteria,42,4.619047619,5.813996489,0.897119135,1.811768848,Positive,Stimulated
+46,Negative Control,Brevundimonas,Alphaproteobacteria,60,0.05,0.286711335,0.037014274,0.074065392,Positive,Inhibited
+47,Antifungal,Brevundimonas,Alphaproteobacteria,51,139.3137255,177.3761529,24.83762942,49.8878469,Positive,Inhibited
+48,Antibacterial+Antifungal,Brevundimonas,Alphaproteobacteria,57,164.5087719,221.0238451,29.27532345,58.64551999,Positive,Inhibited
+49,Antibacterial,Brevundimonas,Alphaproteobacteria,63,184.1904762,243.7759983,30.7128889,61.39419013,Positive,Inhibited
+50,Positive Control,Brevundimonas,Alphaproteobacteria,54,228.9074074,260.3993499,35.43586315,71.07534061,Positive,Inhibited
+51,Negative Control,Caulobacteraceae,Alphaproteobacteria,20,0.95,0.510417786,0.114132887,0.238882877,Positive,Stimulated
+52,Antifungal,Caulobacteraceae,Alphaproteobacteria,17,67.58823529,31.40075402,7.615801503,16.14477796,Positive,Stimulated
+53,Antibacterial,Caulobacteraceae,Alphaproteobacteria,21,81.47619048,33.9449835,7.407402683,15.45157124,Positive,Stimulated
+54,Positive Control,Caulobacteraceae,Alphaproteobacteria,18,89.27777778,15.87008119,3.74061401,7.892005709,Positive,Stimulated
+55,Antibacterial+Antifungal,Caulobacteraceae,Alphaproteobacteria,19,103.5789474,35.46722398,8.136739217,17.09465476,Positive,Stimulated
+76,Antibacterial+Antifungal,Delftia,Betaproteobacteria,19,0,0,0,0,Negative,Stimulated
+77,Antifungal,Delftia,Betaproteobacteria,17,0,0,0,0,Negative,Stimulated
+78,Positive Control,Delftia,Betaproteobacteria,18,0,0,0,0,Negative,Stimulated
+79,Negative Control,Delftia,Betaproteobacteria,20,0.1,0.307793506,0.06882472,0.144051795,Negative,Stimulated
+80,Antibacterial,Delftia,Betaproteobacteria,21,3.380952381,10.1905652,2.223763638,4.638689664,Negative,Stimulated
+81,Negative Control,Devosia,Alphaproteobacteria,20,0.05,0.223606798,0.05,0.104651203,Positive,Stimulated
+82,Antifungal,Devosia,Alphaproteobacteria,17,53.23529412,30.29754407,7.348233787,15.57755975,Positive,Stimulated
+83,Antibacterial+Antifungal,Devosia,Alphaproteobacteria,19,72.78947368,36.47004699,8.366802595,17.57799998,Positive,Stimulated
+84,Positive Control,Devosia,Alphaproteobacteria,18,79.88888889,36.32838606,8.562682712,18.06568137,Positive,Stimulated
+85,Antibacterial,Devosia,Alphaproteobacteria,21,184.8095238,116.9900077,25.52931266,53.25321305,Positive,Stimulated
+101,Negative Control,Hydrogenophaga,Betaproteobacteria,20,0.1,0.307793506,0.06882472,0.144051795,Positive,Inhibited
+102,Antifungal,Hydrogenophaga,Betaproteobacteria,17,1.176470588,1.236693885,0.299942324,0.635849323,Positive,Inhibited
+103,Antibacterial,Hydrogenophaga,Betaproteobacteria,21,1.19047619,1.503963019,0.328191637,0.684595758,Positive,Inhibited
+104,Antibacterial+Antifungal,Hydrogenophaga,Betaproteobacteria,19,1.842105263,1.607729866,0.368838527,0.774900991,Positive,Inhibited
+105,Positive Control,Hydrogenophaga,Betaproteobacteria,18,2.333333333,2.249182858,0.530137484,1.118492322,Positive,Inhibited
+116,Negative Control,Luteimonas,Gammaproteobacteria,20,0,0,0,0,Positive,Stimulated
+117,Antibacterial+Antifungal,Luteimonas,Gammaproteobacteria,19,21.52631579,20.25769654,4.647434318,9.763897189,Positive,Stimulated
+118,Antifungal,Luteimonas,Gammaproteobacteria,17,26.41176471,40.67563586,9.865290768,20.91348218,Positive,Stimulated
+119,Positive Control,Luteimonas,Gammaproteobacteria,18,35.16666667,30.16864364,7.110817498,15.00251353,Positive,Stimulated
+120,Antibacterial,Luteimonas,Gammaproteobacteria,21,46.33333333,51.93778329,11.33375349,23.64179551,Positive,Stimulated
+121,Positive Control,Lysobacter,Gammaproteobacteria,18,2.388888889,1.144752164,0.269820673,0.569271858,Negative,Stimulated
+122,Antifungal,Lysobacter,Gammaproteobacteria,17,2.764705882,1.480262298,0.359016342,0.761080645,Negative,Stimulated
+123,Antibacterial+Antifungal,Lysobacter,Gammaproteobacteria,19,3.263157895,1.147078669,0.263157895,0.552874221,Negative,Stimulated
+124,Antibacterial,Lysobacter,Gammaproteobacteria,21,5.047619048,3.680709041,0.803196562,1.675438668,Negative,Stimulated
+125,Negative Control,Lysobacter,Gammaproteobacteria,20,20.55,3.268268494,0.730807052,1.529596739,Negative,Stimulated
+126,Negative Control,Massilia,Betaproteobacteria,20,0,0,0,0,Positive,Stimulated
+127,Antifungal,Massilia,Betaproteobacteria,17,12.58823529,20.98528896,5.089680176,10.78963998,Positive,Stimulated
+128,Antibacterial+Antifungal,Massilia,Betaproteobacteria,19,20.78947368,33.3109574,7.642057738,16.05536754,Positive,Stimulated
+129,Positive Control,Massilia,Betaproteobacteria,18,32.33333333,38.81024728,9.147663011,19.29988192,Positive,Stimulated
+130,Antibacterial,Massilia,Betaproteobacteria,21,51.85714286,68.35223896,14.91568138,31.11356615,Positive,Stimulated
+166,Negative Control,Phenylobacterium,Alphaproteobacteria,20,0.1,0.307793506,0.06882472,0.144051795,Positive,Stimulated
+167,Antibacterial,Phenylobacterium,Alphaproteobacteria,21,79,52.27332015,11.40697364,23.79453006,Positive,Stimulated
+168,Antifungal,Phenylobacterium,Alphaproteobacteria,17,122.0588235,89.55966628,21.72140964,46.0473314,Positive,Stimulated
+169,Positive Control,Phenylobacterium,Alphaproteobacteria,18,131.1666667,82.49652399,19.44461718,41.02455623,Positive,Stimulated
+170,Antibacterial+Antifungal,Phenylobacterium,Alphaproteobacteria,19,139.8947368,97.85243694,22.44888863,47.16336491,Positive,Stimulated
+171,Negative Control,Phyllobacteriaceae,Alphaproteobacteria,20,0,0,0,0,Positive,Stimulated
+172,Antibacterial,Phyllobacteriaceae,Alphaproteobacteria,21,39.23809524,23.61970525,5.154242248,10.75156093,Positive,Stimulated
+173,Positive Control,Phyllobacteriaceae,Alphaproteobacteria,18,48.11111111,21.48019303,5.062930052,10.68184869,Positive,Stimulated
+174,Antifungal,Phyllobacteriaceae,Alphaproteobacteria,17,76.94117647,37.88052037,9.187375685,19.4763664,Positive,Stimulated
+175,Antibacterial+Antifungal,Phyllobacteriaceae,Alphaproteobacteria,19,85.47368421,32.05961187,7.354979385,15.4522383,Positive,Stimulated
+186,Negative Control,Pseudoxanthomonas,Gammaproteobacteria,20,0,0,0,0,Positive,Inhibited
+187,Antifungal,Pseudoxanthomonas,Gammaproteobacteria,17,9.176470588,12.09460259,2.933371998,6.218470844,Positive,Inhibited
+188,Antibacterial,Pseudoxanthomonas,Gammaproteobacteria,21,26.04761905,19.64809454,4.287565738,8.943705406,Positive,Inhibited
+189,Antibacterial+Antifungal,Pseudoxanthomonas,Gammaproteobacteria,19,29.52631579,61.32913792,14.06986918,29.55969827,Positive,Inhibited
+190,Positive Control,Pseudoxanthomonas,Gammaproteobacteria,18,33.11111111,22.05311473,5.197968991,10.96675595,Positive,Inhibited
+196,Negative Control,Rhodocyclaceae,Betaproteobacteria,20,0,0,0,0,Positive,Inhibited
+197,Antibacterial,Rhodocyclaceae,Betaproteobacteria,21,2.333333333,1.316561177,0.287297202,0.599291463,Positive,Inhibited
+198,Antifungal,Rhodocyclaceae,Betaproteobacteria,17,3.411764706,2.1811357,0.52900311,1.121436497,Positive,Inhibited
+199,Antibacterial+Antifungal,Rhodocyclaceae,Betaproteobacteria,19,7.947368421,6.569911924,1.507241166,3.166596185,Positive,Inhibited
+200,Positive Control,Rhodocyclaceae,Betaproteobacteria,18,12.44444444,19.90927133,4.692660256,9.900647709,Positive,Inhibited
+201,Negative Control,Rickettsiales,Alphaproteobacteria,20,0.05,0.223606798,0.05,0.104651203,Negative,Stimulated
+202,Antibacterial+Antifungal,Rickettsiales,Alphaproteobacteria,19,0.052631579,0.229415734,0.052631579,0.110574844,Negative,Stimulated
+203,Positive Control,Rickettsiales,Alphaproteobacteria,18,0.055555556,0.23570226,0.055555556,0.117211977,Negative,Stimulated
+204,Antifungal,Rickettsiales,Alphaproteobacteria,17,0.117647059,0.332105582,0.080547435,0.170752934,Negative,Stimulated
+205,Antibacterial,Rickettsiales,Alphaproteobacteria,21,10.76190476,26.24672315,5.727504552,11.94736514,Negative,Stimulated
+211,Negative Control,Simplicispira,Betaproteobacteria,20,0,0,0,0,Positive,Stimulated
+212,Antifungal,Simplicispira,Betaproteobacteria,17,85.58823529,30.2883204,7.345996721,15.57281738,Positive,Stimulated
+213,Antibacterial,Simplicispira,Betaproteobacteria,21,91.61904762,36.22633875,7.905235212,16.4900317,Positive,Stimulated
+214,Positive Control,Simplicispira,Betaproteobacteria,18,112.8333333,48.51955337,11.4361684,24.12820624,Positive,Stimulated
+215,Antibacterial+Antifungal,Simplicispira,Betaproteobacteria,19,113.8947368,41.14728928,9.439835567,19.8323586,Positive,Stimulated
+231,Negative Control,Sphingomonas,Alphaproteobacteria,60,23.35,26.60369861,3.434522722,6.872464093,Positive,Stimulated
+232,Positive Control,Sphingomonas,Alphaproteobacteria,54,117.1666667,179.4545982,24.42067765,48.9816764,Positive,Stimulated
+233,Antibacterial+Antifungal,Sphingomonas,Alphaproteobacteria,57,125.9122807,149.8549633,19.84877478,39.76187385,Positive,Stimulated
+234,Antifungal,Sphingomonas,Alphaproteobacteria,51,139.9019608,205.3100343,28.74915521,57.74437767,Positive,Stimulated
+235,Antibacterial,Sphingomonas,Alphaproteobacteria,63,191.2222222,258.0841601,32.51554785,64.99765402,Positive,Stimulated
+256,Negative Control,Vulgatibacter,Deltaproteobacteria,20,0,0,0,0,Positive,Stimulated
+257,Antifungal,Vulgatibacter,Deltaproteobacteria,17,7.117647059,7.499019544,1.818779392,3.855640072,Positive,Stimulated
+258,Positive Control,Vulgatibacter,Deltaproteobacteria,18,14.16666667,13.2009358,3.111490406,6.56467093,Positive,Stimulated
+259,Antibacterial+Antifungal,Vulgatibacter,Deltaproteobacteria,19,17.52631579,14.21020143,3.260043789,6.849097848,Positive,Stimulated
+260,Antibacterial,Vulgatibacter,Deltaproteobacteria,21,18.19047619,13.86224746,3.024990396,6.310019394,Positive,Stimulated
+261,Positive Control,Xanthomonadaceae,Gammaproteobacteria,18,9.166666667,2.874840149,0.677606321,1.429624373,Negative,Stimulated
+262,Antifungal,Xanthomonadaceae,Gammaproteobacteria,17,14.52941176,6.423761039,1.557990899,3.302793162,Negative,Stimulated
+263,Antibacterial,Xanthomonadaceae,Gammaproteobacteria,21,15.85714286,9.880717152,2.156149251,4.497648524,Negative,Stimulated
+264,Antibacterial+Antifungal,Xanthomonadaceae,Gammaproteobacteria,19,17.57894737,7.544797983,1.730895366,3.636476224,Negative,Stimulated
+265,Negative Control,Xanthomonadaceae,Gammaproteobacteria,20,32.5,14.4057737,3.221228925,6.742109626,Negative,Stimulated
+61,Positive Control,Chthoniobacter,Verrucomicrobia,18,4.388888889,2.118237027,0.499273255,1.053374492,Negative,Stimulated
+62,Antibacterial+Antifungal,Chthoniobacter,Verrucomicrobia,19,6.526315789,2.969631871,0.681280275,1.431316745,Negative,Stimulated
+63,Antibacterial,Chthoniobacter,Verrucomicrobia,21,6.761904762,2.773170783,0.605155477,1.262332206,Negative,Stimulated
+64,Antifungal,Chthoniobacter,Verrucomicrobia,17,7.117647059,2.934330267,0.711679625,1.508693409,Negative,Stimulated
+65,Negative Control,Chthoniobacter,Verrucomicrobia,20,15.1,3.823748505,0.855016159,1.789569387,Negative,Stimulated
+71,Positive Control,DA101 soil group,Verrucomicrobia,18,3.444444444,1.722591147,0.406018627,0.856624425,Negative,Stimulated
+72,Antibacterial,DA101 soil group,Verrucomicrobia,21,5.571428571,3.613466875,0.788523118,1.644830401,Negative,Stimulated
+73,Negative Control,DA101 soil group,Verrucomicrobia,20,9.65,5.00815125,1.119856664,2.343886935,Negative,Stimulated
+74,Antifungal,DA101 soil group,Verrucomicrobia,17,13.35294118,6.594895531,1.59949711,3.390782399,Negative,Stimulated
+75,Antibacterial+Antifungal,DA101 soil group,Verrucomicrobia,19,19.68421053,8.007306605,1.837002121,3.859398244,Negative,Stimulated
+91,Negative Control,FukuN18 freshwater group,Verrucomicrobia,20,0.4,0.50262469,0.112390297,0.235235596,Positive,Inhibited
+92,Antifungal,FukuN18 freshwater group,Verrucomicrobia,17,138.4117647,134.5845732,32.64155359,69.19700243,Positive,Inhibited
+93,Antibacterial,FukuN18 freshwater group,Verrucomicrobia,21,153.3333333,94.37655076,20.59465179,42.95969085,Positive,Inhibited
+94,Antibacterial+Antifungal,FukuN18 freshwater group,Verrucomicrobia,19,161.1052632,137.6912386,31.58853656,66.36505267,Positive,Inhibited
+95,Positive Control,FukuN18 freshwater group,Verrucomicrobia,18,163.3888889,100.9962951,23.80505506,50.22427599,Positive,Inhibited
+141,Positive Control,OPB35 soil group,Verrucomicrobia,36,6.666666667,2.354327323,0.392387887,0.796589761,Negative,Stimulated
+142,Antifungal,OPB35 soil group,Verrucomicrobia,34,6.882352941,3.699014659,0.63437578,1.29064723,Negative,Stimulated
+143,Antibacterial,OPB35 soil group,Verrucomicrobia,42,9.595238095,4.701113121,0.725397503,1.464969977,Negative,Stimulated
+144,Antibacterial+Antifungal,OPB35 soil group,Verrucomicrobia,38,10.26315789,2.777167627,0.450516079,0.912832284,Negative,Stimulated
+145,Negative Control,OPB35 soil group,Verrucomicrobia,40,36.2,10.02356199,1.584864307,3.205690643,Negative,Stimulated

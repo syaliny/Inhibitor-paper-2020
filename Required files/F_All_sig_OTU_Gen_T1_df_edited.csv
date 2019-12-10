@@ -1,0 +1,26 @@
+,Treatment,Genus,Phylum,N,Abundance,sd,se,ci,Response_to_urea,Response_to_Inhibitors
+1,Antifungal,Ascobolaceae,Opisthokonta,84,0.071428571,0.404365166,0.044119857,0.087752621,Negative,Stimulated
+2,Antibacterial+Antifungal,Ascobolaceae,Opisthokonta,84,0.154761905,1.312535003,0.14320931,0.284837557,Negative,Stimulated
+3,Positive Control,Ascobolaceae,Opisthokonta,72,0.958333333,3.754574674,0.442480869,0.882281794,Negative,Stimulated
+4,Negative Control,Ascobolaceae,Opisthokonta,84,1.535714286,3.527675191,0.384900919,0.765552447,Negative,Stimulated
+5,Antibacterial,Ascobolaceae,Opisthokonta,84,12.91666667,53.00948047,5.783808496,11.50376247,Negative,Stimulated
+6,Antibacterial+Antifungal,Brachyconidiellopsis,Opisthokonta,21,0.047619048,0.21821789,0.047619048,0.099331593,Positive,Stimulated
+7,Negative Control,Brachyconidiellopsis,Opisthokonta,21,0.047619048,0.21821789,0.047619048,0.099331593,Positive,Stimulated
+8,Antifungal,Brachyconidiellopsis,Opisthokonta,21,0.428571429,0.810643483,0.176896911,0.36900049,Positive,Stimulated
+9,Positive Control,Brachyconidiellopsis,Opisthokonta,18,1.222222222,1.165966176,0.274820863,0.579821338,Positive,Stimulated
+10,Antibacterial,Brachyconidiellopsis,Opisthokonta,21,3.095238095,4.979003534,1.086507647,2.266415236,Positive,Stimulated
+11,Antibacterial+Antifungal,Helotiales,Opisthokonta,42,1.714285714,2.87364572,0.443413161,0.895491046,Positive,Stimulated
+12,Negative Control,Helotiales,Opisthokonta,42,1.714285714,2.350772725,0.362732106,0.73255235,Positive,Stimulated
+13,Antifungal,Helotiales,Opisthokonta,42,2.452380952,4.312219625,0.665389934,1.343782233,Positive,Stimulated
+14,Positive Control,Helotiales,Opisthokonta,36,3.416666667,5.410967698,0.90182795,1.830808071,Positive,Stimulated
+15,Antibacterial,Helotiales,Opisthokonta,42,179.9285714,634.9921602,97.98141752,197.877487,Positive,Stimulated
+16,Antibacterial+Antifungal,Mortierellales,Opisthokonta,105,0.00952381,0.097590007,0.00952381,0.018886072,Negative,Stimulated
+17,Positive Control,Mortierellales,Opisthokonta,90,0.055555556,0.274828286,0.028969445,0.05756167,Negative,Stimulated
+18,Antifungal,Mortierellales,Opisthokonta,105,0.066666667,0.422143492,0.041196987,0.08169517,Negative,Stimulated
+19,Negative Control,Mortierellales,Opisthokonta,105,1.495238095,7.205932131,0.703226969,1.39452547,Negative,Stimulated
+20,Antibacterial,Mortierellales,Opisthokonta,105,17.60952381,85.43063935,8.337176717,16.53293429,Negative,Stimulated
+21,Antibacterial+Antifungal,Nectria,Opisthokonta,21,0,0,0,0,Positive,Stimulated
+22,Negative Control,Nectria,Opisthokonta,21,0,0,0,0,Positive,Stimulated
+23,Antifungal,Nectria,Opisthokonta,21,0.095238095,0.300792604,0.065638327,0.136919152,Positive,Stimulated
+24,Positive Control,Nectria,Opisthokonta,18,0.166666667,0.383482494,0.090387691,0.190701358,Positive,Stimulated
+25,Antibacterial,Nectria,Opisthokonta,21,3.380952381,8.754862594,1.910467645,3.985165674,Positive,Stimulated

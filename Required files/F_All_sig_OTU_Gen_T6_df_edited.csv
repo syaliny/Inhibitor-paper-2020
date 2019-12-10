@@ -1,0 +1,31 @@
+Treatment,Genus,Phylum,N,Abundance,sd,se,ci,Response_to_urea,Response_to_Inhibitors
+Antibacterial+Antifungal,Helotiales,Opisthokonta,21,3.380952381,3.323795879,0.725311724,1.512973745,Positive,Stimulated
+Negative Control,Helotiales,Opisthokonta,21,3.428571429,2.270934358,0.495558504,1.033716926,Positive,Stimulated
+Antifungal,Helotiales,Opisthokonta,21,4.904761905,5.048809383,1.101740532,2.298190478,Positive,Stimulated
+Positive Control,Helotiales,Opisthokonta,18,6.833333333,5.963121962,1.405521325,2.965390787,Positive,Stimulated
+Antibacterial,Helotiales,Opisthokonta,21,358,871.7692929,190.2356559,396.8246245,Positive,Stimulated
+Negative Control,LKM11,Opisthokonta,21,1.857142857,1.352246808,0.295084445,0.615535367,Positive,Stimulated
+Antibacterial,LKM11,Opisthokonta,21,1.904761905,1.609495632,0.351220741,0.732633628,Positive,Stimulated
+Antibacterial+Antifungal,LKM11,Opisthokonta,21,4.952380952,6.336214883,1.382675444,2.884210435,Positive,Stimulated
+Positive Control,LKM11,Opisthokonta,18,5.333333333,6.686245759,1.575963239,3.324991792,Positive,Stimulated
+Antifungal,LKM11,Opisthokonta,21,6.523809524,14.7330209,3.215008737,6.706390708,Positive,Stimulated
+Negative Control,Pleosporales,Opisthokonta,21,0,0,0,0,Positive,Inhibited
+Antifungal,Pleosporales,Opisthokonta,21,1.428571429,3.155494075,0.68858526,1.436363682,Positive,Inhibited
+Antibacterial+Antifungal,Pleosporales,Opisthokonta,21,3.571428571,6.98978847,1.525296893,3.181713565,Positive,Inhibited
+Antibacterial,Pleosporales,Opisthokonta,21,14.47619048,25.38822374,5.540164622,11.55658089,Positive,Inhibited
+Positive Control,Pleosporales,Opisthokonta,18,16.16666667,22.04073768,5.195051693,10.96060099,Positive,Inhibited
+Antibacterial,Tapinella,Opisthokonta,21,2.714285714,2.239260082,0.488646611,1.019298969,Negative,Inhibited
+Antibacterial+Antifungal,Tapinella,Opisthokonta,21,3.047619048,2.836832573,0.619047619,1.291310705,Negative,Inhibited
+Antifungal,Tapinella,Opisthokonta,21,3.142857143,3.054271014,0.666496577,1.390287497,Negative,Inhibited
+Positive Control,Tapinella,Opisthokonta,18,4.222222222,3.523960932,0.830605557,1.752424544,Negative,Inhibited
+Negative Control,Tapinella,Opisthokonta,21,20.19047619,6.485514996,1.415255399,2.952171032,Negative,Inhibited
+Antibacterial,Tremella,Opisthokonta,21,14.42857143,7.909307356,1.725952365,3.600273544,Negative,Inhibited
+Antibacterial+Antifungal,Tremella,Opisthokonta,21,14.95238095,10.52366947,2.296452949,4.790316909,Negative,Inhibited
+Antifungal,Tremella,Opisthokonta,21,16.71428571,7.925546398,1.729496014,3.607665467,Negative,Inhibited
+Positive Control,Tremella,Opisthokonta,18,18.16666667,11.23675691,2.648529003,5.58790775,Negative,Inhibited
+Negative Control,Tremella,Opisthokonta,21,45.23809524,21.44738856,4.680203883,9.762734226,Negative,Inhibited
+Antibacterial+Antifungal,Tremellales,Opisthokonta,21,0,0,0,0,Positive,Inhibited
+Antifungal,Tremellales,Opisthokonta,21,0,0,0,0,Positive,Inhibited
+Negative Control,Tremellales,Opisthokonta,21,0,0,0,0,Positive,Inhibited
+Antibacterial,Tremellales,Opisthokonta,21,0.285714286,0.956182887,0.208656212,0.435249232,Positive,Inhibited
+Positive Control,Tremellales,Opisthokonta,18,2.888888889,5.540109246,1.305816272,2.755031513,Positive,Inhibited
