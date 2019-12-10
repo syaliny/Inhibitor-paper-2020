@@ -1,0 +1,549 @@
+---
+title: "Section 2"
+author: "Syaliny"
+date: "11/13/2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+#Data was processed using QIIME and taxonomy was assigned using the SILVA database.For prokaryotes data was rarified at 10000 sequencing depth which removed 10 samples that had lower depths than this and for fungi data was rarified at 7000. Before input into R mapping file was modified so as to remove any special characters using the gsub function and metadata information (Treatment, Day) were added to the mapping file
+
+```{r global_options, echo=FALSE, results='hide'}
+
+library(knitr)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='hide', echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE)
+```
+
+```{r Load libraries and data}
+
+library(phyloseq)  
+library(ggplot2)
+library(Rmisc)
+library(microbiome)
+library(dplyr)
+library(plyr)
+#library(dplyr)
+#library(scales)
+#library(reshape)
+#library(reshape2)
+#library(RColorBrewer)
+#library(grid)
+library(MultNonParam)
+library(PMCMR)
+library(DescTools)
+library(FSA)
+```
+
+#Importing biom file and setting working directory for prokaryotes and fungi
+```{r importing data}
+
+setwd("/Volumes/S_ GANASAMU/Paper 3/Section 2")
+
+#Prokaryotes
+# Now import the .biom-formatted otu_table-tax_table file.
+Bact_biom_otu_tax <- import_biom("10000_merged_otu_table_json.biom")
+
+# Import sample data
+Bact_bmsd <- import_qiime_sample_data("Rex_antibiotic_16S_Sainur.txt")
+
+#Now do the same for fungal data
+# Now import the .biom-formatted otu_table-tax_table file.
+Fungi_biom_otu_tax <- import_biom("merged_otu_table_7000.json")
+
+# Import sample data
+Fungi_bmsd <- import_qiime_sample_data("18S_2org2017edited_map.txt")
+```
+
+#Merging otu table with metadata and creating a phyloseq object
+```{r merge_phyloseq_format}
+
+#Merge into phyloseq format for prokaryotes
+Bacteria_phyloseq <- merge_phyloseq(Bact_biom_otu_tax, Bact_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Bacteria_phyloseq
+
+#Merge into phyloseq format for fungi
+Fungi_phyloseq <- merge_phyloseq(Fungi_biom_otu_tax, Fungi_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Fungi_phyloseq
+
+```
+
+#Attach OTU ID
+```{r Attached OTU ID}
+
+#Prokaryotes
+tax_table(Bacteria_phyloseq) <- cbind(tax_table(Bacteria_phyloseq), OTU=taxa_names(Bacteria_phyloseq))
+
+#Fungi
+tax_table(Fungi_phyloseq) <- cbind(tax_table(Fungi_phyloseq), OTU=taxa_names(Fungi_phyloseq))
+```
+
+#Renaming ranks
+```{r Rename Ranks}
+
+#Prokaryotes
+colnames(tax_table(Bacteria_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove. 
+tax_table(Bacteria_phyloseq) =gsub("D_0__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_1__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_2__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_3__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_4__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_5__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_6__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_7__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_8__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_9__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_10__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_11__", "", tax_table(Bacteria_phyloseq))
+
+#Fungi
+colnames(tax_table(Fungi_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove.
+tax_table(Fungi_phyloseq) =gsub("D_0__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_1__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_2__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_3__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_4__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_5__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_6__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_7__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_8__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_9__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_10__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_11__", "", tax_table(Fungi_phyloseq))
+```
+
+#Prune taxa for fungi keep only those that are fungi or fungal like because kingdom eukaryota includes other things as well
+```{r prune taxa for fungi only}
+
+#Subset to only keep fungi and those that are fungal like 
+Fungi_phyloseq = subset_taxa(Fungi_phyloseq , Order == "Fungi" |Order == "Hyphochytriales" | Order == "Labyrinthulomycetes" | Order == "Peronosporomycetes")
+
+```
+
+#Avergae results for multiple rarefractions
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10)}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, function(x) x/10)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, function(x) x/10)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Round off and confirm count number
+```{r Round and confirm count number}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, round)
+sample_sums(Bacteria_phyloseq)
+Bacteria_phyloseq = prune_samples(sample_sums(Bacteria_phyloseq)>=1, Bacteria_phyloseq)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, round)
+sample_sums(Fungi_phyloseq)
+Fungi_phyloseq = prune_samples(sample_sums(Fungi_phyloseq)>=1, Fungi_phyloseq)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Identify if there are taxa which don't have a count 
+```{r identify taxa with only zeros}
+
+#Prokaryotes
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(taxa_sums(Bacteria_phyloseq)== 0)
+sum(taxa_sums(Bacteria_phyloseq) == 0)
+any(taxa_sums(Bacteria_phyloseq) > 1)
+sum(taxa_sums(Bacteria_phyloseq) > 1)
+any(taxa_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(taxa_sums(Fungi_phyloseq)== 0)
+sum(taxa_sums(Fungi_phyloseq) == 0)
+any(taxa_sums(Fungi_phyloseq) > 1)
+sum(taxa_sums(Fungi_phyloseq) > 1)
+any(taxa_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+```
+
+#Create new file with taxa that have count data
+```{r  Save original file and create new file with only present (no zeroes) taxa}
+
+#Create new file with only present (no zeroes) taxa
+#Prokaryotes
+Bacteria_phyloseq = prune_taxa(taxa_sums(Bacteria_phyloseq) > 1, Bacteria_phyloseq)
+any(sample_sums(Bacteria_phyloseq) == 0)
+any(sample_sums(Bacteria_phyloseq) > 0)
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(sample_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+Fungi_phyloseq = prune_taxa(taxa_sums(Fungi_phyloseq) > 1, Fungi_phyloseq)
+any(sample_sums(Fungi_phyloseq) == 0)
+any(sample_sums(Fungi_phyloseq) > 0)
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(sample_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+```
+
+#Compare sequences per sample or OTU
+```{r Compare sequences per sample or OTU}
+
+#Prokaryotes
+Bactreadsumsdf = data.frame(nreads = sort(taxa_sums(Bacteria_phyloseq),TRUE), sorted = 1:ntaxa(Bacteria_phyloseq), type = "OTU")
+Bactreadsumsdf = rbind(Bactreadsumsdf,data.frame(nreads = sort(sample_sums(Bacteria_phyloseq),TRUE),sorted = 1:nsamples(Bacteria_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Bact_seq_persample = ggplot(Bactreadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Bact_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+
+#Fungi
+Fungireadsumsdf = data.frame(nreads = sort(taxa_sums(Fungi_phyloseq),TRUE), sorted = 1:ntaxa(Fungi_phyloseq), type = "OTU")
+Fungireadsumsdf = rbind(Fungireadsumsdf,data.frame(nreads = sort(sample_sums(Fungi_phyloseq),TRUE),sorted = 1:nsamples(Fungi_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Fungi_seq_persample = ggplot(Fungireadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Fungi_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+```
+
+#Calculate alpha diversity (richness, diversity, evenness) for prokaryotes and fungi
+```{r Calculate alpha diversity }
+
+#Prokaryotes
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Bacteria_phyloseq)$Treatment)[levels(sample_data(Bacteria_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Bacteria_phyloseq)$Treatment)
+
+
+#Calculate alpha diversity for prokaryotes
+#This is the base code for calculating observed richness and shannon diversity and then saving results to a file.
+alpha_summary_Bacteria<- estimate_richness(Bacteria_phyloseq, measures = c("Observed", "Shannon"))
+
+#This calculates eveness and adds it to the prior file
+Evenness_Bacteria <- evenness(Bacteria_phyloseq, 'pielou')
+alpha_summary_Bacteria$Pielou <- Evenness_Bacteria$pielou
+summary(alpha_summary_Bacteria)
+
+# Combine results with sample_data. This is useful if we wish to plot later against other variables or information.
+alpha_meta_Bacteria <- data.frame(alpha_summary_Bacteria, sample_data(Bacteria_phyloseq))
+
+
+#Fungi
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Fungi_phyloseq)$Treatment)[levels(sample_data(Fungi_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Fungi_phyloseq)$Treatment)
+
+#Calculate alpha diversity for fungi
+#This is the base code for calculating observed richness and shannon diversity and then saving results to a file.
+alpha_summary_Fungi<- estimate_richness(Fungi_phyloseq, measures = c("Observed", "Shannon"))
+
+#This calculates eveness and adds it to the prior file
+Evenness_Fungi <- evenness(Fungi_phyloseq, 'pielou')
+alpha_summary_Fungi$Pielou <- Evenness_Fungi$pielou
+summary(alpha_summary_Fungi)
+
+# Combine results with sample_data. This is useful if we wish to plot later against other variables or information.
+alpha_meta_Fungi <- data.frame(alpha_summary_Fungi, sample_data(Fungi_phyloseq))
+
+```
+
+#Figure 3
+#Observed richness 
+```{r Observed richness plot}
+
+#Export plots Landscape A4 8.27 x 11.69
+
+#Prokaryotes
+#To avoid erros bars from overlapping when plotting
+pd<-position_dodge(0.1)
+
+#Alpha meta summary prokaryote
+AM_summ_obs_Bacteria <- summarySE(alpha_meta_Bacteria, measurevar = "Observed", groupvars=c("Treatment", "Day"))
+
+#Change day to factor
+AM_summ_obs_Bacteria$Day <- as.factor(AM_summ_obs_Bacteria$Day) 
+
+#Order by day and then by treatment
+AM_summ_obs_Bacteria<-dplyr::arrange(AM_summ_obs_Bacteria,Day,Treatment)
+
+#write csv
+write.csv(AM_summ_obs_Bacteria, file="/Volumes/S_ GANASAMU/Paper 3/Section 2/ObservedBact_table.csv")
+
+#Order by treatment
+AM_summ_obs_Bacteria$Treatment=factor(AM_summ_obs_Bacteria$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#Rename Observed column in AM_summ-obs df to OTU_Richness
+AM_summ_obs_Bacteria=AM_summ_obs_Bacteria %>% rename(OTU_Richness=Observed)
+
+
+#Observed richness prokaryote plot
+ObservedR_Bacteria_plot<-ggplot()+geom_errorbar(data=subset(AM_summ_obs_Bacteria,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")),mapping=aes(x=Day,ymin=OTU_Richness-se, ymax=OTU_Richness+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=0.8))+geom_bar(data=subset(AM_summ_obs_Bacteria,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = OTU_Richness, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(size=3,data=subset(AM_summ_obs_Bacteria,Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = OTU_Richness, color=Treatment))+ geom_line(data=subset(AM_summ_obs_Bacteria, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = OTU_Richness,colour=Treatment, group=Treatment,linetype=Treatment),lwd=2) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(AM_summ_obs_Bacteria,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=OTU_Richness-se, ymax=OTU_Richness+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.01))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=20),strip.text = element_text(size=20),axis.text.y = element_text(size=20), axis.title=element_text(size=20,face="bold"),legend.text=element_text(size=20),legend.title=element_text(size=20,face="bold"))
+
+#Rename y label
+ObservedR_Bacteria_plot+labs(y="OTU Richness")
+
+
+
+#Fungi
+#Alpha meta summary Fungi
+AM_summ_obs_Fungi <- summarySE(alpha_meta_Fungi, measurevar = "Observed", groupvars=c("Treatment", "Day"))
+
+#Change day to factor
+AM_summ_obs_Fungi$Day <- as.factor(AM_summ_obs_Fungi$Day) 
+
+#Order by day and then by treatment
+AM_summ_obs_Fungi<-dplyr::arrange(AM_summ_obs_Fungi,Day,Treatment)
+
+
+#write csv
+write.csv(AM_summ_obs_Fungi, file="/Volumes/S_ GANASAMU/Paper 3/Section 2/ObservedFungi_table.csv")
+
+#order by treatment
+AM_summ_obs_Fungi$Treatment=factor(AM_summ_obs_Fungi$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#Rename Observed column in AM_summ-obs df to OTU_Richness
+AM_summ_obs_Fungi=AM_summ_obs_Fungi %>% rename(OTU_Richness=Observed)
+
+#Observed richness fungi plot
+ObservedR_Fungi_plot<-ggplot()+geom_errorbar(data=subset(AM_summ_obs_Fungi,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")),mapping=aes(x=Day,ymin=OTU_Richness-se, ymax=OTU_Richness+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=0.8))+geom_bar(data=subset(AM_summ_obs_Fungi,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = OTU_Richness, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(size=3,data=subset(AM_summ_obs_Fungi, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = OTU_Richness, color=Treatment))+ geom_line(data=subset(AM_summ_obs_Fungi, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = OTU_Richness,colour=Treatment, group=Treatment,linetype=Treatment),lwd=2) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(AM_summ_obs_Fungi,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=OTU_Richness-se, ymax=OTU_Richness+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.01))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=20),strip.text = element_text(size=20),axis.text.y = element_text(size=20), axis.title=element_text(size=20,face="bold"),legend.text=element_text(size=20),legend.title=element_text(size=20,face="bold"))
+
+
+#Rename y label
+ObservedR_Fungi_plot+labs(y="OTU Richness")
+
+```
+
+
+#Figure S3
+#Shannnon diversity
+```{r Shannon diversity plot}
+
+#Export plots Landscape A4 8.27 x 11.69
+
+#Prokaryotes
+#Alpha meta summary prokaryotes
+AM_summ_shan_Bacteria <- summarySE(alpha_meta_Bacteria, measurevar = "Shannon", groupvars=c("Treatment", "Day"))
+
+#Change day to factor
+AM_summ_shan_Bacteria$Day <- as.factor(AM_summ_shan_Bacteria$Day) 
+
+#Order by day and then by treatment
+AM_summ_shan_Bacteria<-dplyr::arrange(AM_summ_shan_Bacteria,Day,Treatment)
+
+#write csv
+write.csv(AM_summ_shan_Bacteria, file="/Volumes/S_ GANASAMU/Paper 3/Section 2/ShannonBact_table.csv")
+
+#order by treatment
+AM_summ_shan_Bacteria$Treatment=factor(AM_summ_shan_Bacteria$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#Rename Observed column in AM_summ-obs df to OTU_Richness
+AM_summ_shan_Bacteria=AM_summ_shan_Bacteria %>% rename(Diversity=Shannon)
+
+#Shannon prokaryote plot
+Shannon_Bacteria_plot<-ggplot()+geom_errorbar(data=subset(AM_summ_shan_Bacteria,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")),mapping=aes(x=Day,ymin=Diversity-se, ymax=Diversity+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=0.8))+geom_bar(data=subset(AM_summ_shan_Bacteria,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = Diversity, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(size=3,data=subset(AM_summ_shan_Bacteria, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Diversity, color=Treatment))+ geom_line(data=subset(AM_summ_shan_Bacteria, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Diversity,colour=Treatment, group=Treatment,linetype=Treatment),lwd=2) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(AM_summ_shan_Bacteria,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=Diversity-se, ymax=Diversity+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.01))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=20),strip.text = element_text(size=20),axis.text.y = element_text(size=20), axis.title=element_text(size=20,face="bold"),legend.text=element_text(size=20),legend.title=element_text(size=20,face="bold"))
+
+#Rename y label
+Shannon_Bacteria_plot+labs(y="OTU Diversity")
+
+
+
+#Fungi
+#Alpha meta summary Fungi
+AM_summ_shan_Fungi <- summarySE(alpha_meta_Fungi, measurevar = "Shannon", groupvars=c("Treatment", "Day"))
+
+#Change day to factor
+AM_summ_shan_Fungi$Day <- as.factor(AM_summ_shan_Fungi$Day) 
+
+#Order by day and then by treatment
+AM_summ_shan_Fungi<-dplyr::arrange(AM_summ_shan_Fungi,Day,Treatment)
+
+#write csv
+write.csv(AM_summ_shan_Fungi, file="/Volumes/S_ GANASAMU/Paper 3/Section 2/ShannonFungi_table.csv")
+
+#order by treatment
+AM_summ_shan_Fungi$Treatment=factor(AM_summ_shan_Fungi$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#Rename Observed column in AM_summ-obs df to OTU_Richness
+AM_summ_shan_Fungi=AM_summ_shan_Fungi %>% rename(Diversity=Shannon)
+
+
+#Shannon Fungi plot
+Shannon_Fungi_plot<-ggplot()+geom_errorbar(data=subset(AM_summ_shan_Fungi,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")),mapping=aes(x=Day,ymin=Diversity-se, ymax=Diversity+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=0.8))+geom_bar(data=subset(AM_summ_shan_Fungi,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = Diversity, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(size=3,data=subset(AM_summ_shan_Fungi, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Diversity, color=Treatment))+ geom_line(data=subset(AM_summ_shan_Fungi, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Diversity,colour=Treatment, group=Treatment,linetype=Treatment),lwd=2) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(AM_summ_shan_Fungi,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=Diversity-se, ymax=Diversity+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.01))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=20),strip.text = element_text(size=20),axis.text.y = element_text(size=20), axis.title=element_text(size=20,face="bold"),legend.text=element_text(size=20),legend.title=element_text(size=20,face="bold"))
+
+#Rename y label
+Shannon_Fungi_plot+labs(y="OTU Diversity")
+
+```
+
+
+#Figure S3
+#Evenness 
+```{r Evenness plot}
+
+#Export plots Landscape A4 8.27 x 11.69
+
+#Prokaryotes
+#Alpha meta summary prokaryotes
+AM_summ_pielou_Bacteria <- summarySE(alpha_meta_Bacteria, measurevar = "Pielou", groupvars=c("Treatment", "Day"))
+
+#Change day to factor
+AM_summ_pielou_Bacteria$Day <- as.factor(AM_summ_pielou_Bacteria$Day) 
+
+#Order by day and then by treatment
+AM_summ_pielou_Bacteria<-dplyr::arrange(AM_summ_pielou_Bacteria,Day,Treatment)
+
+#write csv
+write.csv(AM_summ_pielou_Bacteria, file="/Volumes/S_ GANASAMU/Paper 3/Section 2/EvennessBact_table.csv")
+
+#order by treatment
+AM_summ_pielou_Bacteria$Treatment=factor(AM_summ_pielou_Bacteria$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#Rename Observed column in AM_summ-obs df to OTU_Richness
+AM_summ_pielou_Bacteria=AM_summ_pielou_Bacteria %>% rename(Evenness=Pielou)
+
+#Eveness prokaryote plot
+Pielou_Bacteria_plot<-ggplot()+geom_errorbar(data=subset(AM_summ_pielou_Bacteria,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")),mapping=aes(x=Day,ymin=Evenness-se, ymax=Evenness+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=0.8))+geom_bar(data=subset(AM_summ_pielou_Bacteria,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = Evenness, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(size=3,data=subset(AM_summ_pielou_Bacteria, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Evenness, color=Treatment))+ geom_line(data=subset(AM_summ_pielou_Bacteria, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Evenness,colour=Treatment, group=Treatment,linetype=Treatment),lwd=2) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(AM_summ_pielou_Bacteria,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=Evenness-se, ymax=Evenness+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.01))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=20),strip.text = element_text(size=20),axis.text.y = element_text(size=20), axis.title=element_text(size=20, face="bold"),legend.text=element_text(size=20),legend.title=element_text(size=20,face="bold"))
+
+Pielou_Bacteria_plot+labs(y="OTU Evenness")
+
+
+
+#Fungi
+#Alpha meta summary Fungi
+AM_summ_pielou_Fungi <- summarySE(alpha_meta_Fungi, measurevar = "Pielou", groupvars=c("Treatment", "Day"))
+
+#Change day to factor
+AM_summ_pielou_Fungi$Day <- as.factor(AM_summ_pielou_Fungi$Day) 
+
+#Order by day and then by treatment
+AM_summ_pielou_Fungi<-dplyr::arrange(AM_summ_pielou_Fungi,Day,Treatment)
+
+#write csv
+write.csv(AM_summ_pielou_Fungi, file="/Volumes/S_ GANASAMU/Paper 3/Section 2/EvennessFungi_table.csv")
+
+#order by treatment
+AM_summ_pielou_Fungi$Treatment=factor(AM_summ_pielou_Fungi$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#Rename Observed column in AM_summ-obs df to OTU_Richness
+AM_summ_pielou_Fungi=AM_summ_pielou_Fungi %>% rename(Evenness=Pielou)
+
+#Pielou Fungi plot
+Pielou_Fungi_plot<-ggplot()+geom_errorbar(data=subset(AM_summ_pielou_Fungi,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")),mapping=aes(x=Day,ymin=Evenness-se, ymax=Evenness+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=0.8))+geom_bar(data=subset(AM_summ_pielou_Fungi,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = Evenness, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(size=3,data=subset(AM_summ_pielou_Fungi, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Evenness, color=Treatment))+ geom_line(data=subset(AM_summ_pielou_Fungi, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = Evenness,colour=Treatment, group=Treatment,linetype=Treatment),lwd=2) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(AM_summ_pielou_Fungi,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=Evenness-se, ymax=Evenness+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.01))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=20),strip.text = element_text(size=20),axis.text.y = element_text(size=20), axis.title=element_text(size=20,face="bold"),legend.text=element_text(size=20),legend.title=element_text(size=20,face="bold"))
+
+Pielou_Fungi_plot+labs(y="OTU Evenness")
+
+```
+
+
+#Significance testing for alpha diversity measures
+#Significant testing using Kruskall wallis (KW) and then a posthoc to identify which combinations are significant
+```{r Significance testing}
+
+#Prokaryotes
+interTD_Bact<-interaction(alpha_meta_Bacteria$Treatment, alpha_meta_Bacteria$Day)
+
+#Summary to look at data
+Summarize(Observed ~ interTD_Bact, data = alpha_meta_Bacteria)
+
+#KW Observed
+KWBact_Int_Obs<-kruskal.test(Observed ~ interTD_Bact, data = alpha_meta_Bacteria)
+KWBact_Int_Obs
+
+#Posthoc Dunn's test Observed Richness 
+Posthoc_Bact_Obs=dunnTest(Observed ~ interTD_Bact, data = alpha_meta_Bacteria, method="bh")
+
+#write csv
+write.csv(Posthoc_Bact_Obs$res, file = "/Volumes/S_ GANASAMU/Paper 3/Section 2/PosthocDunn_Bact_Obs2.csv")
+
+
+#KW Shannon
+KWBact_Int_Shan<-kruskal.test(Shannon ~ interTD_Bact, data = alpha_meta_Bacteria)
+KWBact_Int_Shan
+
+#Posthoc Dunn's test Shannon
+Posthoc_Bact_Shan=dunnTest(Shannon ~ interTD_Bact, data = alpha_meta_Bacteria, method="bh")
+Posthoc_Bact_Shan
+
+#write csv
+write.csv(Posthoc_Bact_Shan$res, file = "/Volumes/S_ GANASAMU/Paper 3/Section 2/PosthocDunn_Bact_Shan2.csv")
+
+
+#KW Evenness
+KWBact_Int_Even<-kruskal.test(Pielou ~ interTD_Bact, data = alpha_meta_Bacteria)
+KWBact_Int_Even
+
+#Posthoc Dunn's test Evenness
+Posthoc_Bact_Even=dunnTest(Pielou ~ interTD_Bact, data = alpha_meta_Bacteria, method="bh")
+Posthoc_Bact_Even
+
+#write csv
+write.csv(Posthoc_Bact_Even$res, file = "/Volumes/S_ GANASAMU/Paper 3/Section 2/PosthocDunn_Bact_Even2.csv")
+
+
+
+#Fungi
+interTD_Fungi<-interaction(alpha_meta_Fungi$Treatment, alpha_meta_Fungi$Day)
+
+#KW Observed
+KWFungi_Int_Obs<-kruskal.test(Observed ~ interTD_Fungi, data = alpha_meta_Fungi)
+KWFungi_Int_Obs
+
+#Posthoc Dunn's test Observed Richness
+Posthoc_Fungi_Obs=dunnTest(Observed ~ interTD_Fungi, data = alpha_meta_Fungi, method="bh")
+Posthoc_Fungi_Obs
+
+#write csv
+write.csv(Posthoc_Fungi_Obs$res, file = "/Volumes/S_ GANASAMU/Paper 3/Section 2/PosthocDunn_Fungi_Obs2.csv")
+
+#KW Shannon
+KWFungi_Int_Shan<-kruskal.test(Shannon ~ interTD_Fungi, data = alpha_meta_Fungi)
+KWFungi_Int_Shan
+
+#Posthoc Dunn's test Shannon
+Posthoc_Fungi_Shan=dunnTest(Shannon ~ interTD_Fungi, data = alpha_meta_Fungi, method="bh")
+Posthoc_Fungi_Shan
+
+#write csv
+write.csv(Posthoc_Fungi_Shan$res, file = "/Volumes/S_ GANASAMU/Paper 3/Section 2/PosthocDunn_Fungi_Shan2.csv")
+
+#KW Evenness
+KWFungi_Int_Even<-kruskal.test(Pielou ~ interTD_Fungi, data = alpha_meta_Fungi)
+KWFungi_Int_Even
+
+#Posthoc Dunn's test Evenness
+Posthoc_Fungi_Even=dunnTest(Pielou ~ interTD_Fungi, data = alpha_meta_Fungi, method="bh")
+Posthoc_Fungi_Even
+
+#write csv
+write.csv(Posthoc_Fungi_Even$res, file = "/Volumes/S_ GANASAMU/Paper 3/Section 2/PosthocDunn_Fungi_Even2.csv")
+
+```
+
+
