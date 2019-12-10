@@ -1,7 +1,7 @@
 # Inhibitor-paper-2020
 R code for figures in inhibitor paper
 
-The R code which generates the figures have been broken down into 6 sections.Each section has a code for prokaryotic and eukaryotic community.
+The R code which generates the figures have been broken down into 6 sections.Each section has a code for prokaryotic and fungal community.
 
 a) Section 1
 
@@ -13,11 +13,11 @@ b) Section 2
 
 c) Section 3
 
--This section contains the R code for Figure 4 (Relative abundance of taxa)and Figure S4 (Heatmap of communities at all time points)
+-This section contains the R code for Figure 4 (Relative abundance of taxa) and Figure S4 (Heatmap of communities at all time points)
 
 d) Section 4
 
--This section contains the R code for Figure 5 (Significant prokaryotic OTU) and Figure 6 (Significant fungal OTU)
+-This section contains the R code for Figure 5 (Significant prokaryotic OTU on Day 9) and Figure 6 (Significant fungal OTU on Day 9, Day 33 and Day 42)
 
 e) Section 4a
 
