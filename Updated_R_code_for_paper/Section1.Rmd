@@ -1,0 +1,951 @@
+---
+title: "Section1"
+author: "Syaliny"
+date: "9/9/2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+#Data was processed using QIIME and taxonomy was assigned using the SILVA database.For prokaryotes data was rarified at 10000 sequencing depth which removed 10 samples that had lower depths than this and for fungi data was rarified at 7000. Before input into R mapping file was modified so as to remove any special characters using the gsub function and metadata information (Treatment, Day) were added to the mapping file
+
+```{r global_options, echo=FALSE, results='hide'}
+library(knitr)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='hide', echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE)
+```
+
+```{r Load libraries and data}
+
+library(phyloseq)  
+library(ggplot2)
+library(vegan)
+library(plyr)
+library(dplyr)
+library(grid)
+library(Rmisc)
+#library(scales)
+library(reshape)
+#library(reshape2)
+library(RColorBrewer)
+#library(microbiome)
+library(MultNonParam)
+library(PMCMR)
+library(DescTools)
+library(FSA)
+library(ggpubr)
+```
+
+#Importing biom file and setting working directory for prokaryotes and fungi
+```{r importing data}
+
+setwd("/Volumes/Elements/Inhibitor_paper/Section1")
+#Bacteria
+# Now import the .biom-formatted otu_table-tax_table file.
+Bact_biom_otu_tax <- import_biom("10000_merged_otu_table_json.biom")
+
+# Import sample data
+Bact_bmsd <- import_qiime_sample_data("Rex_antibiotic_16S_Sainur.txt")
+
+#Now do the same for fungal data
+# Now import the .biom-formatted otu_table-tax_table file.
+Fungi_biom_otu_tax <- import_biom("merged_otu_table_7000.json")
+
+# Import sample data
+Fungi_bmsd <- import_qiime_sample_data("18S_2org2017edited_map.txt")
+```
+
+#Merging otu table with metadata and creating a phyloseq object
+```{r merge_phyloseq_format}
+
+#Merge into phyloseq format for prokaryotes
+Bacteria_phyloseq <- merge_phyloseq(Bact_biom_otu_tax, Bact_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Bacteria_phyloseq
+
+#Merge into phyloseq format for fungi
+Fungi_phyloseq <- merge_phyloseq(Fungi_biom_otu_tax, Fungi_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Fungi_phyloseq
+
+```
+
+#Attach OTU ID
+```{r Attached OTU ID}
+
+#Prokaryotes
+tax_table(Bacteria_phyloseq) <- cbind(tax_table(Bacteria_phyloseq), OTU=taxa_names(Bacteria_phyloseq))
+
+#Fungi
+tax_table(Fungi_phyloseq) <- cbind(tax_table(Fungi_phyloseq), OTU=taxa_names(Fungi_phyloseq))
+```
+
+#Renaming ranks
+```{r Rename Ranks}
+
+#Prokaryotes
+colnames(tax_table(Bacteria_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove. 
+tax_table(Bacteria_phyloseq) =gsub("D_0__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_1__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_2__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_3__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_4__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_5__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_6__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_7__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_8__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_9__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_10__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_11__", "", tax_table(Bacteria_phyloseq))
+
+#Fungi
+colnames(tax_table(Fungi_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove.
+tax_table(Fungi_phyloseq) =gsub("D_0__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_1__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_2__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_3__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_4__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_5__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_6__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_7__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_8__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_9__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_10__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_11__", "", tax_table(Fungi_phyloseq))
+```
+
+#Prune taxa for fungi keep only those that are fungi or fungal like because kingdom eukaryota includes other things as well
+```{r prune taxa for fungi only}
+
+#Subset to only keep fungi and those that are fungal like
+Fungi_phyloseq = subset_taxa(Fungi_phyloseq , Order == "Fungi" |Order == "Hyphochytriales" | Order == "Labyrinthulomycetes" | Order == "Peronosporomycetes")
+
+```
+
+#Avergae results for multiple rarefractions
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10)}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, function(x) x/10)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, function(x) x/10)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Round off and confirm count number
+```{r Round and confirm count number}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, round)
+sample_sums(Bacteria_phyloseq)
+Bacteria_phyloseq = prune_samples(sample_sums(Bacteria_phyloseq)>=1, Bacteria_phyloseq)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, round)
+sample_sums(Fungi_phyloseq)
+Fungi_phyloseq = prune_samples(sample_sums(Fungi_phyloseq)>=1, Fungi_phyloseq)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Identify if there are taxa which don't have a count 
+```{r identify taxa with only zeros}
+
+#Prokaryotes
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(taxa_sums(Bacteria_phyloseq)== 0)
+sum(taxa_sums(Bacteria_phyloseq) == 0)
+any(taxa_sums(Bacteria_phyloseq) > 1)
+sum(taxa_sums(Bacteria_phyloseq) > 1)
+any(taxa_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(taxa_sums(Fungi_phyloseq)== 0)
+sum(taxa_sums(Fungi_phyloseq) == 0)
+any(taxa_sums(Fungi_phyloseq) > 1)
+sum(taxa_sums(Fungi_phyloseq) > 1)
+any(taxa_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+```
+
+#Create new file with taxa that have count data
+```{r  Save original file and create new file with only present (no zeroes) taxa}
+
+#Create new file with only present (no zeroes) taxa
+#Prokaryotes
+Bacteria_phyloseq = prune_taxa(taxa_sums(Bacteria_phyloseq) > 1, Bacteria_phyloseq)
+any(sample_sums(Bacteria_phyloseq) == 0)
+any(sample_sums(Bacteria_phyloseq) > 0)
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(sample_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+Fungi_phyloseq = prune_taxa(taxa_sums(Fungi_phyloseq) > 1, Fungi_phyloseq)
+any(sample_sums(Fungi_phyloseq) == 0)
+any(sample_sums(Fungi_phyloseq) > 0)
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(sample_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+
+#Bacteria_df<-psmelt(Bacteria_phyloseq)
+#write.csv(Bacteria_df, file ="/Volumes/S_ GANASAMU/Paper 3/Section 1/Bacteria_df.csv")
+```
+
+#Compare sequences per sample or OTU
+```{r Compare sequences per sample or OTU}
+
+#Prokaryotes
+Bactreadsumsdf = data.frame(nreads = sort(taxa_sums(Bacteria_phyloseq),TRUE), sorted = 1:ntaxa(Bacteria_phyloseq), type = "OTU")
+
+Bactreadsumsdf = rbind(Bactreadsumsdf,data.frame(nreads = sort(sample_sums(Bacteria_phyloseq),TRUE),sorted = 1:nsamples(Bacteria_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Bact_seq_persample = ggplot(Bactreadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Bact_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+
+#Fungi
+Fungireadsumsdf = data.frame(nreads = sort(taxa_sums(Fungi_phyloseq),TRUE), sorted = 1:ntaxa(Fungi_phyloseq), type = "OTU")
+Fungireadsumsdf = rbind(Fungireadsumsdf,data.frame(nreads = sort(sample_sums(Fungi_phyloseq),TRUE),sorted = 1:nsamples(Fungi_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Fungi_seq_persample = ggplot(Fungireadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Fungi_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+
+
+```
+
+##Plot NMDS ordination using Bray Distance containing all treatments for prokaryotes
+#NMDS colour gradient for Day
+```{r NMDS all samples plot, colour gradient for Day}
+
+#export plots Landscape A4 size 8.27 x 11.69
+
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Bacteria_phyloseq)$Treatment)[levels(sample_data(Bacteria_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Bacteria_phyloseq)$Treatment)
+
+#Ordering treatmets in phyloseq
+Bacteria_phyloseq@sam_data$Treatment=factor(Bacteria_phyloseq@sam_data$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+set.seed(2)
+#Ordinate phyloseq object
+Bact_NMDSord <- ordinate(Bacteria_phyloseq, "NMDS", "bray")
+Bact_NMDSord
+
+#Plot baseplot
+plot_ordination(Bacteria_phyloseq, Bact_NMDSord, type = "samples", color = "Day", shape="Treatment") + geom_point(size = 0.3) + geom_jitter()
+baseplot = plot_ordination(Bacteria_phyloseq, Bact_NMDSord, type = "samples", color = "Day",shape="Treatment") + geom_point(size = 0.3)+ geom_jitter()
+baseplot
+
+my_grob = grobTree(textGrob("Stress = 0.09", x=0.2,  y=0.95, hjust=0,gp=gpar(col="Black", fontsize=7, fontface="italic")))
+
+#Plot
+NMDS_B_Clr_grdnt = baseplot +geom_point(size = 0.3) + 
+theme(axis.title.x = element_text(face="bold",size=7),
+axis.text.x = element_text(angle=0, colour = "black", vjust=1, hjust = 1, size=5),
+axis.text.y = element_text(colour = "black", size=5), 
+axis.title.y = element_text(face="bold",size=7),
+legend.title =element_text(size = 7, face="bold"),
+legend.text = element_text(size = 7),
+legend.position="right",
+legend.key.size = unit(0.25, "cm"),
+panel.background = element_blank(),
+panel.border = element_rect(fill = NA, colour = "black"),
+strip.background = element_rect(colour="black")) + annotation_custom(my_grob) + scale_shape_manual(values=c(3, 7, 19,15,17))+scale_size_manual(values=c(1,1,1,1,1))
+
+NMDS_B_Clr_grdnt
+
+NMDS_B_CG= NMDS_B_Clr_grdnt + geom_jitter()# pass this if you want labels + geom_text_repel(aes(label = SampleID), size = 5) 
+NMDS_B_CG
+
+
+
+##Sven's theme
+#My_Theme = theme(axis.title.x = element_text(size=18),
+       # axis.text.x = element_text(angle=0, colour = "black", vjust=1, hjust = 0.5, size=18), 
+       # axis.text.y = element_text(colour = "black", size=18),
+        #axis.title.y = element_text(face="bold",size=18),
+       # plot.title = element_text(size = 18),
+       # legend.title =element_text(size = 18),
+       # legend.text = element_text(size = 16),
+        #legend.position="right",
+       # legend.key.size = unit(1, "cm"),
+        #strip.text.x = element_text(size=18, face="bold"),
+       # strip.text.y = element_text(size=18, face="bold"),
+        #panel.background = element_blank(),
+        #panel.border = element_rect(fill = NA, colour = "black"),
+       # strip.background = element_rect(colour="black"))
+
+
+
+
+
+
+#Changing colour scheme to colour blind friendly palletes
+#colour blind freindly palletes
+display.brewer.all(colorblindFriendly = TRUE)
+#To view colour pallete 
+display.brewer.pal(n=9,name='Blues')
+
+#To display colour palette code
+brewer.pal(n=9,name="Blues")
+#"#F7FBFF" "#DEEBF7" "#C6DBEF" "#9ECAE1" "#6BAED6" "#4292C6" "#2171B5" "#08519C" "#08306B
+
+NMDS_B_CG=NMDS_B_CG + scale_color_gradient(low = "#C6DBEF", high = "#08306B") 
+NMDS_B_CG
+
+#pdf("NMDSall_prokaryotes.pdf", height = 8, width = 12)
+#NMDS_B_CG
+#dev.off()
+
+
+
+#Stressplot
+stressplot(Bact_NMDSord,cex.lab=1.5, cex.axis=1.5, font.lab=2)
+
+#ggsave("/Volumes/S_ GANASAMU/Paper 3/Section 1/FigS1_B.pdf",width=8,height=6,units ="cm", device="pdf") # 18 and 12 is good  #use this if landscape plot  # 16 and 10 is good
+
+#pdf("Stressplotall_prokaryotes.pdf", height = 8, width = 12)
+#Stressplotall_prokaryotes
+#dev.off()
+
+```
+
+#Subset to only keep urea treated samples
+```{r Removing negative control from treatment and replotting with ellipses}
+
+#To view types of treatments within df
+levels(sample_data(Bacteria_phyloseq)$Treatment)
+
+#Subset to keep urea treated samples, remove Negative control
+Bact_no_neg<-subset_samples(Bacteria_phyloseq, Treatment == "Antifungal" | Treatment == "Antibacterial" |Treatment == "Antibacterial+Antifungal" | Treatment == "Positive Control")
+
+#Ordering treatmets in phyloseq
+Bact_no_neg@sam_data$Treatment=factor(Bact_no_neg@sam_data$Treatment,levels= c("Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#To check if Negative control was removed
+levels(sample_data(Bact_no_neg)$Treatment)
+
+```
+
+## Plot NMDS ordination using Bray Distance for urea treated samples only with ordiellipse for prokaryotes
+```{r NMDS urea treated samples plot with ellipses}
+
+#export plots Landscape A4 size 8.27 x 11.69
+
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Bact_no_neg)$Treatment)[levels(sample_data(Bact_no_neg)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Bact_no_neg)$Treatment)
+
+#Ordinate phyloseq object
+Bact_noneg_NMDSord <- ordinate(Bact_no_neg, "NMDS", "bray")
+Bact_noneg_NMDSord
+
+pointsBact <- as.data.frame(Bact_noneg_NMDSord$points)
+
+#Plot baseplot
+Bact_NMDS = data.frame(MDS1 = pointsBact$MDS1, MDS2 = pointsBact$MDS2)
+Bact_NMDS$Treatment <- get_variable(Bact_no_neg, "Treatment")
+Bact_NMDS$Day <- get_variable(Bact_no_neg, "Day")
+plot(Bact_noneg_NMDSord$points, col = Bact_NMDS$Treatment)
+
+Bact_ord<-ordiellipse(Bact_noneg_NMDSord, Bact_NMDS$Treatment, display = "sites", 
+                 kind = "se", conf = 0.95, label = T)
+
+# Function to create ellipse/ordiellipse
+veganCovEllipse <-
+  function(cov, center = c(0,0), scale = 1, npoints = 100)
+  {
+    theta <- (0:npoints) * 2 * pi/npoints
+    Circle <- cbind(cos(theta), sin(theta))
+    Q <- chol(cov, pivot = TRUE)
+    o <- attr(Q, "pivot")
+    t(center + scale * t(Circle %*% Q[,o]))
+  }
+
+Bact_ordell_df <- data.frame()
+for(g in levels(Bact_NMDS$Treatment)){
+  Bact_ordell_df <- rbind(Bact_ordell_df, cbind(as.data.frame(with(Bact_NMDS[Bact_NMDS$Treatment==g,],
+                                                   veganCovEllipse(Bact_ord[[g]]$cov,Bact_ord[[g]]$center,Bact_ord[[g]]$scale)))
+                                ,Treatment=g))
+}
+
+Bact_ordell_noneg_my_grob = grobTree(textGrob("Stress = 0.18", x=0.6,  y=0.95, hjust=0,
+                             gp=gpar(col="Black", fontsize=7, fontface="italic")))
+
+
+#Plot
+Bact_NMDS_ordell_plot<-ggplot(data = Bact_NMDS, aes(MDS1, MDS2)) + geom_point(size=1,aes(color = Treatment)) +
+  geom_path(data=Bact_ordell_df, aes(x=NMDS1, y=NMDS2,colour=Treatment), size=0.5, linetype=2)+
+  theme_bw() +
+  theme(
+    plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,panel.background = element_blank()
+    ,axis.text.x  = element_text( vjust=0.5, size=5))+
+  theme(axis.title.x = element_text(face="bold",size=7),
+        axis.text.x = element_text(colour = "black", vjust=1, hjust = 1, size=5),
+        axis.text.y = element_text(colour = "black", size=5),
+        axis.title.y = element_text(face="bold", size=7),
+        legend.title = element_text(size=7,face="bold"),
+        legend.text = element_text(size = 7),
+        legend.position="none",
+        #Manipulating the facet features
+        strip.text.x = element_text(size=7, face="bold"),
+        strip.text.y = element_text(size=7, face="bold"),
+        strip.background = element_rect(colour="black")) + # Black rectangle around facet title
+  guides(fill = guide_legend(ncol = 1, title.hjust = 0.4)) + annotation_custom(Bact_ordell_noneg_my_grob) +scale_colour_manual(values=c("#999999", "#F0E442", "#0072B2", "#009E73"))+ guides(colour=guide_legend(title="Treatment"))
+Bact_NMDS_ordell_plot 
+
+
+
+
+```
+
+#Stats for NMDS all samples plot, ANOSIM and ADONIS for prokaryotes
+```{r Stats (ANOSIM and ADONIS) for NMDS all samples plot}
+
+#Select variable to test for grouping
+VTreatment_Bact = get_variable(Bacteria_phyloseq@sam_data, "Treatment")
+
+#Perform ANOSIM
+Treatment_ano_Bact = anosim(phyloseq::distance(Bacteria_phyloseq, "bray"), VTreatment_Bact)
+
+#Is the observed grouping statistically significant?
+Treatment_ano_Bact$signif
+Treatment_ano_Bact$statistic
+
+#Create a data frame using your sample_data
+Bact_df = as(sample_data(Bacteria_phyloseq), "data.frame")
+#Bact_df_group = get_variable(Bacteria_phyloseq@sam_data, "Treatment")
+
+#Calculate your Bray distance matrix
+d_Bact = phyloseq::distance(Bacteria_phyloseq, "bray")
+
+#Perform your ADONIS test for p value
+Bact_all_adonis = adonis(d_Bact ~ Treatment*Day, Bact_df)
+
+#Check results
+Bact_all_adonis
+
+#Make data frame for results
+Bact_all_adonis_df=as.data.frame(Bact_all_adonis$aov.tab)
+
+#Save table as csv
+write.csv(Bact_all_adonis_df, file ="/Volumes/Elements/Inhibitor_paper/Section1/Bact_all_adonis_table.csv")
+```
+
+#Stats for NMDS urea treated samples plot, ANOSIM and ADONIS for prokaryotes
+```{r Stats (ANOSIM and ADONIS) NMDS urea treated samples plot}
+
+#Select variable to test for grouping
+VTreatment_noneg_Bact = get_variable(Bact_no_neg,"Treatment")
+
+#Perform ANOSIM for urea treated samples
+Treatment_noneg_ano_Bact = anosim(phyloseq::distance(Bact_no_neg, "bray"), VTreatment_noneg_Bact)
+
+#Is the observed grouping statistically significant?
+Treatment_noneg_ano_Bact$signif
+Treatment_noneg_ano_Bact$statistic
+
+#Create a data frame using your sample_data
+Bact_noneg_df=as(sample_data(Bact_no_neg),"data.frame")
+
+#Calculate your Bray distance matrix
+d_Bact_noneg=distance(Bact_no_neg,"bray")
+
+#Perform your ADONIS test for p value
+Bact_noneg_adonis=adonis(d_Bact_noneg~ Treatment*Day,Bact_noneg_df)
+
+#Check Results
+Bact_noneg_adonis
+
+#Make data frame for results 
+Bact_noneg_adonis=as.data.frame(Bact_noneg_adonis$aov.tab)
+
+#Save table as csv
+write.csv(Bact_noneg_adonis, file ="/Volumes/Elements/Inhibitor_paper/Section1/Bact_noneg_adonis_table.csv")
+```
+
+##Plot NMDS ordination using Bray Distance containing all treatments for Fungi
+#NMDS colour gradient for Day
+```{r NMDS all samples plot, colour gradient for Day}
+
+#export plots Landscape A4 size 8.27 x 11.69
+
+#Fungi
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Fungi_phyloseq)$Treatment)[levels(sample_data(Fungi_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Fungi_phyloseq)$Treatment)
+
+#Ordering treatmets in phyloseq
+Fungi_phyloseq@sam_data$Treatment=factor(Fungi_phyloseq@sam_data$Treatment,levels= c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#Ordinate phyloseq object
+Fungi_NMDSord <- ordinate(Fungi_phyloseq, "NMDS", "bray")
+Fungi_NMDSord
+
+#Plot baseplot
+plot_ordination(Fungi_phyloseq, Fungi_NMDSord, type = "samples", color = "Day", shape="Treatment") + geom_point(size = 0.3) + geom_jitter()
+baseplot2 = plot_ordination(Fungi_phyloseq, Fungi_NMDSord, type = "samples", color = "Day",shape="Treatment") + geom_point(size = 0.3)+ geom_jitter()
+baseplot2
+
+my_grob2 = grobTree(textGrob("Stress = 0.21", x=0.3,  y=0.95, hjust=0,gp=gpar(col="Black", fontsize=7, fontface="italic")))
+
+#Plot
+NMDS_F_Clr_grdnt = baseplot2 +geom_point(size = 0.3) + 
+theme(axis.title.x = element_text(face="bold",size=7),
+axis.text.x = element_text(angle=0, colour = "black", vjust=1, hjust = 1, size=5),
+axis.text.y = element_text(colour = "black", size=5), 
+axis.title.y = element_text(face="bold",size=7),
+legend.title =element_text(size = 7, face="bold"),
+legend.text = element_text(size = 7),
+legend.position="right",
+legend.key.size  = unit(0.25, "cm"),legend.key.width = unit(0.25,"cm"),
+panel.background = element_blank(),
+panel.border = element_rect(fill = NA, colour = "black"),
+strip.background = element_rect(colour="black")) + annotation_custom(my_grob2) + scale_shape_manual(values=c(3, 7, 19,15,17))+scale_size_manual(values=c(1,1,1,1,1))
+
+NMDS_F_Clr_grdnt
+
+NMDS_F_CG= NMDS_F_Clr_grdnt + geom_jitter()# pass this if you want labels + geom_text_repel(aes(label = SampleID), size = 5) 
+NMDS_F_CG
+
+
+#Changing colour scheme to colour blind frinedly palletes
+#colour blind freindly palletes
+display.brewer.all(colorblindFriendly = TRUE)
+#To view colour pallete 
+display.brewer.pal(n=9,name='Greens')
+
+#To display colour palette code
+brewer.pal(n=9,name="Greens")
+#"#F7FCF5" "#E5F5E0" "#C7E9C0" "#A1D99B" "#74C476" "#41AB5D" "#238B45" "#006D2C" "#00441B"
+
+NMDS_F_CG=NMDS_F_CG + scale_color_gradient(low = "#E5F5E0", high = "#00441B") 
+NMDS_F_CG
+
+
+#Stressplot
+stressplot(Fungi_NMDSord)
+stressplot(Fungi_NMDSord,cex.lab=1.5, cex.axis=1.5,font.lab=2)
+
+```
+
+
+##ggarrange NMDS plots for all treatments
+```{r}
+library(ggpubr)
+combined_NMDS_CG_BF=ggarrange(NMDS_B_CG,NMDS_F_CG, ncol=2, nrow=1)
+combined_NMDS_CG_BF
+
+ggsave("/Volumes/Elements/Inhibitor_paper/Section1/Fig1.pdf",width=18,height=6,units ="cm", device="pdf") # 18 and 12 is good  #use this if landscape plot  # 16 and 10 is good
+
+
+#pdf("Fig1.pdf", height = 8, width = 22)
+#combined_NMDS_CG_BF
+#dev.off()
+
+```
+
+#ggarrange stressplot all treatments
+```{r}
+library(ggpubr)
+#combined_stressplot_all_BF=ggarrange(Stressplotall_prokaryotes,Stressplotall_fungi, ncol=2, nrow=1)
+#combined_stressplot_all_BF
+
+#ggsave("/Volumes/S_ GANASAMU/Paper 3/Section 1/Fig1_1.pdf",width=17,height=6,units ="cm", device="pdf") # 18 and 12 is good  #use this if landscape plot  # 16 and 10 is good
+
+
+#pdf("Fig1.pdf", height = 8, width = 22)
+#combined_NMDS_CG_BF
+#dev.off()
+
+```
+
+#Subset to only keep urea treated samples only
+```{r Removing negative control from treatment and replotting with ellipses}
+
+#To view list of treatments in df
+levels(sample_data(Fungi_phyloseq)$Treatment)
+
+Fungi_no_neg<-subset_samples(Fungi_phyloseq, Treatment == "Antifungal" | Treatment == "Antibacterial" |Treatment == "Antibacterial+Antifungal" | Treatment == "Positive Control")
+
+#Ordering treatmets in phyloseq
+Fungi_no_neg@sam_data$Treatment=factor(Fungi_no_neg@sam_data$Treatment,levels= c("Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+#To check if Negative control was removed
+levels(sample_data(Fungi_no_neg)$Treatment)
+
+```
+
+
+## Plot NMDS ordination using Bray Distance for urea treated samples only with ordiellipse for fungi
+```{r NMDS urea treated samples plot with ellipses}
+
+#export plots Landscape A4 size 8.27 x 11.69
+set.seed(2)
+#Ordinate phyloseq object
+Fungi_noneg_NMDSord <- ordinate(Fungi_no_neg, "NMDS", "bray")
+Fungi_noneg_NMDSord
+
+pointsfungi <- as.data.frame(Fungi_noneg_NMDSord$points)
+
+#Plot baseplot
+Fungi_NMDS = data.frame(MDS1 = pointsfungi$MDS1, MDS2 = pointsfungi$MDS2)
+Fungi_NMDS$Treatment <- get_variable(Fungi_no_neg, "Treatment")
+Fungi_NMDS$Day <- get_variable(Fungi_no_neg, "Day")
+
+plot(Fungi_noneg_NMDSord$points, col = Fungi_NMDS$Treatment)
+
+Fungi_ord<-ordiellipse(Fungi_noneg_NMDSord, Fungi_NMDS$Treatment, display = "sites", 
+                 kind = "se", conf = 0.95, label = T)
+
+
+#Function to create ellipses/ordiellipses
+veganCovEllipse <-
+  function(cov, center = c(0,0), scale = 1, npoints = 100)
+  {
+    theta <- (0:npoints) * 2 * pi/npoints
+    Circle <- cbind(cos(theta), sin(theta))
+    Q <- chol(cov, pivot = TRUE)
+    o <- attr(Q, "pivot")
+    t(center + scale * t(Circle %*% Q[,o]))
+  }
+
+Fungi_ordell_df <- data.frame()
+for(g in levels(Fungi_NMDS$Treatment)){
+  Fungi_ordell_df <- rbind(Fungi_ordell_df, cbind(as.data.frame(with(Fungi_NMDS[Fungi_NMDS$Treatment==g,],
+                                                   veganCovEllipse(Fungi_ord[[g]]$cov,Fungi_ord[[g]]$center,Fungi_ord[[g]]$scale)))
+                                ,Treatment=g))
+}
+
+Fungi_ordell_noneg_my_grob = grobTree(textGrob("Stress = 0.24", x=0.6,  y=0.95, hjust=0,
+                             gp=gpar(col="Black", fontsize=7, fontface="italic")))
+
+
+#Plot
+Fungi_NMDS_ordell_plot<-ggplot(data = Fungi_NMDS, aes(MDS1, MDS2)) + geom_point(size=1,aes(color = Treatment)) +
+  geom_path(data=Fungi_ordell_df, aes(x=NMDS1, y=NMDS2,colour=Treatment), size=0.5, linetype=2)+
+  theme_bw() +
+  theme(
+    plot.background = element_blank()
+    ,panel.grid.major = element_blank()
+    ,panel.grid.minor = element_blank()
+    ,panel.background = element_blank()
+    ,axis.text.x  = element_text( vjust=0.5, size=5)
+  )+
+  theme(axis.title.x = element_text(face="bold",size=7),
+        axis.text.x = element_text(colour = "black", vjust=1, hjust = 1, size=5),
+        axis.text.y = element_text(colour = "black", size=5),
+        axis.title.y = element_text(face="bold", size=7),
+        legend.title = element_text(size=7,face="bold"),
+        legend.text = element_text(size = 7),
+        legend.position="right",
+        #Manipulating the facet features
+        strip.text.x = element_text(size=7, face="bold"),
+        strip.text.y = element_text(size=7, face="bold"),
+        strip.background = element_rect(colour="black")) + # Black rectangle around facet title
+  guides(fill = guide_legend(ncol = 1, title.hjust = 0.4)) + annotation_custom(Fungi_ordell_noneg_my_grob) + scale_colour_manual(values=c("#999999", "#F0E442", "#0072B2", "#009E73")) + guides(colour=guide_legend(title="Treatment"))
+Fungi_NMDS_ordell_plot
+
+```
+
+
+##ggarrange NMDS plots for urea samples only
+```{r}
+library(ggpubr)
+combined_ellipse_CG_ureaBF=ggarrange(Bact_NMDS_ordell_plot,Fungi_NMDS_ordell_plot, ncol=2,nrow=1, widths  = c(1.55, 2.5))
+combined_ellipse_CG_ureaBF
+
+ggsave("/Volumes/Elements/Inhibitor_paper/Section1/FigS2.pdf",width=17,height=8,units ="cm", device="pdf") # 18 and 12 is good  #use this if landscape plot  # 16 and 10 is good
+
+
+#pdf("FigS2.pdf", height = 8, width = 22)
+#combined_ellipse_CG_ureaBF
+#dev.off()
+
+```
+
+
+#Stats for NMDS all samples plot, ANOSIM and ADONIS for fungi
+```{r Stats (ANOSIM and ADONIS) for NMDS all samples plot}
+
+#Select variable to test for grouping
+VTreatment_Fungi = get_variable(Fungi_phyloseq, "Treatment")
+
+#Perform ANOSIM
+Treatment_ano_Fungi = anosim(phyloseq::distance(Fungi_phyloseq, "bray"), VTreatment_Fungi)
+
+#Is the observed grouping statistically significant?
+Treatment_ano_Fungi$signif
+Treatment_ano_Fungi$statistic
+
+#Create a data frame using your sample_data
+Fungi_df = as(sample_data(Fungi_phyloseq), "data.frame")
+
+#Calculate your Bray distance matrix
+d_Fungi = phyloseq::distance(Fungi_phyloseq, "bray")
+
+#Perform your ADONIS test for p value
+Fungi_all_adonis = adonis(d_Fungi ~ Treatment * Day, Fungi_df)
+
+#Check results
+Fungi_all_adonis
+
+#Make data frame for results
+Fungi_all_adonis=as.data.frame(Fungi_all_adonis$aov.tab)
+
+#Save table as csv
+write.csv(Fungi_all_adonis, file ="/Volumes/Elements/Inhibitor_paper/Section1/Fungi_all_adonis_table.csv")
+```
+
+#Stats for NMDS plot for urea treated samples only, ANOSIM and ADONIS for Fungi
+```{r Stats (ANOSIM and ADONIS) NMDS urea treated samples plot}
+
+#Select variable to test for grouping
+VTreatment_noneg_Fungi = get_variable(Fungi_no_neg,"Treatment")
+
+#Perform ANOSIM for urea treated samples
+Treatment_noneg_ano_Fungi = anosim(phyloseq::distance(Fungi_no_neg, "bray"), VTreatment_noneg_Fungi)
+
+#Is the observed grouping statistically significant?
+Treatment_noneg_ano_Fungi$signif
+Treatment_noneg_ano_Fungi$statistic
+
+#Adonis
+Fungi_noneg_df=as(sample_data(Fungi_no_neg),"data.frame")
+
+#Bray dis
+d_Fungi_noneg=distance(Fungi_no_neg,"bray")
+
+#Perform your ADONIS test for p value
+Fungi_noneg_adonis=adonis(d_Fungi_noneg~ Treatment*Day,Fungi_noneg_df)
+
+#Check Results
+Fungi_noneg_adonis
+
+#Make data frame for results 
+Fungi_noneg_adonis=as.data.frame(Fungi_noneg_adonis$aov.tab)
+
+#Save table as csv
+write.csv(Fungi_noneg_adonis, file ="/Volumes/Elements/Inhibitor_paper/Section1/Fungi_noneg_adonis_table.csv")
+```
+
+#Combined boxplot prokaryotes and fungi
+```{r Boxplot Positive Control vs each treatment according to respective day }
+
+#export plots Landscape A4 size 8.27 x 11.69
+
+p = Bacteria_phyloseq
+m = "bray"
+s = "SampleID"
+d = "Day"
+t = "Treatment"
+
+  # calc distances
+  Bact_wu = vegan::vegdist(t(otu_table(p)), method = "bray")
+  
+  Bact_wu.m = melt(as.matrix(Bact_wu))
+  
+#Rename y axis so its more meaningful
+colnames(Bact_wu.m)[3] <- "Bray_dissimilarity"
+colnames(Bact_wu.m)[2] <- "Var2" 
+colnames(Bact_wu.m)[1] <- "Var1" 
+  
+  # remove self-comparisons
+  Bact_wu.m = Bact_wu.m %>%
+    filter(as.character(Var1) != as.character(Var2)) %>%
+    mutate_if(is.factor,as.character)
+  
+  #this does not work whyyyy
+  # get sample data (S4 error OK and expected)
+  Bact_sd = data.frame(sample_data(p)) %>%
+   select(s, d,t) %>%
+    mutate_if(is.factor,as.character) 
+  
+  # combined distances with sample data
+  colnames(Bact_sd) = c("Var1", "Day1", "Treatment.x")
+  Bact_wu.sd = left_join(Bact_wu.m, Bact_sd, by = "Var1")
+  
+  colnames(Bact_sd) = c("Var2", "Day2", "Treatment.y")
+  Bact_wu.sd = left_join(Bact_wu.sd, Bact_sd, by = "Var2")
+  
+  #Bact_wu.sd.filt = Bact_wu.sd %>%
+    #filter(Treatment.x == 'Positive Control')%>%
+    #filter(as.character(Day1) == "9") %>%
+    #mutate_if(is.factor,as.character)
+  
+  Bact_wu.sd.filt = Bact_wu.sd %>%
+    filter(Treatment.x == 'Positive Control')%>%
+    filter(as.character(Day1)== as.character(Day2)) %>%
+    mutate_if(is.factor,as.character)
+  
+#Now do the same for fungi
+p = Fungi_phyloseq
+m = "bray"
+s = "SampleID"
+d = "Day"
+t = "Treatment"
+
+  # calc distances
+  Fungi_wu = vegan::vegdist(t(otu_table(p)), method = "bray")
+  
+  Fungi_wu.m = melt(as.matrix(Fungi_wu))
+  
+
+#Rename y axis so more meaningful
+colnames(Fungi_wu.m)[3] <- "Bray_dissimilarity"
+colnames(Fungi_wu.m)[2] <- "Var2" 
+colnames(Fungi_wu.m)[1] <- "Var1" 
+  
+  # remove self-comparisons
+  Fungi_wu.m = Fungi_wu.m %>%
+    filter(as.character(Var1) != as.character(Var2)) %>%
+    mutate_if(is.factor,as.character)
+  
+  # get sample data (S4 error OK and expected)
+  Fungi_sd = data.frame(sample_data(p)) %>%
+    select(s,d,t) %>%
+    mutate_if(is.factor,as.character) 
+  
+  # rename columns and combine distances with sample data
+  colnames(Fungi_sd) = c("Var1", "Day1", "Treatment.x")
+  Fungi_wu.sd = left_join(Fungi_wu.m, Fungi_sd, by = "Var1")
+  
+  colnames(Fungi_sd) = c("Var2", "Day2", "Treatment.y")
+  Fungi_wu.sd = left_join(Fungi_wu.sd, Fungi_sd, by = "Var2")
+  
+  #Fungi_wu.sd.filt = Fungi_wu.sd %>%
+    #filter(Treatment.x == 'Positive Control')%>%
+    #filter(as.character(Day1) == "9") %>%
+    #mutate_if(is.factor,as.character)
+  
+  #To compare day by day and against the positive control 
+  Fungi_wu.sd.filt = Fungi_wu.sd %>%
+    filter(Treatment.x == 'Positive Control')%>%
+    filter(as.character(Day1)== as.character(Day2)) %>%
+    mutate_if(is.factor,as.character)
+  
+  #Add new column in data frame for both bacteria and fungi
+  Bact_wu.sd.filt$Organism="Prokaryotes"
+  Fungi_wu.sd.filt$Organism= "Fungi"
+  
+#Join prokaryotes and fungi into one df
+bactfungi=rbind(Bact_wu.sd.filt,Fungi_wu.sd.filt)
+
+
+##Filter out comparisons of positive control among itself prior to plotting line graph
+Filt_PC_bactfungi=bactfungi %>% select(Var1,Var2,Bray_dissimilarity,Day1,Treatment.x,Day2,Treatment.y,Organism) %>% filter(Treatment.y!="Positive Control") 
+
+#Change characters to factors
+Filt_PC_bactfungi$Treatment.x=factor(Filt_PC_bactfungi$Treatment.x,levels=c("Positive Control"))
+Filt_PC_bactfungi$Treatment.y=factor(Filt_PC_bactfungi$Treatment.y,levels=c("Antibacterial","Antibacterial+Antifungal","Antifungal","Negative Control"))
+Filt_PC_bactfungi$Organism=factor(Filt_PC_bactfungi$Organism,levels=c("Prokaryotes","Fungi"))
+
+#rename column Day1 to Day prior to plotting
+colnames(Filt_PC_bactfungi)[4]="Day"
+
+#Change character to factor 
+Filt_PC_bactfungi$Day=factor(Filt_PC_bactfungi$Day,levels=c("9","15","21","27","33","42","51"))
+
+#Conduct a summarry SE on Bray_disimilarity so it takes the average of the three reps
+SummSE_Bactfungi <- summarySE(Filt_PC_bactfungi, measurevar = "Bray_dissimilarity", groupvars=c("Treatment.x", "Treatment.y","Day","Day2","Organism"))
+
+#Plot
+Combined_lg=ggplot(SummSE_Bactfungi,aes(x=Day,y=Bray_dissimilarity,group=Organism,colour=Organism))+geom_line(lwd=0.5)+
+  geom_point(size=1)+geom_errorbar(aes(ymin=Bray_dissimilarity-se,ymax=Bray_dissimilarity+se),colour="black",width=0.25)+facet_wrap(~ Treatment.y, scales = "free_y",ncol=2)+theme_bw()+theme(axis.title.x = element_text(face="bold",size=6),
+        axis.text.x = element_text(colour = "black", vjust=1, hjust = 1, size=5, angle=45),
+        axis.text.y = element_text(colour = "black", size=5),
+        axis.title.y = element_text(face="bold", size=6),
+        legend.title = element_text(size=6,face="bold"),
+        legend.text = element_text(size = 6),
+        legend.position="right",
+        #Manipulating the facet features
+        strip.text.x = element_text(size=5,face="bold"),
+        strip.background = element_rect(colour="black"))
+
+Combined_lg
+
+#Change y labels in plot from Bray_dissimilarity to Bray dissimilarity and change colours of lines with scale_colour_manual
+Combined_lg=Combined_lg + labs(y="Bray dissimilarity") + scale_colour_manual(values=c("#2171B5","#41AB5D"))
+Combined_lg
+
+ggsave("/Volumes/Elements/Inhibitor_paper/Section1/Fig2.pdf",width=12,height=8,units ="cm", device="pdf") # 18 and 12 is good  #use this if landscape plot  # 16 and 10 is good
+
+
+#pdf("Fig2.pdf", height = 8, width = 16)
+#Combined_lg
+#dev.off()
+```
+
+
+#Statistical testing for combined line graph
+#conduct a Kruskall wallis, this shows all groups are significant
+#To identify which treatment groups are significant use a posthoc Dunn's test
+```{r Significance testing using Dunn's test}
+
+#Prokaryotes
+interTD_lgBact<-interaction(Bact_wu.sd.filt$Treatment.y, Bact_wu.sd.filt$Day1)
+
+#Summary to look at data
+Summarize(Bray_dissimilarity ~ interTD_lgBact, data = Bact_wu.sd.filt)
+
+#KW Prokaryotes lg
+KWBact_Int_lg<-kruskal.test(Bray_dissimilarity ~ interTD_lgBact, data = Bact_wu.sd.filt)
+KWBact_Int_lg
+
+#Posthoc Prokaryotes lg
+Posthoc_Bact_lg=dunnTest(Bray_dissimilarity ~ interTD_lgBact, data = Bact_wu.sd.filt, method="bh")
+
+#write csv
+write.csv(Posthoc_Bact_lg$res, file = "/Volumes/Elements/Inhibitor_paper/Section1/PosthocDunntst_Bact_lg.csv")
+
+
+
+#Fungi
+interTD_lgFungi<-interaction(Fungi_wu.sd.filt$Treatment.y, Fungi_wu.sd.filt$Day1)
+
+#Summary to look at data
+Summarize(Bray_dissimilarity ~ interTD_lgFungi, data = Fungi_wu.sd.filt)
+
+#KW Fungi lg
+KWFungi_Int_lg<-kruskal.test(Bray_dissimilarity ~ interTD_lgFungi, data = Fungi_wu.sd.filt)
+KWFungi_Int_lg
+
+#Posthoc Fungi lg
+Posthoc_Fungi_lg=dunnTest(Bray_dissimilarity ~ interTD_lgFungi, data = Fungi_wu.sd.filt, method="bh")
+Posthoc_Fungi_lg
+
+#write csv
+write.csv(Posthoc_Fungi_lg$res, file = "/Volumes/Elements/Inhibitor_paper/Section1/PosthocDunntst_Fungi_lg.csv")
+
+```
+

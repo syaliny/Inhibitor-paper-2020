@@ -1,0 +1,1190 @@
+---
+title: "Section 5"
+author: "Syaliny"
+date: "11/14/2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+#Data was processed using QIIME and taxonomy was assigned using the SILVA database.For prokaryotes data was rarified at 10000 sequencing depth which removed 10 samples that had lower depths than this and for fungi data was rarified at 7000. Before input into R mapping file was modified so as to remove any special characters using the gsub function and metadata information (Treatment, Day) were added to the mapping file
+
+```{r global_options, echo=FALSE, results='hide'}
+
+library(knitr)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='hide', echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE)
+```
+
+```{r Load libraries and data}
+
+library(phyloseq)  
+library(ggplot2)
+library(Rmisc)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(ampvis2)
+library(viridis)
+library(tidyverse)
+library("MultNonParam")
+library('PMCMR')
+require(stats)
+#library(dplyr)
+#library(scales)
+#library(reshape)
+#library(reshape2)
+#library(RColorBrewer)
+#library(grid)
+library(ggpubr)
+
+```
+
+#Importing biom file and setting working directory for prokaryotes and fungi
+```{r importing data}
+
+setwd("/Volumes/Elements/Inhibitor_paper/Section5")
+
+#Bacteria
+# Now import the .biom-formatted otu_table-tax_table file.
+Bact_biom_otu_tax <- import_biom("10000_merged_otu_table_json.biom")
+
+# Import sample data
+Bact_bmsd <- import_qiime_sample_data("Rex_antibiotic_16S_Sainur.txt")
+
+#Now do the same for fungal data
+# Now import the .biom-formatted otu_table-tax_table file.
+Fungi_biom_otu_tax <- import_biom("merged_otu_table_7000.json")
+
+# Import sample data
+Fungi_bmsd <- import_qiime_sample_data("18S_2org2017edited_map.txt")
+```
+
+#Merging otu table with metadata and creating a phyloseq object
+```{r merge_phyloseq_format}
+
+#Merge into phyloseq format for prokaryotes
+Bacteria_phyloseq <- merge_phyloseq(Bact_biom_otu_tax, Bact_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Bacteria_phyloseq
+
+#Merge into phyloseq format for fungi
+Fungi_phyloseq <- merge_phyloseq(Fungi_biom_otu_tax, Fungi_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Fungi_phyloseq
+
+```
+
+#Attach OTU ID
+```{r Attached OTU ID}
+
+#Prokaryotes
+tax_table(Bacteria_phyloseq) <- cbind(tax_table(Bacteria_phyloseq), OTU=taxa_names(Bacteria_phyloseq))
+
+#Fungi
+tax_table(Fungi_phyloseq) <- cbind(tax_table(Fungi_phyloseq), OTU=taxa_names(Fungi_phyloseq))
+```
+
+#Renaming ranks
+```{r Rename Ranks}
+
+#Prokaryotes
+colnames(tax_table(Bacteria_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove. 
+tax_table(Bacteria_phyloseq) =gsub("D_0__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_1__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_2__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_3__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_4__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_5__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_6__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_7__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_8__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_9__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_10__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_11__", "", tax_table(Bacteria_phyloseq))
+
+#Fungi
+colnames(tax_table(Fungi_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove.
+tax_table(Fungi_phyloseq) =gsub("D_0__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_1__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_2__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_3__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_4__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_5__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_6__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_7__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_8__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_9__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_10__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_11__", "", tax_table(Fungi_phyloseq))
+```
+
+#Prune taxa for fungi keep only those that are fungi or fungal like because kingdom eukaryota includes other things as well
+```{r prune taxa for fungi only}
+
+#Subset to keep fungi and those that are fungal like
+Fungi_phyloseq = subset_taxa(Fungi_phyloseq , Order == "Fungi" |Order == "Hyphochytriales" | Order == "Labyrinthulomycetes" | Order == "Peronosporomycetes")
+
+```
+
+#Avergae results for multiple rarefractions
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10)}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, function(x) x/10)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, function(x) x/10)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Round off and confirm count number
+```{r Round and confirm count number}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, round)
+sample_sums(Bacteria_phyloseq)
+Bacteria_phyloseq = prune_samples(sample_sums(Bacteria_phyloseq)>=1, Bacteria_phyloseq)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, round)
+sample_sums(Fungi_phyloseq)
+Fungi_phyloseq = prune_samples(sample_sums(Fungi_phyloseq)>=1, Fungi_phyloseq)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Identify if there are taxa which don't have a count 
+```{r identify taxa with only zeros}
+
+#Prokaryotes
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(taxa_sums(Bacteria_phyloseq)== 0)
+sum(taxa_sums(Bacteria_phyloseq) == 0)
+any(taxa_sums(Bacteria_phyloseq) > 1)
+sum(taxa_sums(Bacteria_phyloseq) > 1)
+any(taxa_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(taxa_sums(Fungi_phyloseq)== 0)
+sum(taxa_sums(Fungi_phyloseq) == 0)
+any(taxa_sums(Fungi_phyloseq) > 1)
+sum(taxa_sums(Fungi_phyloseq) > 1)
+any(taxa_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+```
+
+#Create new file with taxa that have count data
+```{r  Save original file and create new file with only present (no zeroes) taxa}
+
+#Create new file with only present (no zeroes) taxa
+#Prokaryotes
+Bacteria_phyloseq = prune_taxa(taxa_sums(Bacteria_phyloseq) > 1, Bacteria_phyloseq)
+any(sample_sums(Bacteria_phyloseq) == 0)
+any(sample_sums(Bacteria_phyloseq) > 0)
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(sample_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+Fungi_phyloseq = prune_taxa(taxa_sums(Fungi_phyloseq) > 1, Fungi_phyloseq)
+any(sample_sums(Fungi_phyloseq) == 0)
+any(sample_sums(Fungi_phyloseq) > 0)
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(sample_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+```
+
+#Compare sequences per sample or OTU
+```{r Compare sequences per sample or OTU}
+
+#Prokaryotes
+Bactreadsumsdf = data.frame(nreads = sort(taxa_sums(Bacteria_phyloseq),TRUE), sorted = 1:ntaxa(Bacteria_phyloseq), type = "OTU")
+Bactreadsumsdf = rbind(Bactreadsumsdf,data.frame(nreads = sort(sample_sums(Bacteria_phyloseq),TRUE),sorted = 1:nsamples(Bacteria_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Bact_seq_persample = ggplot(Bactreadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Bact_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+
+#Fungi
+Fungireadsumsdf = data.frame(nreads = sort(taxa_sums(Fungi_phyloseq),TRUE), sorted = 1:ntaxa(Fungi_phyloseq), type = "OTU")
+Fungireadsumsdf = rbind(Fungireadsumsdf,data.frame(nreads = sort(sample_sums(Fungi_phyloseq),TRUE),sorted = 1:nsamples(Fungi_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Fungi_seq_persample = ggplot(Fungireadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Fungi_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+```
+
+
+```{r}
+
+#Prokaryotes
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Bacteria_phyloseq)$Treatment)[levels(sample_data(Bacteria_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Bacteria_phyloseq)$Treatment)
+
+#Fungi
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Fungi_phyloseq)$Treatment)[levels(sample_data(Fungi_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Fungi_phyloseq)$Treatment)
+
+```
+
+
+#Based on Rex's 2018 paper, N20 emissions were found to be significant at time point 6 and 7 (Day 42 and 51)
+#Conduct an exact test to identify organims that were significantly responding at these time points so that we can co-relate the emisions with the organisms
+#Separate by time point 6 and 7 for Prokaryotes
+```{r Exact test time point 6-7 for Prokaryotes}
+
+#Subset all time points separately from phyloseq
+#Time point 6 Day 42
+Bact_T6<-subset_samples(Bacteria_phyloseq,Day%in%c("42"))
+sample_data(Bact_T6)$Day
+
+#Time point 7 Day 51
+Bact_T7<-subset_samples(Bacteria_phyloseq,Day%in%c("51"))
+sample_data(Bact_T7)$Day
+
+
+```
+
+#Now separate time point by treatment, time points are separated by positive control (urea) against inhibitor treatments (urea+inhibitors) ,this is done to identify organisms that were significantly responding to urea and inhibitor treatment 
+#Subset by treatment according to time point
+```{r time point 6}
+
+Bact_T6_PC_AB=subset_samples(Bact_T6,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T6_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T6_PC_AF=subset_samples(Bact_T6,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T6_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T6_PC_AB_AF=subset_samples(Bact_T6,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T6_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+```
+
+
+#Time point 6 Day 42
+#ET Time point 6 PC vs AB 
+```{r Exact time point 6 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge1 = phyloseq_to_edgeR(Bact_T6_PC_AB, group = "Treatment")
+
+# Perform binary test
+et1 = exactTest(dge1)
+# Extract values from test results
+tt1 = topTags(et1, n = nrow(dge1$table), adjust.method = "BH", sort.by = "PValue")
+res1 = tt1@.Data[[1]]
+alpha = 0.05
+B_sigtab_T6_PC_AB = res1[(res1$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+B_sigtab_2fold_T6_PC_AB <- subset(B_sigtab_T6_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T6_PC_AB)
+
+#
+B_sigtab_2fold_T6_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T6_PC_AB), B_sigtab_2fold_T6_PC_AB)
+```
+
+
+#ET Time point 6 PC vs AF
+```{r Exact time point 6 PC vs AF}
+
+dge2 = phyloseq_to_edgeR(Bact_T6_PC_AF, group = "Treatment")
+
+# Perform binary test
+et2 = exactTest(dge2)
+# Extract values from test results
+tt2 = topTags(et2, n = nrow(dge2$table), adjust.method = "BH", sort.by = "PValue")
+res2 = tt2@.Data[[1]]
+alpha = 0.05
+B_sigtab_T6_PC_AF = res2[(res2$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+B_sigtab_2fold_T6_PC_AF <- subset(B_sigtab_T6_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T6_PC_AF)
+
+#
+B_sigtab_2fold_T6_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T6_PC_AF), B_sigtab_2fold_T6_PC_AF)
+```
+
+
+#ET Time point 6 PC vs AB_AF 
+```{r Exact time point 6 PC vs AB_AF}
+
+dge3 = phyloseq_to_edgeR(Bact_T6_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et3 = exactTest(dge3)
+# Extract values from test results
+tt3 = topTags(et3, n = nrow(dge3$table), adjust.method = "BH", sort.by = "PValue")
+res3 = tt3@.Data[[1]]
+alpha = 0.05
+B_sigtab_T6_PC_AB_AF = res3[(res3$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+B_sigtab_2fold_T6_PC_AB_AF <- subset(B_sigtab_T6_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T6_PC_AB_AF)
+
+#
+B_sigtab_2fold_T6_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T6_PC_AB_AF), B_sigtab_2fold_T6_PC_AB_AF)
+
+
+```
+
+
+#Now separate time point by treatment, time points are separated by positive control (urea) against inhibitor treatments (urea+inhibitors) ,this is done to identify organisms that were significantly responding to urea and inhibitor treatment 
+#Time point 7 Day 51
+```{r time point 7}
+
+Bact_T7_PC_AB=subset_samples(Bact_T7,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T7_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T7_PC_AF=subset_samples(Bact_T7,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T7_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T7_PC_AB_AF=subset_samples(Bact_T7,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T7_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+```
+
+#ET Time point 7 PC vs AB
+```{r Exact time point 7 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge4 = phyloseq_to_edgeR(Bact_T7_PC_AB, group = "Treatment")
+
+# Perform binary test
+et4 = exactTest(dge4)
+# Extract values from test results
+tt4 = topTags(et4, n = nrow(dge4$table), adjust.method = "BH", sort.by = "PValue")
+res4 = tt4@.Data[[1]]
+alpha = 0.05
+B_sigtab_T7_PC_AB = res4[(res4$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                    
+B_sigtab_2fold_T7_PC_AB <- subset(B_sigtab_T7_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T7_PC_AB)
+
+#
+B_sigtab_2fold_T7_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T7_PC_AB), B_sigtab_2fold_T7_PC_AB)
+```
+
+
+#ET Time point 7 PC vs AF
+```{r Exact time point 7 PC vs AF}
+
+dge5 = phyloseq_to_edgeR(Bact_T7_PC_AF, group = "Treatment")
+
+# Perform binary test
+et5 = exactTest(dge5)
+# Extract values from test results
+tt5 = topTags(et5, n = nrow(dge5$table), adjust.method = "BH", sort.by = "PValue")
+res5 = tt5@.Data[[1]]
+alpha = 0.05
+B_sigtab_T7_PC_AF = res5[(res5$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+B_sigtab_2fold_T7_PC_AF <- subset(B_sigtab_T7_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T7_PC_AF)
+
+#
+B_sigtab_2fold_T7_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T7_PC_AF), B_sigtab_2fold_T7_PC_AF)
+```
+
+
+#ET Time point 7 PC vs AB_AF 
+```{r Exact time point 7 PC vs AB_AF}
+
+dge6 = phyloseq_to_edgeR(Bact_T7_PC_AB_AF, group = "Treatment")
+# Perform binary test
+et6= exactTest(dge6)
+# Extract values from test results
+tt6 = topTags(et6, n = nrow(dge6$table), adjust.method = "BH", sort.by = "PValue")
+res6 = tt6@.Data[[1]]
+alpha = 0.05
+B_sigtab_T7_PC_AB_AF = res6[(res6$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+B_sigtab_2fold_T7_PC_AB_AF <- subset(B_sigtab_T7_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T7_PC_AB_AF)
+
+#
+B_sigtab_2fold_T7_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T7_PC_AB_AF), B_sigtab_2fold_T7_PC_AB_AF)
+```
+
+
+#Figure 7 and Figure S7
+#Heatmap Bacteria T6T7
+```{r}
+
+#export plot as landscape 16 x 36
+
+#combine all use previous file generated from excat test by time point 
+B_T6T7_FDRcrctd<-c(as.character(B_sigtab_2fold_T6_PC_AB[,1]),as.character(B_sigtab_2fold_T6_PC_AF[,1]),as.character(B_sigtab_2fold_T6_PC_AB_AF[,1]),as.character(B_sigtab_2fold_T7_PC_AB[,1]),as.character(B_sigtab_2fold_T7_PC_AF[,1]),as.character(B_sigtab_2fold_T7_PC_AB_AF[,1]))
+
+#subset by original phyloseq
+B_SigT6T7_OTU <- subset_taxa(Bacteria_phyloseq, OTU %in% B_T6T7_FDRcrctd)
+B_T6T7gen_glom <- tax_glom(B_SigT6T7_OTU, taxrank = 'Genus') %>% 
+   transform_sample_counts(function(x) {x/sum(x)} ) 
+  
+#Create data frame and order by genus
+B_T6T7gen_glom_df <- psmelt(B_T6T7gen_glom)
+B_T6T7gen_glom_df <- B_T6T7gen_glom_df[order(B_T6T7gen_glom_df$Genus),]
+
+
+#Create dataframe for otutable
+B_T6T7objg <- B_T6T7gen_glom
+B_T6T7otutable_df <- data.frame(OTU = rownames(phyloseq::otu_table(B_T6T7objg)@.Data),
+                        phyloseq::otu_table(B_T6T7objg)@.Data,
+                        phyloseq::tax_table(B_T6T7objg)@.Data,
+                        check.names = TRUE)
+
+
+
+#Extract metadata from the phyloseq object:
+B_T6T7metadata <- data.frame(phyloseq::sample_data(B_T6T7objg), 
+                        check.names = FALSE )
+factor(B_T6T7metadata$Day, levels=c("9", "15", "21", "27","33", "42", "51"))
+
+#order the treatments
+B_T6T7metadata$Treatment=factor(B_T6T7metadata$Treatment,levels=c("Negative Control", "Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+B_T6T7otutable_df$OTU.1 <- NULL #remove OTU.1 column from data frame
+
+#change col name
+colnames(B_T6T7otutable_df)[which(names(B_T6T7otutable_df) == "Domain")] <- "Kingdom"
+
+#save otutable to edit names
+write.csv(B_T6T7otutable_df, file ="/Volumes/Elements/Inhibitor_paper/Section5/B_T6T7otu_table.csv")
+B_T6T7otu_table_edited = read.csv("/Volumes/Elements/Inhibitor_paper/Section5/B_T6T7otu_table_edited.csv", header = TRUE)
+
+B_T6T7otu_table_edited$X <- NULL #remove the X column
+library(ampvis2)
+#Load the data with amp_load:
+B_T6T7Heatmap_amp <- amp_load(B_T6T7otu_table_edited, B_T6T7metadata)
+
+#Plot
+B_T6T7Heatmap_log10<-amp_heatmap(B_T6T7Heatmap_amp,facet_by = "Treatment",group_by = "Day",tax_aggregate = "Genus",tax_show = 15,plot_values = TRUE,plot_values_size = 2,
+plot_colorscale = "log10",color_vector = rev(c("#440154FF","#482878FF","#3E4A89FF","#31688EFF","#26828EFF","#1F9E89FF","#35B779FF","#6DCD59FF","#B4DE2CFF","#FDE725FF")),plot_legendbreaks = c(0.1, 1, 5, 10,25, 50, 75)) +
+theme(axis.text.x = element_text(angle = 45, size=5, vjust = 1),axis.text.y = element_text(size=5),legend.title =element_text(size = 7,face="bold"),legend.text = element_text(size = 7),legend.key.size = unit(0.6, "cm"),strip.text.x = element_text(size=5, face="bold"),axis.title=element_text(size=7,face="bold"),legend.position="none")
+
+
+#Plot T6 and T7 separately
+B_T6Heatmap_log10=B_T6T7Heatmap_log10 + scale_x_discrete(limits = c("42"))
+B_T6Heatmap_log10=B_T6Heatmap_log10+xlab("Day")+ylab("Genus")
+B_T6Heatmap_log10
+
+#T7 separately
+B_T7Heatmap_log10=B_T6T7Heatmap_log10 + scale_x_discrete(limits = c("51"))
+B_T7Heatmap_log10=B_T7Heatmap_log10+xlab("Day")+ylab("Genus")
+
+B_T7Heatmap_log10
+
+```
+
+
+#Based on Rex's 2018 paper, N20 emissions were found to be significant at time point 6 and 7 (Day 42 and 51)
+#Conduct an exact test to identify organims that were significantly responding at these time points so that we can co-relate the emisions with the organisms
+#Separate by time point 6 and 7 for Fungi
+```{r Exact test time point 6-7 for Fungi}
+
+#Subset all time points separately from phyloseq
+#Bacteria
+#Time point 6 Day 42
+Fungi_T6<-subset_samples(Fungi_phyloseq,Day%in%c("42"))
+sample_data(Fungi_T6)$Day
+
+#Time point 7 Day 51
+Fungi_T7<-subset_samples(Fungi_phyloseq,Day%in%c("51"))
+sample_data(Fungi_T7)$Day
+
+```
+
+#Now separate time point by treatment, time points are separated by positive control (urea) against inhibitor treatments (urea+inhibitors) ,this is done to identify organisms that were significantly responding to urea and inhibitor treatment 
+#Time point 6 Day 42 Fungi
+```{r time point 6}
+
+Fungi_T6_PC_AB=subset_samples(Fungi_T6,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Fungi_T6_PC_AB)$Treatment) #To check if subset was done correctly
+
+Fungi_T6_PC_AF=subset_samples(Fungi_T6,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Fungi_T6_PC_AF)$Treatment) #To check if subset was done correctly
+
+Fungi_T6_PC_AB_AF=subset_samples(Fungi_T6,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Fungi_T6_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+```
+
+#Time point 6 Day 42
+#ET Time point 6 PC vs AB Fungi
+```{r Exact time point 6 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge7 = phyloseq_to_edgeR(Fungi_T6_PC_AB, group = "Treatment")
+
+# Perform binary test
+et7 = exactTest(dge7)
+# Extract values from test results
+tt7= topTags(et7, n = nrow(dge7$table), adjust.method = "BH", sort.by = "PValue")
+res7 = tt7@.Data[[1]]
+alpha = 0.05
+F_sigtab_T6_PC_AB = res7[(res7$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                        
+F_sigtab_2fold_T6_PC_AB <- subset(F_sigtab_T6_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T6_PC_AB)
+
+#
+F_sigtab_2fold_T6_PC_AB <- data.frame(OTU = rownames(F_sigtab_2fold_T6_PC_AB), F_sigtab_2fold_T6_PC_AB)
+
+```
+
+
+#ET Time point 6 PC vs AF Fungi
+```{r Exact time point 6 PC vs AF}
+
+dge8 = phyloseq_to_edgeR(Fungi_T6_PC_AF, group = "Treatment")
+
+# Perform binary test
+et8 = exactTest(dge8)
+# Extract values from test results
+tt8 = topTags(et8, n = nrow(dge8$table), adjust.method = "BH", sort.by = "PValue")
+res8 = tt8@.Data[[1]]
+alpha = 0.05
+F_sigtab_T6_PC_AF = res8[(res8$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                       
+F_sigtab_2fold_T6_PC_AF <- subset(F_sigtab_T6_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T6_PC_AF)
+
+#
+F_sigtab_2fold_T6_PC_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T6_PC_AF), F_sigtab_2fold_T6_PC_AF)
+```
+
+
+#ET Time point 6 PC vs AB_AF Fungi
+```{r Exact time point 6 PC vs AB_AF}
+
+dge9 = phyloseq_to_edgeR(Fungi_T6_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et9 = exactTest(dge9)
+# Extract values from test results
+tt9 = topTags(et9, n = nrow(dge9$table), adjust.method = "BH", sort.by = "PValue")
+res9 = tt9@.Data[[1]]
+alpha = 0.05
+F_sigtab_T6_PC_AB_AF = res9[(res9$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                         
+F_sigtab_2fold_T6_PC_AB_AF <- subset(F_sigtab_T6_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T6_PC_AB_AF)
+
+#
+F_sigtab_2fold_T6_PC_AB_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T6_PC_AB_AF), F_sigtab_2fold_T6_PC_AB_AF)
+```
+
+
+#Now separate time point by treatment, time points are separated by positive control (urea) against inhibitor treatments (urea+inhibitors) ,this is done to identify organisms that were significantly responding to urea and inhibitor treatment 
+#Time point 7 Day 51 Fungi
+```{r time point 7}
+
+Fungi_T7_PC_AB=subset_samples(Fungi_T7,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Fungi_T7_PC_AB)$Treatment) #To check if subset was done correctly
+
+Fungi_T7_PC_AF=subset_samples(Fungi_T7,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Fungi_T7_PC_AF)$Treatment) #To check if subset was done correctly
+
+Fungi_T7_PC_AB_AF=subset_samples(Fungi_T7,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Fungi_T7_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+```
+
+#Time point 7 Day 51
+#ET Time point 7 PC vs AB (F sigtab=0)
+```{r Exact time point 7 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge10 = phyloseq_to_edgeR(Fungi_T7_PC_AB, group = "Treatment")
+
+# Perform binary test
+et10 = exactTest(dge10)
+# Extract values from test results
+tt10 = topTags(et10, n = nrow(dge10$table), adjust.method = "BH", sort.by = "PValue")
+res10 = tt10@.Data[[1]]
+alpha = 0.05
+F_sigtab_T7_PC_AB = res10[(res10$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                        
+F_sigtab_2fold_T7_PC_AB <- subset(F_sigtab_T7_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T7_PC_AB)
+
+#
+F_sigtab_2fold_T7_PC_AB <- data.frame(OTU = rownames(F_sigtab_2fold_T7_PC_AB), F_sigtab_2fold_T7_PC_AB)
+```
+
+
+#ET Time point 7 PC vs AF Fungi
+```{r Exact time point 7 PC vs AF}
+
+dge11 = phyloseq_to_edgeR(Fungi_T7_PC_AF, group = "Treatment")
+
+# Perform binary test
+et11 = exactTest(dge11)
+# Extract values from test results
+tt11 = topTags(et11, n = nrow(dge11$table), adjust.method = "BH", sort.by = "PValue")
+res11 = tt11@.Data[[1]]
+alpha = 0.05
+F_sigtab_T7_PC_AF = res11[(res11$FDR <= alpha), ]
+#F_sigtab_T7_PC_AF = cbind(as(F_sigtab_T7_PC_AF, "data.frame"), as(tax_table(Fungi_T7_PC_AF)[rownames(F_sigtab_T7_PC_AF), ], "matrix"))
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                         
+F_sigtab_2fold_T7_PC_AF <- subset(F_sigtab_T7_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T7_PC_AF)
+
+#
+F_sigtab_2fold_T7_PC_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T7_PC_AF), F_sigtab_2fold_T7_PC_AF)
+```
+
+
+
+#ET Time point 7 PC vs AB_AF Fungi sigtab2fold=0
+```{r Exact time point 7 PC vs AB_AF}
+
+
+dge12 = phyloseq_to_edgeR(Fungi_T7_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et12 = exactTest(dge12)
+# Extract values from test results
+tt12 = topTags(et12, n = nrow(dge12$table), adjust.method = "BH", sort.by = "PValue")
+res12 = tt12@.Data[[1]]
+alpha = 0.05
+F_sigtab_T7_PC_AB_AF = res12[(res12$FDR <= alpha), ]
+#F_sigtab_T7_PC_AB_AF = cbind(as(F_sigtab_T7_PC_AB_AF, "data.frame"), as(tax_table(Fungi_T7_PC_AB_AF)[rownames(F_sigtab_T7_PC_AB_AF), ], "matrix"))
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                        
+F_sigtab_2fold_T7_PC_AB_AF <- subset(F_sigtab_T7_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T7_PC_AB_AF)
+
+#
+F_sigtab_2fold_T7_PC_AB_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T7_PC_AB_AF), F_sigtab_2fold_T7_PC_AB_AF)
+```
+
+
+#Figure 7 and Figure S7
+#Heatmap T6T7 fungi
+```{r}
+
+#combine all use previous file generated from excat test by time point 
+F_T6T7_FDRcrctd<-c(as.character(F_sigtab_2fold_T6_PC_AB[,1]),as.character(F_sigtab_2fold_T6_PC_AF[,1]),as.character(F_sigtab_2fold_T6_PC_AB_AF[,1]),as.character(F_sigtab_2fold_T7_PC_AF[,1]))
+
+
+
+#subset by original phyloseq
+F_SigT6T7_OTU <- subset_taxa(Fungi_phyloseq, OTU %in% F_T6T7_FDRcrctd)
+F_T6T7gen_glom <- tax_glom(F_SigT6T7_OTU, taxrank = 'Genus') %>% 
+   transform_sample_counts(function(x) {x/sum(x)} )  
+ 
+#Create data frame and order by genus
+F_T6T7gen_glom_df <- psmelt(F_T6T7gen_glom)
+F_T6T7gen_glom_df <- F_T6T7gen_glom_df[order(F_T6T7gen_glom_df$Genus),]
+
+
+#Create data frame for otu table
+F_T6T7objg <- F_T6T7gen_glom
+F_T6T7otutable_df <- data.frame(OTU = rownames(phyloseq::otu_table(F_T6T7objg)@.Data),
+                        phyloseq::otu_table(F_T6T7objg)@.Data,
+                        phyloseq::tax_table(F_T6T7objg)@.Data,
+                        check.names = TRUE)
+
+
+
+#Extract metadata from the phyloseq object
+F_T6T7metadata <- data.frame(phyloseq::sample_data(F_T6T7objg), 
+                        check.names = FALSE )
+factor(F_T6T7metadata$Day, levels=c("9", "15", "21", "27","33", "42", "51"))
+
+#order the treatments
+F_T6T7metadata$Treatment=factor(F_T6T7metadata$Treatment,levels=c("Negative Control", "Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+F_T6T7otutable_df$OTU.1 <- NULL #remove OTU.1 column from data frame
+
+#change col name
+colnames(F_T6T7otutable_df)[which(names(F_T6T7otutable_df) == "Domain")] <- "Kingdom"
+
+
+#save otutable to edit names, but since all names are meaningful no editing needed, edit by removing X in front of sample names 
+write.csv(F_T6T7otutable_df, file ="/Volumes/Elements/Inhibitor_paper/Section5/F_T6T7otu_table.csv",row.names = F)
+
+
+F_T6T7otu_table_edited = read.csv("/Volumes/Elements/Inhibitor_paper/Section5/F_T6T7otu_table_edited.csv",header=T,check.names=F)
+
+#F_T6T7otu_table_edited$X <- NULL #remove the X column
+
+library(ampvis2)
+#Load the data with amp_load:
+F_T6T7Heatmap_amp <- amp_load(F_T6T7otu_table_edited, F_T6T7metadata)
+
+#Plot
+F_T6T7Heatmap_log10<-amp_heatmap(F_T6T7Heatmap_amp,facet_by = "Treatment",group_by = "Day",tax_aggregate = "Genus",tax_show = 30,plot_values = TRUE,plot_values_size =2,
+plot_colorscale = "log10",color_vector = rev(c("#440154FF","#482878FF","#3E4A89FF","#31688EFF","#26828EFF","#1F9E89FF","#35B779FF","#6DCD59FF","#B4DE2CFF","#FDE725FF")),plot_legendbreaks = c(0.1, 1, 5, 10,25, 50, 75)) +
+theme(axis.text.x = element_text(angle = 45, size=5, vjust = 1),axis.text.y = element_text(size=5),legend.title =element_text(size = 7,face="bold"),legend.text = element_text(size = 7),legend.key.size= unit(0.5, "cm"), legend.key.width=unit(1.9,"cm"),strip.text.x = element_text(size=5, face="bold"),axis.title=element_text(size=7,face="bold"),legend.position="bottom")
+
+#Plot T6 and T7 separately
+#T6
+F_T6Heatmap_log10=F_T6T7Heatmap_log10 + scale_x_discrete(limits = c("42"))
+F_T6Heatmap_log10=F_T6Heatmap_log10 +xlab("Day")+ ylab("Genus")
+F_T6Heatmap_log10
+
+#T7 separately
+F_T7Heatmap_log10=F_T6T7Heatmap_log10 + scale_x_discrete(limits = c("51"))
+F_T7Heatmap_log10=F_T7Heatmap_log10+xlab("Day")+ylab("Genus")
+F_T7Heatmap_log10
+
+```
+
+
+
+#N20 emission graph
+#N20_flux Day 42
+```{r}
+library(tidyr)
+library(Rmisc)
+#import csv file from excel manually instead of using read.csv otherwise it introduces an X infront of sample names and rename the file
+# Then rename file
+N20_Day42_wide=N20_Day42
+
+#Converts data from the long to wide format
+N20_Day42_long=N20_Day42_wide %>% 
+  gather(`-1`, `2`,`5`,`8`,`10`,`14`,`17`,`20`,`23`,`26`,`27`,`29`,`32`,`35`,`36`,`37`,`38`,`39`,`40`,`41`,`42`, key = "Day", value = "N20")
+
+#This calcuates sd,se and ci for the data frame
+SummN20_D42=summarySE(N20_Day42_long,measurevar="N20", groupvars=c("Treatment","Day"))
+
+write.csv(SummN20_D42,file="/Volumes/Elements/Inhibitor_paper/Section5/SummN20_D42.csv")
+```
+
+#Figure 7
+```{r}
+
+#export plot as landscape 12 x 26
+
+#order treatmnets
+SummN20_D42$Treatment=factor(SummN20_D42$Treatment, levels=c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+
+#This makes sure that the days are plotted according to this order
+SummN20_D42$Day <- ordered(SummN20_D42$Day, levels=c("-1", "2", "5", "8","10", "14", "17","20","23","26","27","29","32","35","36","37","38","39","40","41","42"))
+
+#Plot
+N20_D42plot<-ggplot()+geom_errorbar(data=subset(SummN20_D42,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial_Antifungal")),mapping=aes(x=Day,ymin=N20-se, ymax=N20+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=1.2))+geom_bar(data=subset(SummN20_D42,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = N20, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(data=subset(SummN20_D42, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = N20, color=Treatment))+ geom_line(data=subset(SummN20_D42, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = N20,colour=Treatment, group=Treatment,linetype=Treatment),lwd=0.5) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(SummN20_D42,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=N20-se, ymax=N20+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.01))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=5),strip.text = element_text(size=7),axis.text.y = element_text(size=5), axis.title=element_text(size=7),legend.text=element_text(size=7),legend.title=element_text(size=7,face="bold"))+labs(y=expression(paste(N[2],O~ '('*ug~N~ m^-2~h^-1*')')))+ theme(legend.position=c(0.15,0.54), legend.key.size=unit(0.20,"cm"))
+
+#N20_D42plot=N20_D42plot + theme(legend.position=c(0.15,0.54),legend.key.size=unit(0.20,"cm"))#,legend.justification=c(0.8,0.8)) #y axis the larger the number it moves position up, x axis smaller the number moves it to the left
+N20_D42plot
+
+#N20_D42plot=N20_D42plot+ylab(bquote('Assimilation ('*mu~ 'mol' ~CO[2]~ m^-2~s^-1*')'))
+#N20_D42plot
+#N20_D42plot=N20_D42plot+ylab(bquote('N2O ('*μg~ N ~ m^-2~h^-1*')'))
+#N20_D42plot
+
+#N20_D42plot=N20_D42plot+ylab(bquote('N2O ('*μg~ N ~ m^-2~h^-1*')'))
+#N20_D42plot
+
+
+#This works!!!
+#N20_D42plot=N20_D42plot+labs(y=expression(paste(N[2],O~ '('*μg~N~ m^-2~h^-1*')')))
+#N20_D42plot                             
+
+
+
+```
+
+#ggarrage for Fig 7
+```{r}
+library(ggpubr)
+combined_heatmapT6_BF=ggarrange(B_T6Heatmap_log10,F_T6Heatmap_log10,N20_D42plot,ncol=1,nrow=3, heights= c(1.2, 1.2, 1.2))  #height =c(1,0.7,1)
+
+ggsave("/Volumes/Elements/Inhibitor_paper/Section5/Fig7.pdf",width=18,height=15,units ="cm", device="pdf") # 18 and 12 is good  #use this if landscape plot
+#17, 15
+
+#pdf("Fig7.pdf", height = 35, width = 45)  #height =35, width =45
+#combined_heatmapT6_BF
+
+#dev.off()
+
+#20 and 40
+
+
+###
+#ggarrange(combined_heatmapT6_BF,length=c(2,0,0),ncol=1,nrow=3)
+#ggarrange(B_T6Heatmap_log10,F_T6Heatmap_log10,N20_D42plot,ncol=1,nrow=3)
+
+##convert heatmap list to dataframe
+
+
+```
+
+
+
+#Stats
+```{r}
+kruskal.test(N20 ~ Treatment,data= SummN20_D42)
+
+
+#Posthoc N20 flux Day 42
+library("MultNonParam")
+library('PMCMR')
+require(stats)
+Posthoc_D42_N20flux=posthoc.kruskal.nemenyi.test(x = SummN20_D42$N20,
+            g = SummN20_D42$Treatment,
+            dist="Tukey")
+
+Posthoc_D42_N20flux
+
+library(agricolae)
+kruskal(SummN20_D42$N20,SummN20_D42$Treatment, console=TRUE)
+
+
+#write csv
+write.csv(Posthoc_D42_N20flux$p.value, file = "/Volumes/Elements/Inhibitor_paper/Section5/Posthoc_D42_N20flux.csv")
+
+```
+
+
+#N20_flux Day 51
+```{r}
+
+#import csv file from excel manually and rename the file
+#Rename file
+N20_Day51_wide=N20_Day51
+
+N20_Day51_long=N20_Day51_wide %>% 
+  gather(`-1`, `0`,`3`,`6`,`9`,`12`,`15`,`18`,`21`,`24`,`27`,`30`,`33`,`35`,`36`,`37`,`38`,`39`,`40`,`41`,`42`,`44`,`45`,`46`,`47`,`48`,`49`,`50`,`51`, key = "Day", value = "N20")
+
+#This calcuates sd,se and ci for the data frame
+SummN20_D51=summarySE(N20_Day51_long,measurevar= "N20", groupvars=c("Treatment","Day"))
+
+write.csv(SummN20_D51,file="/Volumes/Elements/Inhibitor_paper/Section5/SummN20_D51.csv")
+```
+
+#Figure S7
+```{r}
+
+#export plot as landcse 12 x 26
+#change treatment to a factor
+#SummN20_D51$Treatment=as.factor(SummN20_D51$Treatment)
+#order treatmnets
+SummN20_D51$Treatment=factor(SummN20_D51$Treatment, levels=c("Negative Control","Positive Control","Antibacterial","Antifungal","Antibacterial+Antifungal"))
+
+
+
+#This makes sure that the days are plotted according to this order
+SummN20_D51$Day <- ordered(SummN20_D51$Day, levels=c("-1", "0","3","6","9","12","15","18","21","24","27","30","33","35","36","37","38","39","40","41","42","44","45","46","47","48","49","50","51"))
+
+#Plot
+N20_D51plot<-ggplot()+geom_errorbar(data=subset(SummN20_D51,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")),mapping=aes(x=Day,ymin=N20-se, ymax=N20+se,group=Treatment), width=0.5, size=.3,colour="black", position=position_dodge(width=0.9))+geom_bar(data=subset(SummN20_D51,Treatment %in% c("Antibacterial","Antifungal", "Antibacterial+Antifungal")), aes(x = Day, y = N20, fill=Treatment), stat ="identity", position= "dodge")+ scale_fill_manual(name="Treatment",values=c("#F0E442","#0072B2","#009E73"))+ geom_point(data=subset(SummN20_D51, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = N20, color=Treatment))+ geom_line(data=subset(SummN20_D51, Treatment %in% c("Positive Control","Negative Control")), aes(x = Day, y = N20,colour=Treatment, group=Treatment,linetype=Treatment),lwd=0.5) + scale_linetype_manual(values=c("solid","dotdash")) + geom_errorbar(data=subset(SummN20_D51,Treatment %in% c("Positive Control","Negative Control")),mapping=aes(x=Day,ymin=N20-se, ymax=N20+se,group=Treatment), width=0.2, size=.3,colour="black", position=position_dodge(width=0.20))+theme_light()+scale_color_manual(values=c("#000000","#999999"))+ theme(axis.text.x = element_text(hjust = 1,size=5),strip.text = element_text(size=7,face="bold"),axis.text.y = element_text(size=5),axis.title=element_text(size=7),legend.text=element_text(size=7),legend.title=element_text(size=7,face="bold"))+labs(y=expression(paste(N[2],O~ '('*ug~N~ m^-2~h^-1*')')))+ theme(legend.position=c(0.15,0.54),legend.key.size=unit(0.20,"cm"))
+N20_D51plot
+
+#N20_D51plot=N20_D51plot+ theme(legend.position=c(0.15,0.54), legend.key.size=unit(0.20,"cm"))
+#N20_D51plot
+
+
+
+
+```
+
+#ggarrange for Fig S7
+```{r}
+combined_heatmapT7_BF=ggarrange(B_T7Heatmap_log10,F_T7Heatmap_log10,N20_D51plot,ncol=1,nrow=3, heights = c(1.2, 1.2, 1.2))  #height =c(2.5,1,1)
+
+ggsave("/Volumes/Elements/Inhibitor_paper/Section5/FigS7.pdf",width=18,height=15,units ="cm", device="pdf") # 18 and 12 is good  #use this if landscape plot
+
+```
+
+
+
+
+#Stats
+```{r}
+kruskal.test(N20 ~ Treatment,data= SummN20_D51)
+
+
+#Posthoc N20 flux Day 51
+Posthoc_D51_N20flux=posthoc.kruskal.nemenyi.test(x = SummN20_D51$N20,
+            g = SummN20_D51$Treatment,
+            dist="Tukey")
+
+Posthoc_D51_N20flux
+
+library(agricolae)
+kruskal(SummN20_D51$N20,SummN20_D51$Treatment, console=TRUE)
+
+
+#write csv
+write.csv(Posthoc_D51_N20flux$p.value, file = "/Volumes/Elements/Inhibitor_paper/Section5/Posthoc_D51_N20flux.csv")
+
+```
+
+
+

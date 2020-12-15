@@ -1,0 +1,2438 @@
+---
+title: "Section 4a"
+author: "Syaliny"
+date: "11/25/2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+#Data was processed using QIIME and taxonomy was assigned using the SILVA database.For prokaryotes data was rarified at 10000 sequencing depth which removed 10 samples that had lower depths than this and for fungi data was rarified at 7000. Before input into R mapping file was modified so as to remove any special characters using the gsub function and metadata information (Treatment, Day) were added to the mapping file
+
+```{r global_options, echo=FALSE, results='hide'}
+
+library(knitr)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.align='center', results='hide', echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE)
+```
+
+```{r Load libraries and data}
+
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+library(Rmisc)
+#library(dplyr)
+#library(scales)
+#library(reshape)
+#library(reshape2)
+#library(RColorBrewer)
+#library(grid)
+
+
+```
+
+#Importing biom file and setting working directory for prokaryotes and fungi
+```{r importing data}
+
+setwd("/Volumes/Elements/Inhibitor_paper/Section4a/")
+#Bacteria
+# Now import the .biom-formatted otu_table-tax_table file.
+Bact_biom_otu_tax <- import_biom("10000_merged_otu_table_json.biom")
+
+# Import sample data
+Bact_bmsd <- import_qiime_sample_data("Rex_antibiotic_16S_Sainur.txt")
+
+#Now do the same for fungal data
+# Now import the .biom-formatted otu_table-tax_table file.
+Fungi_biom_otu_tax <- import_biom("merged_otu_table_7000.json")
+
+# Import sample data
+Fungi_bmsd <- import_qiime_sample_data("18S_2org2017edited_map.txt")
+```
+
+#Merging otu table with metadata and creating a phyloseq object
+```{r merge_phyloseq_format}
+
+#Merge into phyloseq format for prokaryotes
+Bacteria_phyloseq <- merge_phyloseq(Bact_biom_otu_tax, Bact_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Bacteria_phyloseq
+
+#Merge into phyloseq format for fungi
+Fungi_phyloseq <- merge_phyloseq(Fungi_biom_otu_tax, Fungi_bmsd)
+
+#check your new merged file and all your datasets should be accounted for
+Fungi_phyloseq
+
+```
+
+#Attach OTU ID
+```{r Attached OTU ID}
+
+#Prokaryotes
+tax_table(Bacteria_phyloseq) <- cbind(tax_table(Bacteria_phyloseq), OTU=taxa_names(Bacteria_phyloseq))
+
+#Fungi
+tax_table(Fungi_phyloseq) <- cbind(tax_table(Fungi_phyloseq), OTU=taxa_names(Fungi_phyloseq))
+```
+
+#Renaming ranks
+```{r Rename Ranks}
+
+#Prokaryotes
+colnames(tax_table(Bacteria_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove. 
+tax_table(Bacteria_phyloseq) =gsub("D_0__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_1__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_2__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_3__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_4__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_5__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_6__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_7__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_8__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_9__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_10__", "", tax_table(Bacteria_phyloseq))
+tax_table(Bacteria_phyloseq) =gsub("D_11__", "", tax_table(Bacteria_phyloseq))
+
+#Fungi
+colnames(tax_table(Fungi_phyloseq)) = c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species", "OTU")
+#This step deletes extra characters that indicate the taxonomic level. If you wish to plot class, family, genus, etc, you will need to repeat this step replacing replacing the number with the level you wish to remove.
+tax_table(Fungi_phyloseq) =gsub("D_0__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_1__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_2__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_3__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_4__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_5__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_6__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_7__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_8__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_9__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_10__", "", tax_table(Fungi_phyloseq))
+tax_table(Fungi_phyloseq) =gsub("D_11__", "", tax_table(Fungi_phyloseq))
+```
+
+#Prune taxa for fungi keep only those that are fungi or fungal like because kingdom eukaryota includes other things as well
+```{r prune taxa for fungi only}
+
+Fungi_phyloseq = subset_taxa(Fungi_phyloseq , Order == "Fungi" |Order == "Hyphochytriales" | Order == "Labyrinthulomycetes" | Order == "Peronosporomycetes")
+
+```
+
+#Avergae results for multiple rarefractions
+```{r Create average result for multiple rarefaction by transforming data using (divide by 10)}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, function(x) x/10)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, function(x) x/10)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Round off and confirm count number
+```{r Round and confirm count number}
+
+#Prokaryotes
+Bacteria_phyloseq = transform_sample_counts(Bacteria_phyloseq, round)
+sample_sums(Bacteria_phyloseq)
+Bacteria_phyloseq = prune_samples(sample_sums(Bacteria_phyloseq)>=1, Bacteria_phyloseq)
+sample_sums(Bacteria_phyloseq)
+
+#Fungi
+Fungi_phyloseq = transform_sample_counts(Fungi_phyloseq, round)
+sample_sums(Fungi_phyloseq)
+Fungi_phyloseq = prune_samples(sample_sums(Fungi_phyloseq)>=1, Fungi_phyloseq)
+sample_sums(Fungi_phyloseq)
+
+```
+
+#Identify if there are taxa which don't have a count 
+```{r identify taxa with only zeros}
+
+#Prokaryotes
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(taxa_sums(Bacteria_phyloseq)== 0)
+sum(taxa_sums(Bacteria_phyloseq) == 0)
+any(taxa_sums(Bacteria_phyloseq) > 1)
+sum(taxa_sums(Bacteria_phyloseq) > 1)
+any(taxa_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(taxa_sums(Fungi_phyloseq)== 0)
+sum(taxa_sums(Fungi_phyloseq) == 0)
+any(taxa_sums(Fungi_phyloseq) > 1)
+sum(taxa_sums(Fungi_phyloseq) > 1)
+any(taxa_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+```
+
+#Create new file with taxa that have count data
+```{r  Save original file and create new file with only present (no zeroes) taxa}
+
+#Create new file with only present (no zeroes) taxa
+#Prokaryotes
+Bacteria_phyloseq = prune_taxa(taxa_sums(Bacteria_phyloseq) > 1, Bacteria_phyloseq)
+any(sample_sums(Bacteria_phyloseq) == 0)
+any(sample_sums(Bacteria_phyloseq) > 0)
+sum(taxa_sums(Bacteria_phyloseq) > 0)
+any(sample_sums(Bacteria_phyloseq) < 1)
+sum(taxa_sums(Bacteria_phyloseq) < 1)
+
+#Fungi
+Fungi_phyloseq = prune_taxa(taxa_sums(Fungi_phyloseq) > 1, Fungi_phyloseq)
+any(sample_sums(Fungi_phyloseq) == 0)
+any(sample_sums(Fungi_phyloseq) > 0)
+sum(taxa_sums(Fungi_phyloseq) > 0)
+any(sample_sums(Fungi_phyloseq) < 1)
+sum(taxa_sums(Fungi_phyloseq) < 1)
+```
+
+#Compare sequences per sample or OTU
+```{r Compare sequences per sample or OTU}
+
+#Prokaryotes
+Bactreadsumsdf = data.frame(nreads = sort(taxa_sums(Bacteria_phyloseq),TRUE), sorted = 1:ntaxa(Bacteria_phyloseq), type = "OTU")
+Bactreadsumsdf = rbind(Bactreadsumsdf,data.frame(nreads = sort(sample_sums(Bacteria_phyloseq),TRUE),sorted = 1:nsamples(Bacteria_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Bact_seq_persample = ggplot(Bactreadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Bact_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+
+#Fungi
+Fungireadsumsdf = data.frame(nreads = sort(taxa_sums(Fungi_phyloseq),TRUE), sorted = 1:ntaxa(Fungi_phyloseq), type = "OTU")
+Fungireadsumsdf = rbind(Fungireadsumsdf,data.frame(nreads = sort(sample_sums(Fungi_phyloseq),TRUE),sorted = 1:nsamples(Fungi_phyloseq), type = "Samples"))
+
+title = "Total number of reads"
+
+Fungi_seq_persample = ggplot(Fungireadsumsdf, aes(x = sorted, y = nreads)) +
+  geom_bar(stat = "identity")
+
+Fungi_seq_persample + ggtitle(title) +
+  scale_y_log10() +
+  facet_wrap(~type, 1, scales = "free")
+```
+
+#Renaming Antibacterial_Antibacterial to Antibacterial+Antifungal
+```{r}
+
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Bacteria_phyloseq)$Treatment)[levels(sample_data(Bacteria_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Bacteria_phyloseq)$Treatment)
+
+#Rename Antibacterial_Antibacterial to Antibacterial+Antifungal
+levels(sample_data(Fungi_phyloseq)$Treatment)[levels(sample_data(Fungi_phyloseq)$Treatment)=="Antibacterial_Antifungal"]="Antibacterial+Antifungal"
+
+#Check if the renaming was done
+levels(sample_data(Fungi_phyloseq)$Treatment)
+
+```
+
+#colour manual
+```{r}
+
+Growthrescolourlist <- c(Alphaproteobacteria="#800026",Actinobacteria="#BD0026",Bacteroidetes="#FC4E2A",Betaproteobacteria="#FD8D3C",Deltaproteobacteria="#FED976",Firmicutes="#E6AB02",Gemmatimonadetes="#A6761D",Acidobacteria="#1D91C0",Gammaproteobacteria="#253494",Verrucomicrobia="#081D58",Planctomycetes="#7FCDBB")
+
+FungiGrowthrescolourlistT1 <- c(Ascobolaceae="#084081",Brachyconidiellopsis="#800026",Helotiales="#BD0026",Mortierellales="#0868AC",Nectria="#FC4E2A")
+
+FungiGrowthrescolourlistT5 <- c(Agaricomycetes="#E31A1C",Tremellales="#2B8CBE")
+
+FungiGrowthrescolourlistT6 <- c(LKM11="#662506",Pleosporales="#993404",Tremellales="#CC4C02",Tapinella="#4EB3D3",Tremella="#A8DDB5",Helotiales="#EC7014")
+
+```
+
+
+#Exact test prokaryotes to identify organisms that were significantly changing at each time point
+#Exact test separate by time point 
+```{r Exact test time point 2-7}
+
+#Subset by time points separately from phyloseq
+
+#Time point 2 Day 15
+Bact_T2<-subset_samples(Bacteria_phyloseq,Day%in%c("15"))
+sample_data(Bact_T2)$Day
+
+#Time point 3 Day 21
+Bact_T3<-subset_samples(Bacteria_phyloseq,Day%in%c("21"))
+sample_data(Bact_T3)$Day
+
+#Time point 4 Day 27
+Bact_T4<-subset_samples(Bacteria_phyloseq,Day%in%c("27"))
+sample_data(Bact_T4)$Day
+
+#Time point 5 Day 33
+Bact_T5<-subset_samples(Bacteria_phyloseq,Day%in%c("33"))
+sample_data(Bact_T5)$Day
+
+#Time point 6 Day 42
+Bact_T6<-subset_samples(Bacteria_phyloseq,Day%in%c("42"))
+sample_data(Bact_T6)$Day
+
+#Time point 7 Day 51
+Bact_T7<-subset_samples(Bacteria_phyloseq,Day%in%c("51"))
+sample_data(Bact_T7)$Day
+
+```
+
+#Now separate time point by treatment, time points are separated by positive control (urea) against inhibitor treatments (urea+inhibitors) ,this is done to identify organisms that were significantly responding to urea and inhibitor treatment 
+#Time point 2,3,4,5,6,7(Day 15,Day 21, Day 27, Day 33, Day 42 and Day 51)
+```{r Exact test time point 2-7}
+
+#Subset by time point from phyloseq
+#Time point 2 Day 15
+#Subset by treatment
+Bact_T2_PC_AB=subset_samples(Bact_T2,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T2_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T2_PC_AF=subset_samples(Bact_T2,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T2_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T2_PC_AB_AF=subset_samples(Bact_T2,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T2_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+#Time point 3 Day 21
+#Subset by treatment
+Bact_T3_PC_AB=subset_samples(Bact_T3,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T3_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T3_PC_AF=subset_samples(Bact_T3,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T3_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T3_PC_AB_AF=subset_samples(Bact_T3,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T3_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+#Time point 4 Day 27
+#Subset by treatment
+Bact_T4_PC_AB=subset_samples(Bact_T4,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T4_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T4_PC_AF=subset_samples(Bact_T4,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T4_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T4_PC_AB_AF=subset_samples(Bact_T4,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T4_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+
+#Time point 5 Day 33
+#Subset by treatment
+Bact_T5_PC_AB=subset_samples(Bact_T5,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T5_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T5_PC_AF=subset_samples(Bact_T5,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T5_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T5_PC_AB_AF=subset_samples(Bact_T5,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T5_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+
+#Time point 6 Day 42
+#Subset by treatment
+Bact_T6_PC_AB=subset_samples(Bact_T6,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T6_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T6_PC_AF=subset_samples(Bact_T6,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T6_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T6_PC_AB_AF=subset_samples(Bact_T6,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T6_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+
+#Time point 7 Day 51
+#Subset by treatment
+Bact_T7_PC_AB=subset_samples(Bact_T7,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Bact_T7_PC_AB)$Treatment) #To check if subset was done correctly
+
+Bact_T7_PC_AF=subset_samples(Bact_T7,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Bact_T7_PC_AF)$Treatment) #To check if subset was done correctly
+
+Bact_T7_PC_AB_AF=subset_samples(Bact_T7,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Bact_T7_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+```
+
+#Time point 2 Day 15
+#ET Time point 2 PC vs AB
+```{r Exact time point 2 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge1 = phyloseq_to_edgeR(Bact_T2_PC_AB, group = "Treatment")
+
+# Perform binary test
+et1 = exactTest(dge1)
+# Extract values from test results
+tt1 = topTags(et1, n = nrow(dge1$table), adjust.method = "BH", sort.by = "PValue")
+res1 = tt1@.Data[[1]]
+alpha = 0.05
+B_sigtab_T2_PC_AB = res1[(res1$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                  
+B_sigtab_2fold_T2_PC_AB <- subset(B_sigtab_T2_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T2_PC_AB)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T2_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T2_PC_AB), B_sigtab_2fold_T2_PC_AB)
+
+```
+
+
+#ET Time point 2 PC vs AF
+```{r Exact time point 2 PC vs AF}
+
+dge2 = phyloseq_to_edgeR(Bact_T2_PC_AF, group = "Treatment")
+
+# Perform binary test
+et2 = exactTest(dge2)
+# Extract values from test results
+tt2 = topTags(et2, n = nrow(dge2$table), adjust.method = "BH", sort.by = "PValue")
+res2 = tt2@.Data[[1]]
+alpha = 0.05
+B_sigtab_T2_PC_AF = res2[(res2$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                              
+B_sigtab_2fold_T2_PC_AF <- subset(B_sigtab_T2_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T2_PC_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T2_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T2_PC_AF), B_sigtab_2fold_T2_PC_AF)
+
+```
+
+
+#ET Time point 2 PC vs AB_AF 
+```{r Exact time point 2 PC vs AB_AF}
+
+dge3 = phyloseq_to_edgeR(Bact_T2_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et3 = exactTest(dge3)
+# Extract values from test results
+tt3 = topTags(et3, n = nrow(dge3$table), adjust.method = "BH", sort.by = "PValue")
+res3 = tt3@.Data[[1]]
+alpha = 0.05
+B_sigtab_T2_PC_AB_AF = res3[(res3$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                 
+B_sigtab_2fold_T2_PC_AB_AF <- subset(B_sigtab_T2_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T2_PC_AB_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T2_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T2_PC_AB_AF), B_sigtab_2fold_T2_PC_AB_AF)
+
+
+```
+
+
+#Large df for ET at time point 2
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+```{r Make one dataframe for sig OTU's at Genus level }
+
+#make one data frame of ET according to treatment then subset phyloseq to only keep the significant ones at that particular time point
+B_FDRcorrected_T2=c(as.character(B_sigtab_2fold_T2_PC_AB[,1]),as.character(B_sigtab_2fold_T2_PC_AF[,1]), as.character(B_sigtab_2fold_T2_PC_AB_AF[,1]))
+
+#Subset the taxa by the OTUs that were shown to change significantly) 
+B_Subset_sig_OTU_T2_genus <-subset_taxa(Bacteria_phyloseq, OTU %in% B_FDRcorrected_T2) 
+
+#Write csv to edit names in excel
+write.csv(tax_table(B_Subset_sig_OTU_T2_genus),file="B_sigOTU_T2.csv")
+
+#Use the B_sigOTU_T2.csv and edit genus names so it is more meaningful, remove first col of OTu names from B_sigOTU_T2.csv and edit phylum column of proteobacteria to Alpha,Beta,Delta and Gamma, remove first OTu column
+B_Subset_sig_OTU_T2_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/B_sigOTU_T2_edited.csv")
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(B_Subset_sig_OTU_T2_genus_edited)<-B_Subset_sig_OTU_T2_genus_edited$OTU
+
+#create matrix from edited list
+BT2=as.matrix(B_Subset_sig_OTU_T2_genus_edited)
+taxBT2=tax_table(BT2) #create taxonomy table with edited genus names
+tax_table(B_Subset_sig_OTU_T2_genus)=taxBT2 #change taxonomy table in original phyloseq with edited taxonomy table
+
+library(dplyr)
+#Glom at genus level
+B_Subset_sig_OTU_T2_genus_df <- tax_glom(B_Subset_sig_OTU_T2_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  #Error no taxonomy table
+
+
+
+```
+
+
+```{r sumarry for significant OTU}
+
+library(Rmisc)
+#Calculate summary 
+B_All_sig_OTU_Gen_T2_df <- summarySE(B_Subset_sig_OTU_T2_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+B_All_sig_OTU_Gen_T2_df<-dplyr::arrange(B_All_sig_OTU_Gen_T2_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df  
+write.csv(B_All_sig_OTU_Gen_T2_df,file="B_All_sig_OTU_Gen_T2_df.csv")
+
+```
+
+
+
+#Plot 
+```{r}
+
+#export plot landscape 27 x 30
+
+B_All_sig_OTU_Gen_T2_df$Treatment<-factor(B_All_sig_OTU_Gen_T2_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+library(ggplot2)
+pd=position_dodge(0.1)
+B_T2_plot<-ggplot(B_All_sig_OTU_Gen_T2_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Phylum ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=30),strip.text = element_text(size=30),axis.text.y = element_text(size=30), axis.title=element_text(size=35,face="bold"),legend.text=element_text(size=35),legend.key.size=unit(1.00,"cm"),legend.title=element_text(size=35,face="bold"))+
+ scale_fill_manual(values=Growthrescolourlist)+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+B_T2_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+
+```
+
+#Time point 3 Day 21
+#ET Time point 3 PC vs AB
+```{r Exact time point 3 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge4 = phyloseq_to_edgeR(Bact_T3_PC_AB, group = "Treatment")
+
+# Perform binary test
+et4 = exactTest(dge4)
+# Extract values from test results
+tt4 = topTags(et4, n = nrow(dge4$table), adjust.method = "BH", sort.by = "PValue")
+res4 = tt4@.Data[[1]]
+alpha = 0.05
+B_sigtab_T3_PC_AB = res4[(res4$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                  
+B_sigtab_2fold_T3_PC_AB <- subset(B_sigtab_T3_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T3_PC_AB)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T3_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T3_PC_AB), B_sigtab_2fold_T3_PC_AB)
+
+```
+
+
+#ET Time point 3 PC vs AF
+```{r Exact time point 3 PC vs AF}
+
+dge5 = phyloseq_to_edgeR(Bact_T3_PC_AF, group = "Treatment")
+
+# Perform binary test
+et5 = exactTest(dge5)
+# Extract values from test results
+tt5 = topTags(et5, n = nrow(dge5$table), adjust.method = "BH", sort.by = "PValue")
+res5 = tt5@.Data[[1]]
+alpha = 0.05
+B_sigtab_T3_PC_AF = res5[(res5$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                              
+B_sigtab_2fold_T3_PC_AF <- subset(B_sigtab_T3_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T3_PC_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T3_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T3_PC_AF), B_sigtab_2fold_T3_PC_AF)
+
+```
+
+
+#ET Time point 3 PC vs AB_AF 
+```{r Exact time point 3 PC vs AB_AF}
+
+dge6 = phyloseq_to_edgeR(Bact_T3_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et6 = exactTest(dge6)
+# Extract values from test results
+tt6 = topTags(et6, n = nrow(dge6$table), adjust.method = "BH", sort.by = "PValue")
+res6 = tt6@.Data[[1]]
+alpha = 0.05
+B_sigtab_T3_PC_AB_AF = res6[(res6$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                 
+B_sigtab_2fold_T3_PC_AB_AF <- subset(B_sigtab_T3_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T3_PC_AB_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T3_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T3_PC_AB_AF), B_sigtab_2fold_T3_PC_AB_AF)
+
+
+```
+
+
+#Large df for ET at time point 3
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+```{r Make one dataframe for sig OTU's at Genus level }
+
+#make one data frame of ET according to treatment then subset phyloseq to only keep the significant ones at that particular time point
+B_FDRcorrected_T3=c(as.character(B_sigtab_2fold_T3_PC_AB[,1]),as.character(B_sigtab_2fold_T3_PC_AF[,1]), as.character(B_sigtab_2fold_T3_PC_AB_AF[,1]))
+
+#Subset the taxa by the OTUs that were shown to change significantly) 
+B_Subset_sig_OTU_T3_genus <-subset_taxa(Bacteria_phyloseq, OTU %in% B_FDRcorrected_T3) 
+
+#Write csv to edit names in excel
+write.csv(tax_table(B_Subset_sig_OTU_T3_genus),file="B_sigOTU_T3.csv")
+
+#Use the B_sigOTU_T2.csv and edit genus names so it is more meaningful, remove first col of OTu names from B_sigOTU_T2.csv and edit phylum column of proteobacteria to Alpha,Beta,Delta and Gamma
+B_Subset_sig_OTU_T3_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/B_sigOTU_T3_edited.csv")
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(B_Subset_sig_OTU_T3_genus_edited)<-B_Subset_sig_OTU_T3_genus_edited$OTU
+
+#create matrix from edited list
+BT3=as.matrix(B_Subset_sig_OTU_T3_genus_edited)
+taxBT3=tax_table(BT3) #create taxonomy table with edited genus names
+tax_table(B_Subset_sig_OTU_T3_genus)=taxBT3 #change taxonomy table in original phyloseq with edited taxonomy table
+
+
+#Glom at genus level
+B_Subset_sig_OTU_T3_genus_df <- tax_glom(B_Subset_sig_OTU_T3_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  #Error no taxonomy table
+
+
+
+```
+
+
+```{r summary significant OTU}
+library(Rmisc)
+#Calculate summary 
+B_All_sig_OTU_Gen_T3_df <- summarySE(B_Subset_sig_OTU_T3_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+B_All_sig_OTU_Gen_T3_df<-dplyr::arrange(B_All_sig_OTU_Gen_T3_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df  
+write.csv(B_All_sig_OTU_Gen_T3_df,file="B_All_sig_OTU_Gen_T3_df.csv")
+
+```
+
+#Plot 
+```{r}
+
+#export plot as landscape 25 x 30
+
+B_All_sig_OTU_Gen_T3_df$Treatment<-factor(B_All_sig_OTU_Gen_T3_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+pd=position_dodge(0.1)
+B_T3_plot<-ggplot(B_All_sig_OTU_Gen_T3_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Phylum ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=30),strip.text = element_text(size=30),axis.text.y = element_text(size=30), axis.title=element_text(size=35,face="bold"),legend.text=element_text(size=35),legend.key.size=unit(1.00,"cm"),legend.title=element_text(size=35,face="bold"))+
+ scale_fill_manual(values=Growthrescolourlist)+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+B_T3_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+
+```
+
+
+#Time point 4 Day 27
+#ET Time point 4 PC vs AB
+```{r Exact time point 4 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge7 = phyloseq_to_edgeR(Bact_T4_PC_AB, group = "Treatment")
+
+# Perform binary test
+et7 = exactTest(dge7)
+# Extract values from test results
+tt7 = topTags(et7, n = nrow(dge7$table), adjust.method = "BH", sort.by = "PValue")
+res7 = tt7@.Data[[1]]
+alpha = 0.05
+B_sigtab_T4_PC_AB = res7[(res7$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                  
+B_sigtab_2fold_T4_PC_AB <- subset(B_sigtab_T4_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T4_PC_AB)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T4_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T4_PC_AB), B_sigtab_2fold_T4_PC_AB)
+
+```
+
+
+#ET Time point 4 PC vs AF
+```{r Exact time point 4 PC vs AF}
+
+dge8 = phyloseq_to_edgeR(Bact_T4_PC_AF, group = "Treatment")
+
+# Perform binary test
+et8 = exactTest(dge8)
+# Extract values from test results
+tt8 = topTags(et8, n = nrow(dge8$table), adjust.method = "BH", sort.by = "PValue")
+res8 = tt8@.Data[[1]]
+alpha = 0.05
+B_sigtab_T4_PC_AF = res8[(res8$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                              
+B_sigtab_2fold_T4_PC_AF <- subset(B_sigtab_T4_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T4_PC_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T4_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T4_PC_AF), B_sigtab_2fold_T4_PC_AF)
+
+```
+
+
+#ET Time point 4 PC vs AB_AF 
+```{r Exact time point 4 PC vs AB_AF}
+
+dge9 = phyloseq_to_edgeR(Bact_T4_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et9 = exactTest(dge9)
+# Extract values from test results
+tt9 = topTags(et9, n = nrow(dge9$table), adjust.method = "BH", sort.by = "PValue")
+res9 = tt9@.Data[[1]]
+alpha = 0.05
+B_sigtab_T4_PC_AB_AF = res9[(res9$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                 
+B_sigtab_2fold_T4_PC_AB_AF <- subset(B_sigtab_T4_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T4_PC_AB_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T4_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T4_PC_AB_AF), B_sigtab_2fold_T4_PC_AB_AF)
+
+
+```
+
+
+#Large df for ET at time point 4
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+```{r Make one dataframe for sig OTU's at Genus level }
+
+#make one data frame of ET according to treatment then subset phyloseq to only keep the significant ones at that particular time point
+B_FDRcorrected_T4=c(as.character(B_sigtab_2fold_T4_PC_AB[,1]),as.character(B_sigtab_2fold_T4_PC_AF[,1]), as.character(B_sigtab_2fold_T4_PC_AB_AF[,1]))
+
+#Subset the taxa by the OTUs that were shown to change significantly) 
+B_Subset_sig_OTU_T4_genus <-subset_taxa(Bacteria_phyloseq, OTU %in% B_FDRcorrected_T4) 
+
+#Write csv to edit names in excel
+write.csv(tax_table(B_Subset_sig_OTU_T4_genus),file="B_sigOTU_T4.csv")
+
+#Use the B_sigOTU_T2.csv and edit genus names so it is more meaningful, remove first col of OTu names from B_sigOTU_T2.csv and edit phylum column of proteobacteria to Alpha,Beta,Delta and Gamma
+B_Subset_sig_OTU_T4_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/B_sigOTU_T4_edited.csv")
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(B_Subset_sig_OTU_T4_genus_edited)<-B_Subset_sig_OTU_T4_genus_edited$OTU
+
+#create matrix from edited list
+BT4=as.matrix(B_Subset_sig_OTU_T4_genus_edited)
+taxBT4=tax_table(BT4) #create taxonomy table with edited genus names
+tax_table(B_Subset_sig_OTU_T4_genus)=taxBT4 #change taxonomy table in original phyloseq with edited taxonomy table
+
+
+#Glom at genus level
+B_Subset_sig_OTU_T4_genus_df <- tax_glom(B_Subset_sig_OTU_T4_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  #Error no taxonomy table
+
+
+
+```
+
+
+```{r sumarry significant OTUl}
+library(Rmisc)
+#Calculate summary 
+B_All_sig_OTU_Gen_T4_df <- summarySE(B_Subset_sig_OTU_T4_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+B_All_sig_OTU_Gen_T4_df<-dplyr::arrange(B_All_sig_OTU_Gen_T4_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df  
+write.csv(B_All_sig_OTU_Gen_T4_df,file="B_All_sig_OTU_Gen_T4_df.csv")
+
+```
+
+#Plot 
+```{r}
+
+#export as landscape 34 x 30
+
+B_All_sig_OTU_Gen_T4_df$Treatment<-factor(B_All_sig_OTU_Gen_T4_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+
+pd=position_dodge(0.1)
+B_T4_plot<-ggplot(B_All_sig_OTU_Gen_T4_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Phylum ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=30),strip.text = element_text(size=30),axis.text.y = element_text(size=30), axis.title=element_text(size=35,face="bold"),legend.text=element_text(size=35),legend.key.size=unit(1.00,"cm"),legend.title=element_text(size=35,face="bold"))+
+ scale_fill_manual(values=Growthrescolourlist)+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+B_T4_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+```
+
+#Time point 5 Day 33
+#ET Time point 5 PC vs AB
+```{r Exact time point 5 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge10 = phyloseq_to_edgeR(Bact_T5_PC_AB, group = "Treatment")
+
+# Perform binary test
+et10 = exactTest(dge10)
+# Extract values from test results
+tt10 = topTags(et10, n = nrow(dge10$table), adjust.method = "BH", sort.by = "PValue")
+res10 = tt10@.Data[[1]]
+alpha = 0.05
+B_sigtab_T5_PC_AB = res10[(res10$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                  
+B_sigtab_2fold_T5_PC_AB <- subset(B_sigtab_T5_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T5_PC_AB)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T5_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T5_PC_AB), B_sigtab_2fold_T5_PC_AB)
+
+```
+
+
+#ET Time point 5 PC vs AF
+```{r Exact time point 5 PC vs AF}
+
+dge11 = phyloseq_to_edgeR(Bact_T5_PC_AF, group = "Treatment")
+
+# Perform binary test
+et11 = exactTest(dge11)
+# Extract values from test results
+tt11 = topTags(et11, n = nrow(dge11$table), adjust.method = "BH", sort.by = "PValue")
+res11 = tt11@.Data[[1]]
+alpha = 0.05
+B_sigtab_T5_PC_AF = res11[(res11$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                              
+B_sigtab_2fold_T5_PC_AF <- subset(B_sigtab_T5_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T5_PC_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T5_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T5_PC_AF), B_sigtab_2fold_T5_PC_AF)
+
+```
+
+
+#ET Time point 5 PC vs AB_AF 
+```{r Exact time point 5 PC vs AB_AF}
+
+dge12 = phyloseq_to_edgeR(Bact_T5_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et12 = exactTest(dge12)
+# Extract values from test results
+tt12 = topTags(et12, n = nrow(dge12$table), adjust.method = "BH", sort.by = "PValue")
+res12 = tt12@.Data[[1]]
+alpha = 0.05
+B_sigtab_T5_PC_AB_AF = res12[(res12$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                 
+B_sigtab_2fold_T5_PC_AB_AF <- subset(B_sigtab_T5_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T5_PC_AB_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T5_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T5_PC_AB_AF), B_sigtab_2fold_T5_PC_AB_AF)
+
+
+```
+
+
+#Large df for ET at time point 5
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+```{r Make one dataframe for sig OTU's at Genus level }
+
+#make one data frame of ET according to treatment then subset phyloseq to only keep the significant ones at that particular time point
+B_FDRcorrected_T5=c(as.character(B_sigtab_2fold_T5_PC_AB[,1]),as.character(B_sigtab_2fold_T5_PC_AF[,1]), as.character(B_sigtab_2fold_T5_PC_AB_AF[,1]))
+
+#Subset the taxa by the OTUs that were shown to change significantly) 
+B_Subset_sig_OTU_T5_genus <-subset_taxa(Bacteria_phyloseq, OTU %in% B_FDRcorrected_T5) 
+
+#Write csv to edit names in excel
+write.csv(tax_table(B_Subset_sig_OTU_T5_genus),file="B_sigOTU_T5.csv")
+
+#Use the B_sigOTU_T2.csv and edit genus names so it is more meaningful, remove first col of OTu names from B_sigOTU_T2.csv and edit phylum column of proteobacteria to Alpha,Beta,Delta and Gamma
+B_Subset_sig_OTU_T5_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/B_sigOTU_T5_edited.csv")
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(B_Subset_sig_OTU_T5_genus_edited)<-B_Subset_sig_OTU_T5_genus_edited$OTU
+
+#create matrix from edited list
+BT5=as.matrix(B_Subset_sig_OTU_T5_genus_edited)
+taxBT5=tax_table(BT5) #create taxonomy table with edited genus names
+tax_table(B_Subset_sig_OTU_T5_genus)=taxBT5 #change taxonomy table in original phyloseq with edited taxonomy table
+
+
+#Glom at genus level
+B_Subset_sig_OTU_T5_genus_df <- tax_glom(B_Subset_sig_OTU_T5_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  #Error no taxonomy table
+
+
+
+```
+
+
+```{r summary significant OTU}
+library(Rmisc)
+#Calculate summary 
+B_All_sig_OTU_Gen_T5_df <- summarySE(B_Subset_sig_OTU_T5_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+B_All_sig_OTU_Gen_T5_df<-dplyr::arrange(B_All_sig_OTU_Gen_T5_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df  
+write.csv(B_All_sig_OTU_Gen_T5_df,file="B_All_sig_OTU_Gen_T5_df.csv")
+
+#read csv
+#B_T2=read.csv("/Volumes/S_ GANASAMU/Paper2/Section4a/B_All_sig_OTU_Gen_T2_df.csv")
+
+
+#read file with growth strategy and response columns added to it,edit Proteobacteria col in B_All_sig_OTU_Gen_T1_df to Alpha,Beta,Delta and Gamma, no outliers
+#BT1_gorwth_response_no_outliers=read.csv(("/Volumes/S_ GANASAMU/Syaliny_paper/Section4a/B_All_sig_OTU_Gen_T1_df_edited_NOutl.csv"))
+```
+
+#Plot 
+```{r}
+
+#export plot as landscape 27 x 30
+
+B_All_sig_OTU_Gen_T5_df$Treatment<-factor(B_All_sig_OTU_Gen_T5_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+
+pd=position_dodge(0.1)
+B_T5_plot<-ggplot(B_All_sig_OTU_Gen_T5_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Phylum ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=30),strip.text = element_text(size=30),axis.text.y = element_text(size=30), axis.title=element_text(size=35,face="bold"),legend.text=element_text(size=35),legend.key.size=unit(1.00,"cm"),legend.title=element_text(size=35,face="bold"))+
+ scale_fill_manual(values=Growthrescolourlist)+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+B_T5_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+```
+
+
+#Time point 6 Day 42
+#ET Time point 6 PC vs AB
+```{r Exact time point 6 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge13 = phyloseq_to_edgeR(Bact_T6_PC_AB, group = "Treatment")
+
+# Perform binary test
+et13 = exactTest(dge13)
+# Extract values from test results
+tt13 = topTags(et13, n = nrow(dge13$table), adjust.method = "BH", sort.by = "PValue")
+res13 = tt13@.Data[[1]]
+alpha = 0.05
+B_sigtab_T6_PC_AB = res13[(res13$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                  
+B_sigtab_2fold_T6_PC_AB <- subset(B_sigtab_T6_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T6_PC_AB)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T6_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T6_PC_AB), B_sigtab_2fold_T6_PC_AB)
+
+```
+
+
+#ET Time point 6 PC vs AF
+```{r Exact time point 6 PC vs AF}
+
+dge14 = phyloseq_to_edgeR(Bact_T6_PC_AF, group = "Treatment")
+
+# Perform binary test
+et14 = exactTest(dge14)
+# Extract values from test results
+tt14 = topTags(et14, n = nrow(dge14$table), adjust.method = "BH", sort.by = "PValue")
+res14 = tt14@.Data[[1]]
+alpha = 0.05
+B_sigtab_T6_PC_AF = res14[(res14$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                              
+B_sigtab_2fold_T6_PC_AF <- subset(B_sigtab_T6_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T6_PC_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T6_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T6_PC_AF), B_sigtab_2fold_T6_PC_AF)
+
+```
+
+
+#ET Time point 6 PC vs AB_AF 
+```{r Exact time point 6 PC vs AB_AF}
+
+dge15 = phyloseq_to_edgeR(Bact_T6_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et15 = exactTest(dge15)
+# Extract values from test results
+tt15 = topTags(et15, n = nrow(dge15$table), adjust.method = "BH", sort.by = "PValue")
+res15 = tt15@.Data[[1]]
+alpha = 0.05
+B_sigtab_T6_PC_AB_AF = res15[(res15$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                 
+B_sigtab_2fold_T6_PC_AB_AF <- subset(B_sigtab_T6_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T6_PC_AB_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T6_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T6_PC_AB_AF), B_sigtab_2fold_T6_PC_AB_AF)
+
+
+```
+
+
+#Large df for ET at time point 6
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+```{r Make one dataframe for sig OTU's at Genus level }
+
+#make one data frame of ET according to treatment then subset phyloseq to only keep the significant ones at that particular time point
+B_FDRcorrected_T6=c(as.character(B_sigtab_2fold_T6_PC_AB[,1]),as.character(B_sigtab_2fold_T6_PC_AF[,1]), as.character(B_sigtab_2fold_T6_PC_AB_AF[,1]))
+
+#Subset the taxa by the OTUs that were shown to change significantly) 
+B_Subset_sig_OTU_T6_genus <-subset_taxa(Bacteria_phyloseq, OTU %in% B_FDRcorrected_T6) 
+
+#Write csv to edit names in excel
+write.csv(tax_table(B_Subset_sig_OTU_T6_genus),file="B_sigOTU_T6.csv")
+
+#Use the B_sigOTU_T2.csv and edit genus names so it is more meaningful, remove first col of OTu names from B_sigOTU_T2.csv and edit phylum column of proteobacteria to Alpha,Beta,Delta and Gamma
+B_Subset_sig_OTU_T6_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/B_sigOTU_T6_edited.csv")
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(B_Subset_sig_OTU_T6_genus_edited)<-B_Subset_sig_OTU_T6_genus_edited$OTU
+
+#create matrix from edited list
+BT6=as.matrix(B_Subset_sig_OTU_T6_genus_edited)
+taxBT6=tax_table(BT6) #create taxonomy table with edited genus names
+tax_table(B_Subset_sig_OTU_T6_genus)=taxBT6 #change taxonomy table in original phyloseq with edited taxonomy table
+
+
+#Glom at genus level
+B_Subset_sig_OTU_T6_genus_df <- tax_glom(B_Subset_sig_OTU_T6_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  #Error no taxonomy table
+
+
+
+```
+
+
+```{r significant OTU}
+library(Rmisc)
+#Calculate summary 
+B_All_sig_OTU_Gen_T6_df <- summarySE(B_Subset_sig_OTU_T6_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+B_All_sig_OTU_Gen_T6_df<-dplyr::arrange(B_All_sig_OTU_Gen_T6_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df  
+write.csv(B_All_sig_OTU_Gen_T6_df,file="B_All_sig_OTU_Gen_T6_df.csv")
+
+```
+
+#Plot 
+```{r}
+
+#export as ladscape 16 x 30
+
+B_All_sig_OTU_Gen_T6_df$Treatment<-factor(B_All_sig_OTU_Gen_T6_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+
+pd=position_dodge(0.1)
+B_T6_plot<-ggplot(B_All_sig_OTU_Gen_T6_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Phylum ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=30),strip.text = element_text(size=30),axis.text.y = element_text(size=30), axis.title=element_text(size=35,face="bold"),legend.text=element_text(size=35),legend.key.size=unit(1.00,"cm"),legend.title=element_text(size=35,face="bold"))+
+ scale_fill_manual(values=Growthrescolourlist)+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+B_T6_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+
+```
+
+
+#Time point 7 Day 51
+#ET Time point 7 PC vs AB
+```{r Exact time point 7 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge16 = phyloseq_to_edgeR(Bact_T7_PC_AB, group = "Treatment")
+
+# Perform binary test
+et16 = exactTest(dge16)
+# Extract values from test results
+tt16 = topTags(et16, n = nrow(dge16$table), adjust.method = "BH", sort.by = "PValue")
+res16 = tt16@.Data[[1]]
+alpha = 0.05
+B_sigtab_T7_PC_AB = res16[(res16$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                  
+B_sigtab_2fold_T7_PC_AB <- subset(B_sigtab_T7_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T7_PC_AB)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T7_PC_AB <- data.frame(OTU = rownames(B_sigtab_2fold_T7_PC_AB), B_sigtab_2fold_T7_PC_AB)
+
+```
+
+
+#ET Time point 7 PC vs AF
+```{r Exact time point 7 PC vs AF}
+
+dge17 = phyloseq_to_edgeR(Bact_T7_PC_AF, group = "Treatment")
+
+# Perform binary test
+et17 = exactTest(dge17)
+# Extract values from test results
+tt17 = topTags(et17, n = nrow(dge17$table), adjust.method = "BH", sort.by = "PValue")
+res17 = tt17@.Data[[1]]
+alpha = 0.05
+B_sigtab_T7_PC_AF = res17[(res17$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                              
+B_sigtab_2fold_T7_PC_AF <- subset(B_sigtab_T7_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T7_PC_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T7_PC_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T7_PC_AF), B_sigtab_2fold_T7_PC_AF)
+
+```
+
+
+#ET Time point 7 PC vs AB_AF 
+```{r Exact time point 7 PC vs AB_AF}
+
+dge18 = phyloseq_to_edgeR(Bact_T7_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et18 = exactTest(dge18)
+# Extract values from test results
+tt18 = topTags(et18, n = nrow(dge18$table), adjust.method = "BH", sort.by = "PValue")
+res18 = tt18@.Data[[1]]
+alpha = 0.05
+B_sigtab_T7_PC_AB_AF = res18[(res18$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                 
+B_sigtab_2fold_T7_PC_AB_AF <- subset(B_sigtab_T7_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(B_sigtab_2fold_T7_PC_AB_AF)
+
+#This ensure that the df starts with the OTU column otherwise there is an error when trying to subset phyloseq 
+B_sigtab_2fold_T7_PC_AB_AF <- data.frame(OTU = rownames(B_sigtab_2fold_T7_PC_AB_AF), B_sigtab_2fold_T7_PC_AB_AF)
+
+
+```
+
+
+#Large df for ET at time point 7
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+```{r Make one dataframe for sig OTU's at Genus level }
+
+#make one data frame of ET according to treatment then subset phyloseq to only keep the significant ones at that particular time point
+B_FDRcorrected_T7=c(as.character(B_sigtab_2fold_T7_PC_AB[,1]),as.character(B_sigtab_2fold_T7_PC_AF[,1]), as.character(B_sigtab_2fold_T7_PC_AB_AF[,1]))
+
+#Subset the taxa by the OTUs that were shown to change significantly) 
+B_Subset_sig_OTU_T7_genus <-subset_taxa(Bacteria_phyloseq, OTU %in% B_FDRcorrected_T7) 
+
+#Write csv to edit names in excel
+write.csv(tax_table(B_Subset_sig_OTU_T7_genus),file="B_sigOTU_T7.csv")
+
+#Use the B_sigOTU_T2.csv and edit genus names so it is more meaningful, remove first col of OTu names from B_sigOTU_T2.csv and edit phylum column of proteobacteria to Alpha,Beta,Delta and Gamma
+B_Subset_sig_OTU_T7_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/B_sigOTU_T7_edited.csv")
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(B_Subset_sig_OTU_T7_genus_edited)<-B_Subset_sig_OTU_T7_genus_edited$OTU
+
+#create matrix from edited list
+BT7=as.matrix(B_Subset_sig_OTU_T7_genus_edited)
+taxBT7=tax_table(BT7) #create taxonomy table with edited genus names
+tax_table(B_Subset_sig_OTU_T7_genus)=taxBT7 #change taxonomy table in original phyloseq with edited taxonomy table
+
+
+#Glom at genus level
+B_Subset_sig_OTU_T7_genus_df <- tax_glom(B_Subset_sig_OTU_T7_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  #Error no taxonomy table
+
+
+
+```
+
+
+```{r summary significant OTU}
+library(Rmisc)
+#Calculate summary 
+B_All_sig_OTU_Gen_T7_df <- summarySE(B_Subset_sig_OTU_T7_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+B_All_sig_OTU_Gen_T7_df<-dplyr::arrange(B_All_sig_OTU_Gen_T7_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df  
+write.csv(B_All_sig_OTU_Gen_T7_df,file="B_All_sig_OTU_Gen_T7_df.csv")
+
+```
+
+#Plot 
+```{r}
+
+#export plot as landscape 14 x 30
+
+B_All_sig_OTU_Gen_T7_df$Treatment<-factor(B_All_sig_OTU_Gen_T7_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+
+pd=position_dodge(0.1)
+B_T7_plot<-ggplot(B_All_sig_OTU_Gen_T7_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Phylum ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=30),strip.text = element_text(size=30),axis.text.y = element_text(size=30), axis.title=element_text(size=35,face="bold"),legend.text=element_text(size=35),legend.key.size=unit(1.00,"cm"),legend.title=element_text(size=35,face="bold"))+
+ scale_fill_manual(values=Growthrescolourlist)+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+B_T7_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+
+```
+
+
+#Fungi
+#Exact test fungi to identify organisms that were significantly changing at each time point
+#Exact test separate by time point 
+```{r Exact test time point 2-4 and 7}
+
+#Subset by time points separately from phyloseq
+
+#Time point 2 Day 15
+Fungi_T2<-subset_samples(Fungi_phyloseq,Day%in%c("15"))
+sample_data(Fungi_T2)$Day
+
+#Time point 3 Day 21
+Fungi_T3<-subset_samples(Fungi_phyloseq,Day%in%c("21"))
+sample_data(Fungi_T3)$Day
+
+#Time point 4 Day 27
+Fungi_T4<-subset_samples(Fungi_phyloseq,Day%in%c("27"))
+sample_data(Fungi_T4)$Day
+
+#Time point 7 Day 51
+Fungi_T7<-subset_samples(Fungi_phyloseq,Day%in%c("51"))
+sample_data(Fungi_T7)$Day
+
+```
+
+
+#Now separate time point by treatment, time points are separated by positive control (urea) against inhibitor treatments (urea+inhibitors) ,this is done to identify organisms that were significantly responding to urea and inhibitor treatment 
+#Time point 2,3,4,7(Day 15,Day 21, Day 27,and Day 51)
+```{r Exact test time point 2-4 and 7}
+
+#Subset by time point from phyloseq
+#Time point 2 Day 15
+#Subset by treatment
+Fungi_T2_PC_AB=subset_samples(Fungi_T2,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Fungi_T2_PC_AB)$Treatment) #To check if subset was done correctly
+
+Fungi_T2_PC_AF=subset_samples(Fungi_T2,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Fungi_T2_PC_AF)$Treatment) #To check if subset was done correctly
+
+Fungi_T2_PC_AB_AF=subset_samples(Fungi_T2,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Fungi_T2_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+#Time point 3 Day 21
+#Subset by treatment
+Fungi_T3_PC_AB=subset_samples(Fungi_T3,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Fungi_T3_PC_AB)$Treatment) #To check if subset was done correctly
+
+Fungi_T3_PC_AF=subset_samples(Fungi_T3,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Fungi_T3_PC_AF)$Treatment) #To check if subset was done correctly
+
+Fungi_T3_PC_AB_AF=subset_samples(Fungi_T3,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Fungi_T3_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+#Time point 4 Day 27
+#Subset by treatment
+Fungi_T4_PC_AB=subset_samples(Fungi_T4,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Fungi_T4_PC_AB)$Treatment) #To check if subset was done correctly
+
+Fungi_T4_PC_AF=subset_samples(Fungi_T4,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Fungi_T4_PC_AF)$Treatment) #To check if subset was done correctly
+
+Fungi_T4_PC_AB_AF=subset_samples(Fungi_T4,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Fungi_T4_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+
+#Time point 7 Day 51
+#Subset by treatment
+Fungi_T7_PC_AB=subset_samples(Fungi_T7,Treatment%in% c("Positive Control", "Antibacterial"))
+unique(sample_data(Fungi_T7_PC_AB)$Treatment) #To check if subset was done correctly
+
+Fungi_T7_PC_AF=subset_samples(Fungi_T7,Treatment%in% c("Positive Control", "Antifungal"))
+unique(sample_data(Fungi_T7_PC_AF)$Treatment) #To check if subset was done correctly
+
+Fungi_T7_PC_AB_AF=subset_samples(Fungi_T7,Treatment%in% c("Positive Control", "Antibacterial+Antifungal"))
+unique(sample_data(Fungi_T7_PC_AB_AF)$Treatment) #To check if subset was done correctly
+
+
+```
+
+
+#Time point 2 Day 15
+#ET Time point 2 PC vs AB (F_sigtab_2fold_T2_PC_AB =0)
+```{r Exact time point 2 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+
+
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+
+#Convert phyloseq OTU count data into DGEList for edgeR package
+##http://joey711.github.io/phyloseq-extensions/edgeR.html
+
+#to install edgeR
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("edgeR")
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge19 = phyloseq_to_edgeR(Fungi_T2_PC_AB, group = "Treatment")
+
+# Perform binary test
+et19 = exactTest(dge19)
+# Extract values from test results
+tt19 = topTags(et19, n = nrow(dge19$table), adjust.method = "BH", sort.by = "PValue")
+res19 = tt19@.Data[[1]]
+alpha = 0.05
+F_sigtab_T2_PC_AB = res19[(res19$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                       
+F_sigtab_2fold_T2_PC_AB <- subset(F_sigtab_T2_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T2_PC_AB)
+
+#
+F_sigtab_2fold_T2_PC_AB <- data.frame(OTU = rownames(F_sigtab_2fold_T2_PC_AB), F_sigtab_2fold_T2_PC_AB)
+
+```
+
+
+#ET Time point 2 PC vs AF (F_sigtab_2fold_T2_PC_AF=0)
+```{r Exact time point 2 PC vs AF}
+
+dge20 = phyloseq_to_edgeR(Fungi_T2_PC_AF, group = "Treatment")
+
+# Perform binary test
+et20 = exactTest(dge20)
+# Extract values from test results
+tt20 = topTags(et20, n = nrow(dge20$table), adjust.method = "BH", sort.by = "PValue")
+res20 = tt20@.Data[[1]]
+alpha = 0.05
+F_sigtab_T2_PC_AF = res20[(res20$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+F_sigtab_2fold_T2_PC_AF <- subset(F_sigtab_T2_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T2_PC_AF)
+
+#
+#F_sigtab_2fold_T1_PC_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T1_PC_AF), F_sigtab_2fold_T1_PC_AF)
+
+
+```
+
+
+#ET Time point 2 PC vs AB_AF (F_sigtab_2fold_T2_PC_AB_AF=0)
+```{r Exact time point 2 PC vs AB_AF}
+
+dge21 = phyloseq_to_edgeR(Fungi_T2_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et21 = exactTest(dge21)
+# Extract values from test results
+tt21 = topTags(et21, n = nrow(dge21$table), adjust.method = "BH", sort.by = "PValue")
+res21 = tt21@.Data[[1]]
+alpha = 0.05
+F_sigtab_T2_PC_AB_AF = res21[(res21$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                        
+F_sigtab_2fold_T2_PC_AB_AF <- subset(F_sigtab_T2_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T2_PC_AB_AF)
+
+#
+#F_sigtab_2fold_T1_PC_AB_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T1_PC_AB_AF), F_sigtab_2fold_T1_PC_AB_AF)
+
+```
+
+#No plot for TP 2 for fungi since no significant OTU found
+
+
+#Time point 3 Day 21
+#ET Time point 3 PC vs AB (F_sigtab_2fold_T3_PC_AB=0)
+```{r Exact time point 3 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+
+
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+
+#Convert phyloseq OTU count data into DGEList for edgeR package
+##http://joey711.github.io/phyloseq-extensions/edgeR.html
+
+#to install edgeR
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("edgeR")
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge22 = phyloseq_to_edgeR(Fungi_T3_PC_AB, group = "Treatment")
+
+# Perform binary test
+et22 = exactTest(dge22)
+# Extract values from test results
+tt22 = topTags(et22, n = nrow(dge22$table), adjust.method = "BH", sort.by = "PValue")
+res22 = tt22@.Data[[1]]
+alpha = 0.05
+F_sigtab_T3_PC_AB = res22[(res22$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                        
+F_sigtab_2fold_T3_PC_AB <- subset(F_sigtab_T3_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T3_PC_AB)
+
+#
+#F_sigtab_2fold_T3_PC_AB <- data.frame(OTU = rownames(F_sigtab_2fold_T3_PC_AB), F_sigtab_2fold_T3_PC_AB)
+
+```
+
+
+#ET Time point 3 PC vs AF 
+```{r Exact time point 3 PC vs AF}
+
+dge23 = phyloseq_to_edgeR(Fungi_T3_PC_AF, group = "Treatment")
+
+# Perform binary test
+et23 = exactTest(dge23)
+# Extract values from test results
+tt23 = topTags(et23, n = nrow(dge23$table), adjust.method = "BH", sort.by = "PValue")
+res23 = tt23@.Data[[1]]
+alpha = 0.05
+F_sigtab_T3_PC_AF = res23[(res23$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+F_sigtab_2fold_T3_PC_AF <- subset(F_sigtab_T3_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T3_PC_AF)
+
+
+F_sigtab_2fold_T3_PC_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T3_PC_AF), F_sigtab_2fold_T3_PC_AF)
+
+
+```
+
+
+#ET Time point 3 PC vs AB_AF (F_sigtab_2fold_T3_PC_AB_AF=0)
+```{r Exact time point 3 PC vs AB_AF}
+
+dge24 = phyloseq_to_edgeR(Fungi_T3_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et24 = exactTest(dge24)
+# Extract values from test results
+tt24 = topTags(et24, n = nrow(dge24$table), adjust.method = "BH", sort.by = "PValue")
+res24 = tt24@.Data[[1]]
+alpha = 0.05
+F_sigtab_T3_PC_AB_AF = res24[(res24$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+F_sigtab_2fold_T3_PC_AB_AF <- subset(F_sigtab_T3_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T3_PC_AB_AF)
+
+#
+#F_sigtab_2fold_T1_PC_AB_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T1_PC_AB_AF), F_sigtab_2fold_T1_PC_AB_AF)
+
+```
+
+
+#Large df for ET at time point 3
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+#had to import F_SigOTU_T3 manually because of an error 
+```{r Make one dataframe for sig OTU's at Genus level }
+
+F_FDRcorrected_T3 <- c(as.character(F_sigtab_2fold_T3_PC_AF[,1])) #Extract the OTU table that was shown to be significant
+
+F_Subset_sig_OTU_T3_genus <- subset_taxa(Fungi_phyloseq, OTU %in% F_FDRcorrected_T3) #Subset the taxa by the OTUs that were shown to change significantly
+
+#Write csv to edit names in excel
+write.csv(tax_table(F_Subset_sig_OTU_T3_genus),file="F_sigOTU_T3.csv")
+
+#import csv with changed taxa names, have to import this file manually
+F_Subset_sig_OTU_T3_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/F_sigOTU_T3_edited.csv")
+
+F_Subset_sig_OTU_T3_genus_edited=F_sigOTU_T3_edited
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(F_Subset_sig_OTU_T3_genus_edited)<-F_Subset_sig_OTU_T3_genus_edited$OTU
+
+#create matrix from edited list
+FT3=as.matrix(F_Subset_sig_OTU_T3_genus_edited)
+taxFT3=tax_table(FT3) #create taxonomy table with edited genus names
+tax_table(F_Subset_sig_OTU_T3_genus)=taxFT3 #change taxonomy table in original phyloseq with edited taxonomy table
+
+
+#Glom at genus level
+F_Subset_sig_OTU_T3_genus_df <- tax_glom(F_Subset_sig_OTU_T3_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  
+  
+
+```
+
+
+```{r summary significant OTU}
+library(Rmisc)
+#Calculate summary 
+F_All_sig_OTU_Gen_T3_df <- summarySE(F_Subset_sig_OTU_T3_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+F_All_sig_OTU_Gen_T3_df<-dplyr::arrange(F_All_sig_OTU_Gen_T3_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df and manually add columns for growth strategy and response towards antimicrobials 
+write.csv(F_All_sig_OTU_Gen_T3_df,file="F_All_sig_OTU_Gen_T3_df.csv")
+
+
+```
+
+
+#Plot 
+```{r}
+
+#save plot using ggsave
+
+FungiGrowthrescolourlistT3 <- c(unc_Pleosporales="#993404")
+
+
+F_All_sig_OTU_Gen_T3_df$Treatment<-factor(F_All_sig_OTU_Gen_T3_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+
+pd=position_dodge(0.1)
+F_T3_plot<-ggplot(F_All_sig_OTU_Gen_T3_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Genus ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=12),strip.text = element_text(size=12),axis.text.y = element_text(size=12), axis.title=element_text(size=12,face="bold"),legend.text=element_text(size=12),legend.title=element_text(size=12,face="bold"))+
+ scale_fill_manual(values=FungiGrowthrescolourlistT3)+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+F_T3_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+
+ggsave("/Volumes/Elements/Inhibitor_paper/Section4a/FT3.pdf",width=5,height=3)
+
+
+```
+
+
+#Time point 4 Day 27
+#ET Time point 4 PC vs AB (F_sigtab_2fold_T4_PC_AB=0)
+```{r Exact time point 4 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+
+
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+
+#Convert phyloseq OTU count data into DGEList for edgeR package
+##http://joey711.github.io/phyloseq-extensions/edgeR.html
+
+#to install edgeR
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("edgeR")
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge25 = phyloseq_to_edgeR(Fungi_T4_PC_AB, group = "Treatment")
+
+# Perform binary test
+et25 = exactTest(dge25)
+# Extract values from test results
+tt25 = topTags(et25, n = nrow(dge25$table), adjust.method = "BH", sort.by = "PValue")
+res25 = tt25@.Data[[1]]
+alpha = 0.05
+F_sigtab_T4_PC_AB = res25[(res25$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+F_sigtab_2fold_T4_PC_AB <- subset(F_sigtab_T4_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T4_PC_AB)
+
+#
+#F_sigtab_2fold_T3_PC_AB <- data.frame(OTU = rownames(F_sigtab_2fold_T3_PC_AB), F_sigtab_2fold_T3_PC_AB)
+
+```
+
+
+#ET Time point 4 PC vs AF (F_sigtab_2fold_T4_PC_AF=0)
+```{r Exact time point 4 PC vs AF}
+
+dge26 = phyloseq_to_edgeR(Fungi_T4_PC_AF, group = "Treatment")
+
+# Perform binary test
+et26 = exactTest(dge26)
+# Extract values from test results
+tt26 = topTags(et26, n = nrow(dge26$table), adjust.method = "BH", sort.by = "PValue")
+res26 = tt26@.Data[[1]]
+alpha = 0.05
+F_sigtab_T4_PC_AF = res26[(res26$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                       
+F_sigtab_2fold_T4_PC_AF <- subset(F_sigtab_T4_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T4_PC_AF)
+
+
+#F_sigtab_2fold_T4_PC_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T4_PC_AF), F_sigtab_2fold_T4_PC_AF)
+
+
+```
+
+
+#ET Time point 4 PC vs AB_AF (F_sigtab_2fold_T4_PC_AB_AF=0)
+```{r Exact time point 4 PC vs AB_AF}
+
+dge27 = phyloseq_to_edgeR(Fungi_T4_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et27 = exactTest(dge27)
+# Extract values from test results
+tt27 = topTags(et27, n = nrow(dge27$table), adjust.method = "BH", sort.by = "PValue")
+res27 = tt27@.Data[[1]]
+alpha = 0.05
+F_sigtab_T4_PC_AB_AF = res27[(res27$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                      
+F_sigtab_2fold_T4_PC_AB_AF <- subset(F_sigtab_T4_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T4_PC_AB_AF)
+
+#
+#F_sigtab_2fold_T1_PC_AB_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T1_PC_AB_AF), F_sigtab_2fold_T1_PC_AB_AF)
+
+```
+
+#No plot for TP 4 for fungi since no significant OTU found
+
+
+#Time point 7 Day 51
+#ET Time point 7 PC vs AB (F_sigtab_2fold_T7_PC_AB=0)
+```{r Exact time point 7 PC vs AB}
+#check open packages
+(.packages())
+##Close all
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+
+
+library(phyloseq)  
+library(ggplot2)
+library(microbiome)
+library(dplyr)
+library(plyr)
+library(scales)
+library("MultNonParam")
+library('PMCMR')
+
+
+#Convert phyloseq OTU count data into DGEList for edgeR package
+##http://joey711.github.io/phyloseq-extensions/edgeR.html
+
+#to install edgeR
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("edgeR")
+
+phyloseq_to_edgeR = function(physeq, group, method = "RLE", ...) {
+  require("edgeR")
+  require("limma")
+  require("phyloseq")
+  # Enforce orientation.
+  if (!taxa_are_rows(physeq)) {
+    physeq <- t(physeq)
+  }
+  x = as(otu_table(physeq), "matrix")
+  # Add one to protect against overflow, log(0) issues.
+  x = x + 1
+  # Check `group` argument
+  if (identical(all.equal(length(group), 1), TRUE) & nsamples(physeq) > 1) {
+    # Assume that group was a sample variable name (must be categorical)
+    group = get_variable(physeq, group)
+  }
+  # Define gene annotations (`genes`) as tax_table
+  taxonomy = tax_table(physeq, errorIfNULL=FALSE)
+  if( !is.null(taxonomy) ){
+    taxonomy = data.frame(as(taxonomy, "matrix"))
+  } 
+  # Now turn into a DGEList
+  y = DGEList(counts = x, group = group, genes = taxonomy, remove.zeros = TRUE, 
+              ...)
+  # Calculate the normalization factors
+  z = calcNormFactors(y, method = method)
+  # Check for division by zero inside `calcNormFactors`
+  if (!all(is.finite(z$samples$norm.factors))) {
+    stop("Something wrong with edgeR::calcNormFactors on this data,\n         non-finite $norm.factors, consider changing `method` argument")
+  }
+  # Estimate dispersions
+  return(estimateTagwiseDisp(estimateCommonDisp(z)))
+}
+
+
+dge28 = phyloseq_to_edgeR(Fungi_T7_PC_AB, group = "Treatment")
+
+# Perform binary test
+et28 = exactTest(dge28)
+# Extract values from test results
+tt28 = topTags(et28, n = nrow(dge28$table), adjust.method = "BH", sort.by = "PValue")
+res28 = tt28@.Data[[1]]
+alpha = 0.05
+F_sigtab_T7_PC_AB = res28[(res28$FDR <= alpha), ]
+
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                         
+F_sigtab_2fold_T7_PC_AB <- subset(F_sigtab_T7_PC_AB, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T7_PC_AB)
+
+#
+#F_sigtab_2fold_T3_PC_AB <- data.frame(OTU = rownames(F_sigtab_2fold_T3_PC_AB), F_sigtab_2fold_T3_PC_AB)
+
+```
+
+
+#ET Time point 7 PC vs AF 
+```{r Exact time point 7 PC vs AF}
+
+dge29 = phyloseq_to_edgeR(Fungi_T7_PC_AF, group = "Treatment")
+
+# Perform binary test
+et29 = exactTest(dge29)
+# Extract values from test results
+tt29 = topTags(et29, n = nrow(dge29$table), adjust.method = "BH", sort.by = "PValue")
+res29 = tt29@.Data[[1]]
+alpha = 0.05
+F_sigtab_T7_PC_AF = res29[(res29$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                        
+F_sigtab_2fold_T7_PC_AF <- subset(F_sigtab_T7_PC_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T7_PC_AF)
+
+
+F_sigtab_2fold_T7_PC_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T7_PC_AF), F_sigtab_2fold_T7_PC_AF)
+
+
+```
+
+
+#ET Time point 7 PC vs AB_AF (F_sigtab_2fold_T7_PC_AB_AF=0)
+```{r Exact time point 7 PC vs AB_AF}
+
+dge30 = phyloseq_to_edgeR(Fungi_T7_PC_AB_AF, group = "Treatment")
+
+# Perform binary test
+et30 = exactTest(dge30)
+# Extract values from test results
+tt30 = topTags(et30, n = nrow(dge30$table), adjust.method = "BH", sort.by = "PValue")
+res30 = tt30@.Data[[1]]
+alpha = 0.05
+F_sigtab_T7_PC_AB_AF = res30[(res30$FDR <= alpha), ]
+
+#subset by most significant only (p value <0.05 and at least a 2-fold change in abudnance)                                                        
+F_sigtab_2fold_T7_PC_AB_AF <- subset(F_sigtab_T7_PC_AB_AF, FDR < 0.05 & logFC >= 2 | logFC <= -2 & FDR < 0.05)
+head(F_sigtab_2fold_T7_PC_AB_AF)
+
+#
+#F_sigtab_2fold_T1_PC_AB_AF <- data.frame(OTU = rownames(F_sigtab_2fold_T1_PC_AB_AF), F_sigtab_2fold_T1_PC_AB_AF)
+
+```
+
+
+#Large df for ET at time point 7
+#Make one list of which the organisms have been shown to change from the Exact test.
+#Combine exact test at the genus level 
+#had to import F_SigOTU_T7 manually because of an error with read.csv
+```{r Make one dataframe for sig OTU's at Genus level }
+
+ F_FDRcorrected_T7 <- c(as.character(F_sigtab_2fold_T7_PC_AF[,1])) #Extract the OTU table that was shown to be significant
+
+F_Subset_sig_OTU_T7_genus <- subset_taxa(Fungi_phyloseq, OTU %in% F_FDRcorrected_T7) #Subset the taxa by the OTUs that were shown to change significantly
+
+#Write csv to edit names in excel
+write.csv(tax_table(F_Subset_sig_OTU_T7_genus),file="F_sigOTU_T7.csv")
+
+#import csv with changed taxa names, have ti import manually
+F_Subset_sig_OTU_T7_genus_edited=read.csv("/Volumes/Elements/Inhibitor_paper/Section4a/F_sigOTU_T7_edited.csv")
+
+F_Subset_sig_OTU_T7_genus_edited=F_sigOTU_T7_edited
+
+#Edit row names so that it is in the same format as taxonomy table in the phyloseq obj otherwise can't merge
+row.names(F_Subset_sig_OTU_T7_genus_edited)<-F_Subset_sig_OTU_T7_genus_edited$OTU
+
+#create matrix from edited list
+FT7=as.matrix(F_Subset_sig_OTU_T7_genus_edited)
+taxFT7=tax_table(FT7) #create taxonomy table with edited genus names
+tax_table(F_Subset_sig_OTU_T7_genus)=taxFT7 #change taxonomy table in original phyloseq with edited taxonomy table
+
+
+#Glom at genus level
+F_Subset_sig_OTU_T7_genus_df <- tax_glom(F_Subset_sig_OTU_T7_genus, taxrank = 'Genus') %>%#Merge the species at the genus level
+psmelt() #Melt it into a dataframe  
+  
+
+```
+
+
+```{r summary significant OTU}
+library(Rmisc)
+#Calculate summary 
+F_All_sig_OTU_Gen_T7_df <- summarySE(F_Subset_sig_OTU_T7_genus_df, measurevar = "Abundance", groupvars=c("Treatment", "Genus","Phylum"))
+
+
+F_All_sig_OTU_Gen_T7_df<-dplyr::arrange(F_All_sig_OTU_Gen_T7_df, Genus, Abundance) #Arrange the rows by listed variables
+
+#write csv for B_All_sig_OTU_Gen_T1_df and manually add columns for growth strategy and response towards antimicrobials 
+write.csv(F_All_sig_OTU_Gen_T7_df,file="F_All_sig_OTU_Gen_T7_df.csv")
+
+```
+
+
+#Plot 
+```{r}
+
+#save plot using ggsave
+
+F_All_sig_OTU_Gen_T7_df$Treatment<-factor(F_All_sig_OTU_Gen_T7_df$Treatment, levels=c("Negative Control","Positive Control", "Antibacterial", "Antifungal","Antibacterial+Antifungal"))
+
+
+pd=position_dodge(0.1)
+F_T7_plot<-ggplot(F_All_sig_OTU_Gen_T7_df, 
+                         aes(x=Treatment, 
+                             y=Abundance, 
+                             fill=Genus ))+ 
+  geom_bar(stat = "identity", width = 0.85) + 
+  theme_bw() + 
+  theme(legend.position = "right", 
+        strip.background = element_blank())+
+  xlab("Treatment")+ geom_errorbar(aes(ymin=Abundance-se, ymax=Abundance+se), colour="black", position=pd, width=0.25) +
+  ylab("Abundance")+
+ theme(axis.text.x = element_text(angle = 45, hjust = 1,size=12),strip.text = element_text(size=12),axis.text.y = element_text(size=12), axis.title=element_text(size=12,face="bold"),legend.text=element_text(size=12),legend.title=element_text(size=12,face="bold"))+
+ scale_fill_manual(values=c("lightblue","#662506"))+
+facet_wrap(.~Genus,drop = TRUE,scales = "free_y",ncol=4,labeller = label_wrap_gen(width = 10, multi_line=TRUE))
+             
+F_T7_plot+scale_x_discrete(labels=c("Negative Control" = "NC", "Positive Control" = "PC",
+                              "Antibacterial" = "AB","Antifungal"="AF","Antibacterial+Antifungal"="AB+AF"))
+
+ggsave("/Volumes/Elements/Inhibitor_paper/Section4a/FT7.pdf",width=8,height=3)
+```
+
+
+
+
