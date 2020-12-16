@@ -1,0 +1,11 @@
+,Treatment,Genus,Phylum,N,Abundance,sd,se,ci,Response_to_urea,Response_to_Inhibitors
+1,Antibacterial+Antifungal,unc_Agaricomycetes,Opisthokonta,42,0.880952381,1.670437082,0.257754038,0.520544839,Positive,Inhibited
+2,Antifungal,unc_Agaricomycetes,Opisthokonta,42,1.476190476,4.855161173,0.749167634,1.51297473,Positive,Inhibited
+3,Negative Control,unc_Agaricomycetes,Opisthokonta,42,1.857142857,3.000580664,0.462999648,0.935046759,Positive,Inhibited
+4,Antibacterial,unc_Agaricomycetes,Opisthokonta,42,13.23809524,40.8296936,6.3001585,12.72342821,Positive,Inhibited
+5,Positive Control,unc_Agaricomycetes,Opisthokonta,36,36.30555556,120.0347139,20.00578565,40.61390406,Positive,Inhibited
+6,Antibacterial,unc_Tremellales,Opisthokonta,21,18.57142857,10.84698773,2.367006778,4.937489619,Negative,Stimulated
+7,Antifungal,unc_Tremellales,Opisthokonta,21,21.0952381,13.35254568,2.913764348,6.078005924,Negative,Stimulated
+8,Positive Control,unc_Tremellales,Opisthokonta,18,22.33333333,20.41049326,4.810799398,10.14989951,Negative,Stimulated
+9,Antibacterial+Antifungal,unc_Tremellales,Opisthokonta,21,31.80952381,21.24998599,4.637127111,9.672877654,Negative,Stimulated
+10,Negative Control,unc_Tremellales,Opisthokonta,21,32.52380952,19.07778564,4.163114132,8.684103906,Negative,Stimulated

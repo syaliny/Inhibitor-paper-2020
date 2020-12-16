@@ -1,0 +1,6 @@
+"","Treatment","Genus","Phylum","N","Abundance","sd","se","ci"
+"1","Negative Control","unc_Pleosporales","Opisthokonta",21,0,0,0,0
+"2","Antifungal","unc_Pleosporales","Opisthokonta",21,1.42857142857143,3.15549407496558,0.688585259691162,1.43636368204184
+"3","Antibacterial+Antifungal","unc_Pleosporales","Opisthokonta",21,3.57142857142857,6.98978847012861,1.52529689314733,3.18171356533352
+"4","Antibacterial","unc_Pleosporales","Opisthokonta",21,14.4761904761905,25.3882237417647,5.54016462176723,11.5565808928419
+"5","Positive Control","unc_Pleosporales","Opisthokonta",18,16.1666666666667,22.0407376838222,5.19505169286151,10.9606009892486
